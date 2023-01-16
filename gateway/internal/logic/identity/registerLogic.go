@@ -2,10 +2,12 @@ package identity
 
 import (
 	"context"
-	"github.com/zeromicro/go-zero/core/logx"
+	"train-tiktok/service/identity/types/identity"
+
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
-	"train-tiktok/service/identity/types/identity"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type RegisterLogic struct {

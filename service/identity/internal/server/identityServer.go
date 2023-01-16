@@ -26,3 +26,8 @@ func (s *IdentityServer) Register(ctx context.Context, in *identity.RegisterReq)
 	l := logic.NewRegisterLogic(ctx, s.svcCtx)
 	return l.Register(in)
 }
+
+func (s *IdentityServer) Login(ctx context.Context, in *identity.LoginReq) (*identity.LoginResp, error) {
+	l := logic.NewLoginLogic(ctx, s.svcCtx)
+	return l.Login(in)
+}

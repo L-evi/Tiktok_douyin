@@ -30,6 +30,6 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 			StatusMsg:  "sss",
 		},
 		UserId: 0,
-		Token:  "",
+		Token:  in.Username,
 	}, nil
 }

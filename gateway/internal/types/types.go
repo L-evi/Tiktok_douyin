@@ -12,8 +12,8 @@ type Resp struct {
 }
 
 type LoginReq struct {
-	Username string `json:"username,range=[0:32]"`
-	Password string `json:"password,range=[0:32]"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 type LoginResp struct {
@@ -23,8 +23,8 @@ type LoginResp struct {
 }
 
 type RegisterReq struct {
-	Username string `json:"username,range=[0:32]"`
-	Password string `json:"password,range=[0:32]"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 type RegisterResp struct {

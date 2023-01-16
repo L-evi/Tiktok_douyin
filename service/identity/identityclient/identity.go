@@ -13,12 +13,15 @@ import (
 )
 
 type (
+	LoginReq     = identity.LoginReq
+	LoginResp    = identity.LoginResp
 	RegisterReq  = identity.RegisterReq
 	RegisterResp = identity.RegisterResp
 	Resp         = identity.Resp
 
 	Identity interface {
 		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
+		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 	}
 
 	defaultIdentity struct {
@@ -35,4 +38,9 @@ func NewIdentity(cli zrpc.Client) Identity {
 func (m *defaultIdentity) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error) {
 	client := identity.NewIdentityClient(m.cli.Conn())
 	return client.Register(ctx, in, opts...)
+}
+
+func (m *defaultIdentity) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
+	client := identity.NewIdentityClient(m.cli.Conn())
+	return client.Login(ctx, in, opts...)
 }

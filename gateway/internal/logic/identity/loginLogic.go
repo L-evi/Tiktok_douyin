@@ -2,6 +2,7 @@ package identity
 
 import (
 	"context"
+	"train-tiktok/service/identity/types/identity"
 
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
@@ -24,7 +25,19 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+	res, err := l.svcCtx.IdentityRpc.Login(l.ctx, &identity.LoginReq{
+		Username: req.Username,
+		Password: req.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &types.LoginResp{
+		Resp: types.Resp{
+			Code: res.Response.StatusCode,
+			Msg:  res.Response.StatusMsg,
+		},
+		UserId: res.UserId,
+		Token:  res.Token,
+	}, nil
 }

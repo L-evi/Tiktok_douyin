@@ -9,8 +9,8 @@ import "common.api"
 
 type (
 	loginReq {
-		Username string `json:"username,range=[0:32]"`
-		Password string `json:"password,range=[0:32]"`
+		Username string `form:"username"`
+		Password string `form:"password"`
 	}
 
 	loginResp {
@@ -22,8 +22,8 @@ type (
 
 type (
 	registerReq {
-		Username string `json:"username,range=[0:32]"`
-		Password string `json:"password,range=[0:32]"`
+		Username string `form:"username"`
+		Password string `form:"password"`
 	}
 
 	registerResp {
