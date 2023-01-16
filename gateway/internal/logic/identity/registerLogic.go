@@ -32,6 +32,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	if err != nil {
 		return nil, err
 	}
+
 	return &types.RegisterResp{
 		Resp: types.Resp{
 			Code: res.Response.StatusCode,

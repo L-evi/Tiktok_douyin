@@ -32,6 +32,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	if err != nil {
 		return nil, err
 	}
+
 	return &types.LoginResp{
 		Resp: types.Resp{
 			Code: res.Response.StatusCode,
