@@ -1,0 +1,45 @@
+syntax = "v1"
+
+info (
+	title: "identify"
+	desc: "user identify file"
+)
+
+import "common.api"
+
+type (
+	loginReq {
+		Username string `json:"username"` // max 32 chars
+		Password string `json:"password"` // max 32 chars
+	}
+
+	loginResp {
+		Resp
+		Token  string `json:"token"`
+		UserId int64  `json:"user_id"`
+	}
+)
+
+type (
+	registerReq {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	registerResp {
+		Resp
+		Token  string `json:"token"`
+		UserId int64  `json:"user_id"`
+	}
+)
+
+@server(
+	group: identity
+)
+service gateway {
+	@handler register
+	post /douyin/user/register (registerReq) returns (registerResp)
+	
+	@handler login
+	post /douyin/user/login (loginReq) returns (loginResp)
+}
