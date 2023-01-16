@@ -1,0 +1,6 @@
+syntax = "v1"
+
+type Resp {
+    Code int32 `json:"status_code"`
+    Msg string `json:"status_msg"`
+}

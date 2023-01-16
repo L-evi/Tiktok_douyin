@@ -1,0 +1,23 @@
+syntax = "v1"
+
+info (
+	title: "gateway"
+	desc: "main gateway"
+)
+
+import "common.api"
+
+import "identity.api"
+
+type pingResp {
+	Resp
+	Msg string `json:"msg"`
+}
+
+@server(
+	group: gateway
+)
+service gateway {
+	@handler ping
+	get /ping returns (pingResp)
+}
