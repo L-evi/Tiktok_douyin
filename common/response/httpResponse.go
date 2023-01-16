@@ -1,14 +1,14 @@
 package response
 
 type HttpResponse struct {
-	responseStatus
+	RespStatus
 	Data interface{} `json:"data"`
 }
 
 func (res *HttpResponse) WithMsg(msg string) HttpResponse {
 	return HttpResponse{
-		responseStatus: responseStatus{
-			Code: res.responseStatus.Code,
+		RespStatus: RespStatus{
+			Code: res.RespStatus.Code,
 			Msg:  msg,
 		},
 		Data: res.Data,
@@ -17,17 +17,17 @@ func (res *HttpResponse) WithMsg(msg string) HttpResponse {
 
 func (res *HttpResponse) WithData(data interface{}) HttpResponse {
 	return HttpResponse{
-		responseStatus: responseStatus{
-			Code: res.responseStatus.Code,
-			Msg:  res.responseStatus.Msg,
+		RespStatus: RespStatus{
+			Code: res.RespStatus.Code,
+			Msg:  res.RespStatus.Msg,
 		},
 		Data: data,
 	}
 }
 
-func Response(status responseStatus) *HttpResponse {
+func Response(status RespStatus) *HttpResponse {
 	return &HttpResponse{
-		responseStatus: responseStatus{
+		RespStatus: RespStatus{
 			Code: status.Code,
 			Msg:  status.Msg,
 		},

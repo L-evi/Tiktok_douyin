@@ -2,6 +2,10 @@ package logic
 
 import (
 	"context"
+	"train-tiktok/common/response"
+	"train-tiktok/common/tool"
+	"train-tiktok/service/identity/common"
+	"train-tiktok/service/identity/models"
 
 	"train-tiktok/service/identity/internal/svc"
 	"train-tiktok/service/identity/types/identity"
@@ -24,12 +28,46 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterResp, error) {
+
+	// safe check
+	if err := common.VerifyUsername(in.Username); err != nil {
+		return &identity.RegisterResp{}, err
+	}
+
+	if err := common.VerifyPwd(in.Password); err != nil {
+		return &identity.RegisterResp{}, err
+	}
+
+	// check if username exists
+	if err := common.IsUsernameExists(l.svcCtx, in.Username); err != nil {
+		return &identity.RegisterResp{}, err
+	}
+
+	// create user
+	pwdEncrypted, err := tool.EncipherPassword(in.Password)
+	if err != nil {
+		logx.Errorf("failed to encipher password: %v", err)
+		return &identity.RegisterResp{}, response.ErrSystemError
+	}
+
+	var User = models.User{
+		Username: in.Username,
+		Password: pwdEncrypted,
+	}
+
+	if res := l.svcCtx.Db.Create(&User); res.Error != nil || res.RowsAffected == 0 {
+		logx.Errorf("failed to create user: %v", err)
+		return &identity.RegisterResp{}, response.ErrDatabaseError
+	}
+
+	// create token
+
 	return &identity.RegisterResp{
 		Response: &identity.Resp{
 			StatusCode: 200,
-			StatusMsg:  "sss",
+			StatusMsg:  "success",
 		},
-		UserId: 0,
+		UserId: User.ID,
 		Token:  in.Username,
 	}, nil
 }
