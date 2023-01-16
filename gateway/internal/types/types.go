@@ -12,8 +12,8 @@ type Resp struct {
 }
 
 type LoginReq struct {
-	Username string `json:"username"` // max 32 chars
-	Password string `json:"password"` // max 32 chars
+	Username string `json:"username,range=[0:32]"`
+	Password string `json:"password,range=[0:32]"`
 }
 
 type LoginResp struct {
@@ -23,8 +23,8 @@ type LoginResp struct {
 }
 
 type RegisterReq struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username,range=[0:32]"`
+	Password string `json:"password,range=[0:32]"`
 }
 
 type RegisterResp struct {
