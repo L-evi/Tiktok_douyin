@@ -34,7 +34,7 @@ func VerifyPwd(pwd string) error {
 
 // IsUsernameExists 判断用户名是否存在
 func IsUsernameExists(c *svc.ServiceContext, username string) error {
-	if err := c.Db.First(models.User{Username: username}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+	if err := c.Db.Where(&models.User{Username: username}).First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
 	} else if err != nil {
 		logx.Errorf("failed to query user: %v", err)

@@ -4,6 +4,7 @@ package errorx
 // 以及当 Gateway 请求 rpc模块 时，如果 rpc 模块返回错误，将会将错误信息转换为 ErrorResp
 
 import (
+	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/grpc/status"
 )
 
@@ -16,11 +17,10 @@ var (
 	ErrIpBlock                  = status.Error(2003, "IP被禁止访问")
 	ErrLoginError               = status.Error(2004, "帐号或密码错误")
 	ErrAccountError             = status.Error(2005, "帐号状态异常")
-	ErrServerError              = status.Error(3001, "服务器错误")
-	ErrDatabaseError            = status.Error(3002, "数据库错误")
-	ErrIoOperationError         = status.Error(3003, "IO操作错误")
-	ErrSystemError              = status.Error(3004, "系统错误")
-	ErrRequestTimeout           = status.Error(3005, "请求超时")
+	ErrDatabaseError            = status.Error(3001, "数据库错误")
+	ErrIoOperationError         = status.Error(3002, "IO操作错误")
+	ErrSystemError              = status.Error(3003, "服务器开小差了, 过会儿再试吧")
+	ErrRequestTimeout           = status.Error(3004, "请求超时")
 )
 
 type ErrorResp struct {
@@ -40,10 +40,13 @@ func RespErrFormat(Code int32, Msg string) *ErrorResp {
 func FromRpcStatus(err error) ErrorResp {
 	info, ok := status.FromError(err)
 	if !ok {
-		return ErrorResp{
-			Code: 3004,
-			Msg:  "系统错误",
-		}
+		return FromRpcStatus(ErrSystemError)
+	}
+
+	// 非自定义错误, 禁止向用户返回详细错误信息
+	if info.Code() < 100 {
+		logx.Errorf("from rpc status error: %v", err)
+		return FromRpcStatus(ErrSystemError)
 	}
 
 	return ErrorResp{
