@@ -10,13 +10,14 @@ import (
 )
 
 type ServiceContext struct {
-	Config config.Config
-	Db     *gorm.DB
+	Config        config.Config
+	Db            *gorm.DB
+	JwtSigningKey []byte
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	// Gorm
 
+	// Gorm
 	dsn := os.Getenv("MYSQL_DSN")
 	if dsn == "" {
 		dsn = c.Mysql.DataSource
@@ -26,14 +27,20 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err != nil {
 		log.Panicf("failed to connect to mysql: %v", err)
 	}
-
-	//autoMigrate(_db)
+	// 自动生成表结构
 	if err := _db.AutoMigrate(models.User{}); err != nil {
 		log.Panicf("failed to autoMigrate: %v", err)
 	}
 
+	// Get Jwt SigningKey
+	_jwtSigningKey := os.Getenv("JWT_SIGNING_KEY")
+	if _jwtSigningKey == "" {
+		_jwtSigningKey = c.Jwt.SigningKey
+	}
+
 	return &ServiceContext{
-		Config: c,
-		Db:     _db,
+		Config:        c,
+		Db:            _db,
+		JwtSigningKey: []byte(_jwtSigningKey),
 	}
 }

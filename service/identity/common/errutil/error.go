@@ -1,4 +1,4 @@
-package common
+package errutil
 
 import (
 	"google.golang.org/grpc/status"

@@ -1,4 +1,4 @@
-package common
+package userutil
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"regexp"
 	"train-tiktok/common/errorx"
+	"train-tiktok/service/identity/common/errutil"
 	"train-tiktok/service/identity/internal/svc"
 	"train-tiktok/service/identity/models"
 )
@@ -13,11 +14,11 @@ import (
 // VerifyUsername 验证用户名是否合法
 func VerifyUsername(username string) error {
 	if len(username) > 32 || len(username) < 5 {
-		return ErrInvalidUsername
+		return errutil.ErrInvalidUsername
 	}
 
 	if b, err := regexp.MatchString("^[0-9a-zA-Z]{5,30}$", username); err != nil || !b {
-		return ErrInvalidUsername
+		return errutil.ErrInvalidUsername
 	}
 
 	return nil
@@ -26,7 +27,7 @@ func VerifyUsername(username string) error {
 // VerifyPwd 验证密码是否合法
 func VerifyPwd(pwd string) error {
 	if len(pwd) > 32 || len(pwd) < 5 {
-		return ErrInvalidPassword
+		return errutil.ErrInvalidPassword
 	}
 
 	return nil
@@ -40,5 +41,5 @@ func IsUsernameExists(c *svc.ServiceContext, username string) error {
 		logx.Errorf("failed to query user: %v", err)
 		return errorx.ErrDatabaseError
 	}
-	return ErrUsernameExists
+	return errutil.ErrUsernameExists
 }

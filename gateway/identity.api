@@ -6,14 +6,14 @@ info (
 )
 
 type loginReq {
-	Username string `form:"username,optional"`
-	Password string `form:"password,optional"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 
 type registerReq {
-	Username string `form:"username,optional"`
-	Password string `form:"password,optional"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 

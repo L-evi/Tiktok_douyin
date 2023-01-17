@@ -4,7 +4,8 @@ import (
 	"context"
 	"train-tiktok/common/errorx"
 	"train-tiktok/common/tool"
-	"train-tiktok/service/identity/common"
+	"train-tiktok/service/identity/common/jwtutil"
+	"train-tiktok/service/identity/common/userutil"
 	"train-tiktok/service/identity/models"
 
 	"train-tiktok/service/identity/internal/svc"
@@ -30,16 +31,16 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterResp, error) {
 
 	// safe check
-	if err := common.VerifyUsername(in.Username); err != nil {
+	if err := userutil.VerifyUsername(in.Username); err != nil {
 		return &identity.RegisterResp{}, err
 	}
 
-	if err := common.VerifyPwd(in.Password); err != nil {
+	if err := userutil.VerifyPwd(in.Password); err != nil {
 		return &identity.RegisterResp{}, err
 	}
 
 	// check if username exists
-	if err := common.IsUsernameExists(l.svcCtx, in.Username); err != nil {
+	if err := userutil.IsUsernameExists(l.svcCtx, in.Username); err != nil {
 		return &identity.RegisterResp{}, err
 	}
 
@@ -61,6 +62,11 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 	}
 
 	// create token
+	token, err := jwtutil.GenerateJwt(l.svcCtx, User.ID, in.Username)
+	if err != nil {
+		logx.Errorf("failed to generate jwt: %v", err)
+		return &identity.RegisterResp{}, errorx.ErrSystemError
+	}
 
 	return &identity.RegisterResp{
 		Response: &identity.Resp{
@@ -68,6 +74,6 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 			StatusMsg:  "success",
 		},
 		UserId: User.ID,
-		Token:  in.Username,
+		Token:  token,
 	}, nil
 }

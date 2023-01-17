@@ -12,11 +12,11 @@ type PingResp struct {
 }
 
 type LoginReq struct {
-	Username string `form:"username,optional"`
-	Password string `form:"password,optional"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 type RegisterReq struct {
-	Username string `form:"username,optional"`
-	Password string `form:"password,optional"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
