@@ -4,7 +4,6 @@ import (
 	"context"
 	"train-tiktok/common/errorx"
 	"train-tiktok/common/tool"
-	"train-tiktok/service/identity/common/jwtutil"
 	"train-tiktok/service/identity/common/userutil"
 	"train-tiktok/service/identity/models"
 
@@ -62,7 +61,7 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 	}
 
 	// create token
-	token, err := jwtutil.GenerateJwt(l.svcCtx, User.ID, in.Username)
+	token, err := userutil.GenerateJwt(l.svcCtx, User.ID, in.Username)
 	if err != nil {
 		logx.Errorf("failed to generate jwt: %v", err)
 		return &identity.RegisterResp{}, errorx.ErrSystemError
@@ -70,7 +69,7 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 
 	return &identity.RegisterResp{
 		Response: &identity.Resp{
-			StatusCode: 200,
+			StatusCode: 0,
 			StatusMsg:  "success",
 		},
 		UserId: User.ID,

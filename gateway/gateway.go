@@ -35,7 +35,7 @@ func main() {
 		_, ok := status.FromError(err)
 		if !ok {
 			logx.Errorf("error when handler err: %v", err)
-			return http.StatusInternalServerError, errorx.FromRpcStatus(errorx.ErrSystemError)
+			return http.StatusOK, errorx.ErrorResp{Code: 3004, Msg: err.Error()}
 		}
 
 		return http.StatusOK, errorx.FromRpcStatus(err)

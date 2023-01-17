@@ -1,4 +1,4 @@
-package jwtutil
+package userutil
 
 import (
 	"encoding/json"
@@ -7,12 +7,13 @@ import (
 	"time"
 	"train-tiktok/common/tool"
 	"train-tiktok/service/identity/internal/svc"
+	"train-tiktok/service/identity/models"
 )
 
 func GenerateJwt(l *svc.ServiceContext, userid int64, username string) (string, error) {
 
-	uInfo := UserInfo{
-		UserId:   userid,
+	uInfo := models.User{
+		ID:       userid,
 		Username: username,
 	}
 
@@ -22,19 +23,19 @@ func GenerateJwt(l *svc.ServiceContext, userid int64, username string) (string, 
 		IssuedAt: time.Now().Unix(),
 		Issuer:   "train-tiktok",
 		Username: uInfo.Username,
-		UserId:   uInfo.UserId,
+		UserId:   uInfo.ID,
 	}).SignedString(l.JwtSigningKey)
 }
 
 // CheckPermission
 // @description check user permission
-func CheckPermission(l *svc.ServiceContext, _jwt string) (UserInfo, error) {
+func CheckPermission(l *svc.ServiceContext, _jwt string) (models.User, error) {
 	JwtClaims, err := JwtDecode(l, _jwt)
 	if err != nil {
-		return UserInfo{}, err
+		return models.User{}, err
 	}
-	return UserInfo{
-		UserId:   JwtClaims.UserId,
+	return models.User{
+		ID:       JwtClaims.UserId,
 		Username: JwtClaims.Username,
 	}, nil
 }
@@ -56,7 +57,7 @@ func JwtDecode(l *svc.ServiceContext, _jwt string) (JwtClaims, error) {
 }
 
 // generateJti 创建jwt唯一标识, 用于后续吊销凭证
-func generateJti(user UserInfo) string {
+func generateJti(user models.User) string {
 	JtiJson, _ := json.Marshal(map[string]string{
 		"username": user.Username,
 		"randStr":  tool.RandStr(32),
@@ -74,9 +75,4 @@ type JwtClaims struct {
 	Username string `json:"username"`
 	UserId   int64  `json:"userId"`
 	jwt.RegisteredClaims
-}
-
-type UserInfo struct {
-	UserId   int64  `json:"userId"`
-	Username string `json:"username"`
 }
