@@ -5,41 +5,25 @@ info (
 	desc: "user identify file"
 )
 
-import "common.api"
+type loginReq {
+	Username string `form:"username,optional"`
+	Password string `form:"password,optional"`
+}
 
-type (
-	loginReq {
-		Username string `form:"username"`
-		Password string `form:"password"`
-	}
 
-	loginResp {
-		Resp
-		Token  string `json:"token"`
-		UserId int64  `json:"user_id"`
-	}
-)
+type registerReq {
+	Username string `form:"username,optional"`
+	Password string `form:"password,optional"`
+}
 
-type (
-	registerReq {
-		Username string `form:"username"`
-		Password string `form:"password"`
-	}
-
-	registerResp {
-		Resp
-		Token  string `json:"token"`
-		UserId int64  `json:"user_id"`
-	}
-)
 
 @server(
 	group: identity
 )
 service gateway {
 	@handler register
-	post /douyin/user/register (registerReq) returns (registerResp)
+	post /douyin/user/register (registerReq)
 	
 	@handler login
-	post /douyin/user/login (loginReq) returns (loginResp)
+	post /douyin/user/login (loginReq)
 }

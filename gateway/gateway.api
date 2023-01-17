@@ -5,9 +5,12 @@ info (
 	desc: "main gateway"
 )
 
-import "common.api"
-
 import "identity.api"
+
+type Resp {
+	Code int32  `json:"status_code"`
+	Msg  string `json:"status_msg"`
+}
 
 type pingResp {
 	Resp
