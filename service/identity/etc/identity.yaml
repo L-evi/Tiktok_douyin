@@ -4,3 +4,5 @@ Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: identity.rpc
+Mysql:
+    DataSource: tiktok:tiktok@tcp(127.0.0.1)/tiktok?charset=utf8mb4

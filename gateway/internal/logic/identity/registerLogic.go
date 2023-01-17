@@ -2,6 +2,7 @@ package identity
 
 import (
 	"context"
+	"train-tiktok/service/identity/identityclient"
 	"train-tiktok/service/identity/types/identity"
 
 	"train-tiktok/gateway/internal/svc"
@@ -24,21 +25,9 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 	}
 }
 
-func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterResp, err error) {
-	res, err := l.svcCtx.IdentityRpc.Register(l.ctx, &identity.RegisterReq{
+func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *identityclient.RegisterResp, err error) {
+	return l.svcCtx.IdentityRpc.Register(l.ctx, &identity.RegisterReq{
 		Username: req.Username,
 		Password: req.Password,
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.RegisterResp{
-		Resp: types.Resp{
-			Code: res.Response.StatusCode,
-			Msg:  res.Response.StatusMsg,
-		},
-		UserId: res.UserId,
-		Token:  res.Token,
-	}, nil
 }

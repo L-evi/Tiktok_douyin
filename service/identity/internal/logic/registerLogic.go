@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	"train-tiktok/common/response"
+	"train-tiktok/common/errorx"
 	"train-tiktok/common/tool"
 	"train-tiktok/service/identity/common"
 	"train-tiktok/service/identity/models"
@@ -47,7 +47,7 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 	pwdEncrypted, err := tool.EncipherPassword(in.Password)
 	if err != nil {
 		logx.Errorf("failed to encipher password: %v", err)
-		return &identity.RegisterResp{}, response.ErrSystemError
+		return &identity.RegisterResp{}, errorx.ErrSystemError
 	}
 
 	var User = models.User{
@@ -57,7 +57,7 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 
 	if res := l.svcCtx.Db.Create(&User); res.Error != nil || res.RowsAffected == 0 {
 		logx.Errorf("failed to create user: %v", err)
-		return &identity.RegisterResp{}, response.ErrDatabaseError
+		return &identity.RegisterResp{}, errorx.ErrSystemError
 	}
 
 	// create token

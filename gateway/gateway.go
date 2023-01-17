@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
-
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/rest/httpx"
+	"google.golang.org/grpc/status"
+	"net/http"
+	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/internal/config"
 	"train-tiktok/gateway/internal/handler"
 	"train-tiktok/gateway/internal/svc"
@@ -25,6 +30,16 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	httpx.SetErrorHandlerCtx(func(ctx context.Context, err error) (int, interface{}) {
+		_, ok := status.FromError(err)
+		if !ok {
+			logx.Errorf("error when handler err: %v", err)
+			return http.StatusInternalServerError, errorx.FromRpcStatus(errorx.ErrSystemError)
+		}
+
+		return http.StatusOK, errorx.FromRpcStatus(err)
+	})
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

@@ -5,7 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 	"regexp"
-	"train-tiktok/common/response"
+	"train-tiktok/common/errorx"
 	"train-tiktok/service/identity/internal/svc"
 	"train-tiktok/service/identity/models"
 )
@@ -38,7 +38,7 @@ func IsUsernameExists(c *svc.ServiceContext, username string) error {
 		return nil
 	} else if err != nil {
 		logx.Errorf("failed to query user: %v", err)
-		return response.ErrDatabaseError
+		return errorx.ErrDatabaseError
 	}
 	return ErrUsernameExists
 }
