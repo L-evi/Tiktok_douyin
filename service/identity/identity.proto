@@ -31,7 +31,17 @@ message loginResp {
   string token = 3;
 }
 
+message statusReq {
+  string token = 1;
+}
+
+message statusResp {
+  bool is_login = 2;
+  int64 user_id = 3;
+}
+
 service identity {
   rpc register(registerReq) returns (registerResp);
   rpc login(loginReq) returns (loginResp);
+  rpc status(statusReq) returns (statusResp);
 }

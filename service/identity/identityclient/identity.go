@@ -18,10 +18,13 @@ type (
 	RegisterReq  = identity.RegisterReq
 	RegisterResp = identity.RegisterResp
 	Resp         = identity.Resp
+	StatusReq    = identity.StatusReq
+	StatusResp   = identity.StatusResp
 
 	Identity interface {
 		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+		Status(ctx context.Context, in *StatusReq, opts ...grpc.CallOption) (*StatusResp, error)
 	}
 
 	defaultIdentity struct {
@@ -43,4 +46,9 @@ func (m *defaultIdentity) Register(ctx context.Context, in *RegisterReq, opts ..
 func (m *defaultIdentity) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
 	client := identity.NewIdentityClient(m.cli.Conn())
 	return client.Login(ctx, in, opts...)
+}
+
+func (m *defaultIdentity) Status(ctx context.Context, in *StatusReq, opts ...grpc.CallOption) (*StatusResp, error) {
+	client := identity.NewIdentityClient(m.cli.Conn())
+	return client.Status(ctx, in, opts...)
 }

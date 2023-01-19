@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type IdentityClient interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+	Status(ctx context.Context, in *StatusReq, opts ...grpc.CallOption) (*StatusResp, error)
 }
 
 type identityClient struct {
@@ -52,12 +53,22 @@ func (c *identityClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.C
 	return out, nil
 }
 
+func (c *identityClient) Status(ctx context.Context, in *StatusReq, opts ...grpc.CallOption) (*StatusResp, error) {
+	out := new(StatusResp)
+	err := c.cc.Invoke(ctx, "/identity.identity/status", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IdentityServer is the server API for Identity service.
 // All implementations must embed UnimplementedIdentityServer
 // for forward compatibility
 type IdentityServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
+	Status(context.Context, *StatusReq) (*StatusResp, error)
 	mustEmbedUnimplementedIdentityServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedIdentityServer) Register(context.Context, *RegisterReq) (*Reg
 }
 func (UnimplementedIdentityServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedIdentityServer) Status(context.Context, *StatusReq) (*StatusResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Status not implemented")
 }
 func (UnimplementedIdentityServer) mustEmbedUnimplementedIdentityServer() {}
 
@@ -120,6 +134,24 @@ func _Identity_Login_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Identity_Status_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StatusReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityServer).Status(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/identity.identity/status",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityServer).Status(ctx, req.(*StatusReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Identity_ServiceDesc is the grpc.ServiceDesc for Identity service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var Identity_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "login",
 			Handler:    _Identity_Login_Handler,
+		},
+		{
+			MethodName: "status",
+			Handler:    _Identity_Status_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

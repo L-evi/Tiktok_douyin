@@ -31,3 +31,8 @@ func (s *IdentityServer) Login(ctx context.Context, in *identity.LoginReq) (*ide
 	l := logic.NewLoginLogic(ctx, s.svcCtx)
 	return l.Login(in)
 }
+
+func (s *IdentityServer) Status(ctx context.Context, in *identity.StatusReq) (*identity.StatusResp, error) {
+	l := logic.NewStatusLogic(ctx, s.svcCtx)
+	return l.Status(in)
+}
