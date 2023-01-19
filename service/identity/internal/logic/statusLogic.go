@@ -36,10 +36,10 @@ func (l *StatusLogic) Status(in *identity.StatusReq) (*identity.StatusResp, erro
 
 	var err error
 	var _user models.User
-
 	if _user, err = userutil.CheckPermission(l.svcCtx, in.Token); err != nil {
 		return &identity.StatusResp{}, err
 	}
+
 	return &identity.StatusResp{
 		IsLogin: true,
 		UserId:  _user.ID,
