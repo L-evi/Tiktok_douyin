@@ -13,11 +13,12 @@ import (
 
 // VerifyUsername 验证用户名是否合法
 func VerifyUsername(username string) error {
-	if len(username) > 32 || len(username) < 5 {
+	if len(username) > 32 {
 		return errutil.ErrInvalidUsername
 	}
 
-	if b, err := regexp.MatchString("^[0-9a-zA-Z]{5,30}$", username); err != nil || !b {
+	// username must be email
+	if b, err := regexp.MatchString(`^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$`, username); err != nil || !b {
 		return errutil.ErrInvalidUsername
 	}
 

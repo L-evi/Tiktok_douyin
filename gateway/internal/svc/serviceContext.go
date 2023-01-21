@@ -1,17 +1,23 @@
 package svc
 
 import (
+	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
 	"train-tiktok/gateway/internal/config"
+	"train-tiktok/gateway/internal/middleware"
 	"train-tiktok/service/identity/identityclient"
 	"train-tiktok/service/identity/types/identity"
+	"train-tiktok/service/video/types/video"
+	"train-tiktok/service/video/videoclient"
 )
 
 type ServiceContext struct {
 	Config       config.Config
 	IdentityRpc  identity.IdentityClient
+	VideoRpc     video.VideoClient
 	VideoTmpPath string
+	Auth         rest.Middleware
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -25,6 +31,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:       c,
 		IdentityRpc:  identityclient.NewIdentity(zrpc.MustNewClient(c.IdentityRpc)),
+		VideoRpc:     videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpc)),
 		VideoTmpPath: _videoTmpPath,
+		Auth:         middleware.NewAuthMiddleware(c.VideoRpc).Handle,
 	}
 }

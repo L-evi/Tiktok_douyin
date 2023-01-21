@@ -13,6 +13,7 @@ type publishReq {
 
 @server(
     group: video
+    middleware: Auth
 )
 service gateway {
     @handler publish

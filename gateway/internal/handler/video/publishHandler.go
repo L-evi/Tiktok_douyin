@@ -14,11 +14,11 @@ func PublishHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		var req types.PublishReq
 
 		l := video.NewPublishLogic(r, r.Context(), svcCtx)
-		err := l.Publish(&req)
+		resp, err := l.Publish(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.Ok(w)
+			httpx.OkJson(w, resp)
 		}
 	}
 }

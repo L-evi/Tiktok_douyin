@@ -39,12 +39,15 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/douyin/public/action",
-				Handler: video.PublishHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Auth},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/douyin/public/action",
+					Handler: video.PublishHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 }

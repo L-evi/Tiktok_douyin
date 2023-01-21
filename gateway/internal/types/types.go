@@ -23,6 +23,5 @@ type RegisterReq struct {
 
 type PublishReq struct {
 	Token string `form:"token"`
-	File  byte   `form:"file"`
 	Title string `form:"Title"`
 }

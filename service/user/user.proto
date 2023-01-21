@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./user";
+
+message Resp {
+  int32 status_code = 1;
+  string status_msg = 2;
+}
+
+message userReq {
+  int32 user_id = 1;
+}
+
+message userResp {
+  Resp resp = 1;
+  string name = 2;
+  optional int64 follow_count = 3;
+  optional int64 follower_count = 4;
+  bool is_followed = 5;
+}
+
+service identity {
+  rpc user(userReq) returns (userResp);
+}
