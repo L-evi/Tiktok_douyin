@@ -1,0 +1,20 @@
+syntax = "v1"
+
+info (
+    title: "video"
+    desc: "video proc file"
+)
+
+type publishReq {
+    Token string `form:"token"`
+    //   File byte `form:"file"` // handler from l.r.FormFile
+    Title string `form:"Title"`
+}
+
+@server(
+    group: video
+)
+service gateway {
+    @handler publish
+    post /douyin/public/action (publishReq)
+}

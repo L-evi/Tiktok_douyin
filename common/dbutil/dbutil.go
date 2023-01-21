@@ -35,8 +35,8 @@ func New(dsn string, debug string) (*gorm.DB, error) {
 	}
 
 	sqlDb, err := D.DB()
-	sqlDb.SetMaxOpenConns(400)
-	sqlDb.SetMaxIdleConns(100)
+	sqlDb.SetMaxOpenConns(60)
+	sqlDb.SetMaxIdleConns(10)
 	sqlDb.SetConnMaxLifetime(15 * time.Minute)
 	if err := sqlDb.Ping(); err != nil {
 		return nil, err

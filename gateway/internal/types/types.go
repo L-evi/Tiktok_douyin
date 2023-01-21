@@ -20,3 +20,9 @@ type RegisterReq struct {
 	Username string `form:"username"`
 	Password string `form:"password"`
 }
+
+type PublishReq struct {
+	Token string `form:"token"`
+	File  byte   `form:"file"`
+	Title string `form:"Title"`
+}

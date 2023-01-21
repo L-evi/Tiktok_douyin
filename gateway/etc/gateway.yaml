@@ -1,8 +1,14 @@
-Name: gateway
+Name: Gateway
 Host: 127.0.0.1
 Port: 8888
+VideoTmpPath: ./tmp/video
 IdentityRpc:
   Etcd:
     Hosts:
       - 127.0.0.1:2379
     Key: identity.rpc
+VideoRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: video.rpc

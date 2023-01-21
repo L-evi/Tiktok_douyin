@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package video;
+
+option go_package = "./video";
+
+message Resp {
+  int32 status_code = 1;
+  string status_msg = 2;
+}
+
+message publishReq {
+  bytes data = 1;
+  string title = 2;
+}
+
+message publishResp{
+  Resp response = 1;
+}
+
+service video {
+  rpc publish(publishReq) returns (publishResp);
+}

@@ -6,6 +6,7 @@ import (
 
 	gateway "train-tiktok/gateway/internal/handler/gateway"
 	identity "train-tiktok/gateway/internal/handler/identity"
+	video "train-tiktok/gateway/internal/handler/video"
 	"train-tiktok/gateway/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -33,6 +34,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/douyin/user/login",
 				Handler: identity.LoginHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/douyin/public/action",
+				Handler: video.PublishHandler(serverCtx),
 			},
 		},
 	)

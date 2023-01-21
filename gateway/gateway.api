@@ -6,6 +6,7 @@ info (
 )
 
 import "identity.api"
+import "video.api"
 
 type Resp {
 	Code int32  `json:"status_code"`
