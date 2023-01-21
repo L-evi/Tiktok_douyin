@@ -21,6 +21,6 @@ message userResp {
   bool is_followed = 5;
 }
 
-service identity {
+service user {
   rpc user(userReq) returns (userResp);
 }

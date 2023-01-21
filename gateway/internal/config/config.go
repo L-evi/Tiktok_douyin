@@ -9,5 +9,6 @@ type Config struct {
 	rest.RestConf
 	IdentityRpc  zrpc.RpcClientConf
 	VideoRpc     zrpc.RpcClientConf
+	UserRpc      zrpc.RpcClientConf
 	VideoTmpPath string
 }

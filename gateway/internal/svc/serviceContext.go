@@ -8,6 +8,8 @@ import (
 	"train-tiktok/gateway/internal/middleware"
 	"train-tiktok/service/identity/identityclient"
 	"train-tiktok/service/identity/types/identity"
+	"train-tiktok/service/user/types/user"
+	"train-tiktok/service/user/userclient"
 	"train-tiktok/service/video/types/video"
 	"train-tiktok/service/video/videoclient"
 )
@@ -16,6 +18,7 @@ type ServiceContext struct {
 	Config       config.Config
 	IdentityRpc  identity.IdentityClient
 	VideoRpc     video.VideoClient
+	UserRpc      user.UserClient
 	VideoTmpPath string
 	Auth         rest.Middleware
 }
@@ -32,6 +35,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:       c,
 		IdentityRpc:  identityclient.NewIdentity(zrpc.MustNewClient(c.IdentityRpc)),
 		VideoRpc:     videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpc)),
+		UserRpc:      userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
 		VideoTmpPath: _videoTmpPath,
 		Auth:         middleware.NewAuthMiddleware(c.VideoRpc).Handle,
 	}

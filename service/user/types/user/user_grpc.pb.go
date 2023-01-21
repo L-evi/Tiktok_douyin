@@ -18,86 +18,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// IdentityClient is the client API for Identity service.
+// UserClient is the client API for User service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type IdentityClient interface {
+type UserClient interface {
 	User(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*UserResp, error)
 }
 
-type identityClient struct {
+type userClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewIdentityClient(cc grpc.ClientConnInterface) IdentityClient {
-	return &identityClient{cc}
+func NewUserClient(cc grpc.ClientConnInterface) UserClient {
+	return &userClient{cc}
 }
 
-func (c *identityClient) User(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*UserResp, error) {
+func (c *userClient) User(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*UserResp, error) {
 	out := new(UserResp)
-	err := c.cc.Invoke(ctx, "/user.identity/user", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.user/user", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// IdentityServer is the server API for Identity service.
-// All implementations must embed UnimplementedIdentityServer
+// UserServer is the server API for User service.
+// All implementations must embed UnimplementedUserServer
 // for forward compatibility
-type IdentityServer interface {
+type UserServer interface {
 	User(context.Context, *UserReq) (*UserResp, error)
-	mustEmbedUnimplementedIdentityServer()
+	mustEmbedUnimplementedUserServer()
 }
 
-// UnimplementedIdentityServer must be embedded to have forward compatible implementations.
-type UnimplementedIdentityServer struct {
+// UnimplementedUserServer must be embedded to have forward compatible implementations.
+type UnimplementedUserServer struct {
 }
 
-func (UnimplementedIdentityServer) User(context.Context, *UserReq) (*UserResp, error) {
+func (UnimplementedUserServer) User(context.Context, *UserReq) (*UserResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method User not implemented")
 }
-func (UnimplementedIdentityServer) mustEmbedUnimplementedIdentityServer() {}
+func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
-// UnsafeIdentityServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to IdentityServer will
+// UnsafeUserServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserServer will
 // result in compilation errors.
-type UnsafeIdentityServer interface {
-	mustEmbedUnimplementedIdentityServer()
+type UnsafeUserServer interface {
+	mustEmbedUnimplementedUserServer()
 }
 
-func RegisterIdentityServer(s grpc.ServiceRegistrar, srv IdentityServer) {
-	s.RegisterService(&Identity_ServiceDesc, srv)
+func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
+	s.RegisterService(&User_ServiceDesc, srv)
 }
 
-func _Identity_User_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_User_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IdentityServer).User(ctx, in)
+		return srv.(UserServer).User(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.identity/user",
+		FullMethod: "/user.user/user",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IdentityServer).User(ctx, req.(*UserReq))
+		return srv.(UserServer).User(ctx, req.(*UserReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Identity_ServiceDesc is the grpc.ServiceDesc for Identity service.
+// User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Identity_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "user.identity",
-	HandlerType: (*IdentityServer)(nil),
+var User_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "user.user",
+	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "user",
-			Handler:    _Identity_User_Handler,
+			Handler:    _User_User_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
