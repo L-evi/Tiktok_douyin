@@ -38,7 +38,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			Token: token,
 		}); err != nil {
 			logx.Errorf("Auth middleware: identity rpc status err: %v", err)
-			httpx.WriteJson(w, http.StatusUnauthorized, errorx.ErrSystemError)
+			httpx.WriteJson(w, http.StatusInternalServerError, errorx.ErrSystemError)
 			return
 		}
 
