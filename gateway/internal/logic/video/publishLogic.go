@@ -42,7 +42,7 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *videoclient.Publish
 	// 从请求中获取文件句柄
 	var file multipart.File
 	var header *multipart.FileHeader
-	if file, header, err = l.r.FormFile("file"); err != nil {
+	if file, header, err = l.r.FormFile("data"); err != nil {
 		logx.Error(err)
 		return &videoclient.PublishResp{}, errorx.ErrSystemError
 	}

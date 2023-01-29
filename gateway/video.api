@@ -7,7 +7,7 @@ info (
 
 type publishReq {
     Token string `form:"token"`
-    //   File byte `form:"file"` // handler from l.r.FormFile
+    //   data byte `form:"data"` // handler from l.r.FormFile
     Title string `form:"Title"`
 }
 

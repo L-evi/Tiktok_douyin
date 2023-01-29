@@ -1,0 +1,15 @@
+syntax = "v1"
+
+info (
+    title: "user"
+    desc: "user file"
+)
+
+@server(
+    group: user
+    middleware: auth
+)
+service gateway {
+    @handler user
+    get /douyin/user
+}
