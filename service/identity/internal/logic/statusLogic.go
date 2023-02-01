@@ -41,7 +41,8 @@ func (l *StatusLogic) Status(in *identity.StatusReq) (*identity.StatusResp, erro
 	}
 
 	return &identity.StatusResp{
-		IsLogin: true,
-		UserId:  _user.ID,
+		IsLogin:  true,
+		UserId:   _user.ID,
+		Username: _user.Username,
 	}, nil
 }

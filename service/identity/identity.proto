@@ -38,6 +38,7 @@ message statusReq {
 message statusResp {
   bool is_login = 2;
   int64 user_id = 3;
+  string username = 4;
 }
 
 service identity {

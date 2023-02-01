@@ -20,6 +20,9 @@ func NewAuthMiddleware(IdentityRpcConf zrpc.RpcClientConf) *AuthMiddleware {
 	}
 }
 
+// Handle 用于处理用户认证
+// token 无效则直接返回 403 / 登录超时
+// 有效则携带 UserId 以及 Username 向后传递
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// get token in query
@@ -50,6 +53,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		// 传递 User_id
 		ctx := context.WithValue(r.Context(), "user_id", resp.UserId)
+		ctx = context.WithValue(ctx, "username", resp.Username)
 		next(w, r.WithContext(ctx))
 	}
 }
