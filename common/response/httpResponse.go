@@ -1,12 +1,12 @@
 package response
 
-type HttpResponse struct {
+type httpResponse struct {
 	responseStatus
 	Data interface{} `json:"data"`
 }
 
-func (res *HttpResponse) WithMsg(msg string) HttpResponse {
-	return HttpResponse{
+func (res *httpResponse) WithMsg(msg string) httpResponse {
+	return httpResponse{
 		responseStatus: responseStatus{
 			Code: res.responseStatus.Code,
 			Msg:  msg,
@@ -15,8 +15,8 @@ func (res *HttpResponse) WithMsg(msg string) HttpResponse {
 	}
 }
 
-func (res *HttpResponse) WithData(data interface{}) HttpResponse {
-	return HttpResponse{
+func (res *httpResponse) WithData(data interface{}) httpResponse {
+	return httpResponse{
 		responseStatus: responseStatus{
 			Code: res.responseStatus.Code,
 			Msg:  res.responseStatus.Msg,
@@ -25,8 +25,8 @@ func (res *HttpResponse) WithData(data interface{}) HttpResponse {
 	}
 }
 
-func Response(status responseStatus) *HttpResponse {
-	return &HttpResponse{
+func HttpResponse(status responseStatus) *httpResponse {
+	return &httpResponse{
 		responseStatus: responseStatus{
 			Code: status.Code,
 			Msg:  status.Msg,
