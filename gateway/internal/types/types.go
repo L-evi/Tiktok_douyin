@@ -25,3 +25,16 @@ type PublishReq struct {
 	Token string `form:"token"`
 	Title string `form:"Title"`
 }
+
+type UserReq struct {
+	User_id int32  `form:"user_id"`
+	Token   string `form:"token"`
+}
+
+type UserResp struct {
+	Status_code    int64  `json:"status_code"`
+	Status_msg     string `json:"status_msg"`
+	Follow_count   int64  `json:"follow_count"`
+	Follower_count int64  `json:"follower_count"`
+	Is_follow      bool   `json:"is_follow"`
+}

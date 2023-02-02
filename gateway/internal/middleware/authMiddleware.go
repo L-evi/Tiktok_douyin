@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"github.com/zeromicro/go-zero/zrpc"
+	"log"
 	"net/http"
 	"train-tiktok/common/errorx"
 	"train-tiktok/service/identity/identityclient"
@@ -27,13 +28,20 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// get token in query
 		var token string
-		if token = r.PostFormValue("token"); token == "" {
-			httpx.WriteJson(w, http.StatusUnauthorized, errorx.ErrLoginTimeout)
-			return
+
+		if token = r.URL.Query().Get("token"); token == "" {
+			if token = r.PostFormValue("token"); token == "" {
+				httpx.WriteJson(w, http.StatusUnauthorized, errorx.ErrLoginTimeout)
+				return
+			}
 		}
+
+		log.Println("token: ", token)
 
 		// verify token in identity service
 		identityRpc := identityclient.NewIdentity(zrpc.MustNewClient(m.IdentityRpcConf))
+
+		logx.Info("identityRpc: ", identityRpc)
 
 		var resp *identityclient.StatusResp
 		var err error

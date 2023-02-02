@@ -6,6 +6,7 @@ import (
 
 	gateway "train-tiktok/gateway/internal/handler/gateway"
 	identity "train-tiktok/gateway/internal/handler/identity"
+	user "train-tiktok/gateway/internal/handler/user"
 	video "train-tiktok/gateway/internal/handler/video"
 	"train-tiktok/gateway/internal/svc"
 
@@ -46,6 +47,19 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/douyin/public/action",
 					Handler: video.PublishHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Auth},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/user",
+					Handler: user.UserHandler(serverCtx),
 				},
 			}...,
 		),
