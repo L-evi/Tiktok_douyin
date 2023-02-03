@@ -36,3 +36,8 @@ func (s *IdentityServer) Status(ctx context.Context, in *identity.StatusReq) (*i
 	l := logic.NewStatusLogic(ctx, s.svcCtx)
 	return l.Status(in)
 }
+
+func (s *IdentityServer) GetUserInfo(ctx context.Context, in *identity.GetUserInfoReq) (*identity.GetUserInfoResp, error) {
+	l := logic.NewGetUserInfoLogic(ctx, s.svcCtx)
+	return l.GetUserInfo(in)
+}

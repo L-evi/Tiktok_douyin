@@ -27,7 +27,7 @@ func NewUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLogic {
 
 func (l *UserLogic) User(req *types.UserReq) (resp *userclient.UserResp, err error) {
 	return l.svcCtx.UserRpc.User(l.ctx, &user.UserReq{
-		UserId:   req.User_id,
-		Username: l.ctx.Value("username").(string),
+		UserId:   l.ctx.Value("userId").(int64),
+		TargetId: req.User_id,
 	})
 }

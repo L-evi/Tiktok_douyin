@@ -25,6 +25,7 @@ type IdentityClient interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 	Status(ctx context.Context, in *StatusReq, opts ...grpc.CallOption) (*StatusResp, error)
+	GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*GetUserInfoResp, error)
 }
 
 type identityClient struct {
@@ -62,6 +63,15 @@ func (c *identityClient) Status(ctx context.Context, in *StatusReq, opts ...grpc
 	return out, nil
 }
 
+func (c *identityClient) GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*GetUserInfoResp, error) {
+	out := new(GetUserInfoResp)
+	err := c.cc.Invoke(ctx, "/identity.identity/getUserInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IdentityServer is the server API for Identity service.
 // All implementations must embed UnimplementedIdentityServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type IdentityServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	Status(context.Context, *StatusReq) (*StatusResp, error)
+	GetUserInfo(context.Context, *GetUserInfoReq) (*GetUserInfoResp, error)
 	mustEmbedUnimplementedIdentityServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedIdentityServer) Login(context.Context, *LoginReq) (*LoginResp
 }
 func (UnimplementedIdentityServer) Status(context.Context, *StatusReq) (*StatusResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Status not implemented")
+}
+func (UnimplementedIdentityServer) GetUserInfo(context.Context, *GetUserInfoReq) (*GetUserInfoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
 }
 func (UnimplementedIdentityServer) mustEmbedUnimplementedIdentityServer() {}
 
@@ -152,6 +166,24 @@ func _Identity_Status_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Identity_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityServer).GetUserInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/identity.identity/getUserInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityServer).GetUserInfo(ctx, req.(*GetUserInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Identity_ServiceDesc is the grpc.ServiceDesc for Identity service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var Identity_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "status",
 			Handler:    _Identity_Status_Handler,
+		},
+		{
+			MethodName: "getUserInfo",
+			Handler:    _Identity_GetUserInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

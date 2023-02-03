@@ -53,6 +53,7 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 	var User = models.User{
 		Username: in.Username,
 		Password: pwdEncrypted,
+		Nickname: userutil.GenerateNickname(),
 	}
 
 	if res := l.svcCtx.Db.Create(&User); res.Error != nil || res.RowsAffected == 0 {

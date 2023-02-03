@@ -6,7 +6,7 @@ info (
 )
 
 type UserReq {
-	User_id int32  `form:"user_id"`
+	User_id int64  `form:"user_id"`
 	Token   string `form:"token"`
 }
 

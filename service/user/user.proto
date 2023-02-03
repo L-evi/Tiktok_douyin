@@ -10,8 +10,8 @@ message Resp {
 }
 
 message userReq {
-  int32 user_id = 1;
-  string username = 2;
+  int64 user_id = 1;
+  int64 Target_id = 2;
 }
 
 message userResp {

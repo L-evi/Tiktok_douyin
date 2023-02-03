@@ -13,18 +13,21 @@ import (
 )
 
 type (
-	LoginReq     = identity.LoginReq
-	LoginResp    = identity.LoginResp
-	RegisterReq  = identity.RegisterReq
-	RegisterResp = identity.RegisterResp
-	Resp         = identity.Resp
-	StatusReq    = identity.StatusReq
-	StatusResp   = identity.StatusResp
+	GetUserInfoReq  = identity.GetUserInfoReq
+	GetUserInfoResp = identity.GetUserInfoResp
+	LoginReq        = identity.LoginReq
+	LoginResp       = identity.LoginResp
+	RegisterReq     = identity.RegisterReq
+	RegisterResp    = identity.RegisterResp
+	Resp            = identity.Resp
+	StatusReq       = identity.StatusReq
+	StatusResp      = identity.StatusResp
 
 	Identity interface {
 		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 		Status(ctx context.Context, in *StatusReq, opts ...grpc.CallOption) (*StatusResp, error)
+		GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*GetUserInfoResp, error)
 	}
 
 	defaultIdentity struct {
@@ -51,4 +54,9 @@ func (m *defaultIdentity) Login(ctx context.Context, in *LoginReq, opts ...grpc.
 func (m *defaultIdentity) Status(ctx context.Context, in *StatusReq, opts ...grpc.CallOption) (*StatusResp, error) {
 	client := identity.NewIdentityClient(m.cli.Conn())
 	return client.Status(ctx, in, opts...)
+}
+
+func (m *defaultIdentity) GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*GetUserInfoResp, error) {
+	client := identity.NewIdentityClient(m.cli.Conn())
+	return client.GetUserInfo(ctx, in, opts...)
 }

@@ -9,40 +9,53 @@ message Resp {
     string status_msg = 2;
 }
 
+// 注册
 message registerReq {
   string username = 1;
   string password = 2;
 }
-
 message registerResp {
   Resp response = 1;
   int64 user_id = 2;
   string token = 3;
 }
 
+// 登录
 message loginReq {
   string username = 1;
   string password = 2;
 }
-
 message loginResp {
   Resp response = 1;
   int64 user_id = 2;
   string token = 3;
 }
 
+// 获取用户状态
 message statusReq {
   string token = 1;
 }
-
 message statusResp {
-  bool is_login = 2;
-  int64 user_id = 3;
-  string username = 4;
+  bool is_login = 1;
+  int64 user_id = 2;
+  string username = 3;
+}
+
+// 获取用户信息
+message getUserInfoReq {
+  int64 user_id = 1;
+}
+message getUserInfoResp {
+  string username = 1;
+  string nickname = 2;
 }
 
 service identity {
   rpc register(registerReq) returns (registerResp);
   rpc login(loginReq) returns (loginResp);
   rpc status(statusReq) returns (statusResp);
+  rpc getUserInfo(getUserInfoReq) returns (getUserInfoResp);
 }
+
+// TODO 可以考虑 rpc 子服务只返回 参数, 使用 err 作为错误返回
+// TODO Gateway  获取错误后，status_code 和 status_msg 使用 rpc 的 err
