@@ -69,10 +69,6 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 	}
 
 	return &identity.RegisterResp{
-		Response: &identity.Resp{
-			StatusCode: 0,
-			StatusMsg:  "success",
-		},
 		UserId: User.ID,
 		Token:  token,
 	}, nil

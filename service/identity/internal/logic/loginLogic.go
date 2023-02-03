@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 	"train-tiktok/common/errorx"
 	"train-tiktok/common/tool"
-	"train-tiktok/service/identity/common/errutil"
+	"train-tiktok/service/identity/common/errx"
 	"train-tiktok/service/identity/common/userutil"
 	"train-tiktok/service/identity/internal/svc"
 	"train-tiktok/service/identity/models"
@@ -40,7 +40,7 @@ func (l *LoginLogic) Login(in *identity.LoginReq) (*identity.LoginResp, error) {
 	if err := l.svcCtx.Db.Select("id, username, password").
 		Where(&models.User{Username: in.Username}).
 		First(&User).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return &identity.LoginResp{}, errutil.ErrWrongIdentity
+		return &identity.LoginResp{}, errx.ErrWrongIdentity
 	} else if err != nil {
 		logx.Errorf("failed to query user: %v", err)
 		return &identity.LoginResp{}, errorx.ErrDatabaseError
@@ -48,7 +48,7 @@ func (l *LoginLogic) Login(in *identity.LoginReq) (*identity.LoginResp, error) {
 
 	// check pwd
 	if ok, err := tool.VerifyPassword(in.Password, User.Password); err != nil || !ok {
-		return &identity.LoginResp{}, errutil.ErrWrongIdentity
+		return &identity.LoginResp{}, errx.ErrWrongIdentity
 	}
 
 	// create token
@@ -59,10 +59,6 @@ func (l *LoginLogic) Login(in *identity.LoginReq) (*identity.LoginResp, error) {
 	}
 
 	return &identity.LoginResp{
-		Response: &identity.Resp{
-			StatusCode: 0,
-			StatusMsg:  "success",
-		},
 		UserId: User.ID,
 		Token:  token,
 	}, nil

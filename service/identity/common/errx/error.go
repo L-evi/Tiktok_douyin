@@ -1,4 +1,4 @@
-package errutil
+package errx
 
 import (
 	"google.golang.org/grpc/status"

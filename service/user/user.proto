@@ -19,7 +19,7 @@ message userResp {
   string name = 2;
   optional int64 follow_count = 3;
   optional int64 follower_count = 4;
-  bool is_followed = 5;
+  bool is_follow = 5;
 }
 
 service user {

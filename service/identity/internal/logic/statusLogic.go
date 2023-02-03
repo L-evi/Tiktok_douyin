@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	"train-tiktok/service/identity/common/errutil"
+	"train-tiktok/service/identity/common/errx"
 	"train-tiktok/service/identity/common/userutil"
 	"train-tiktok/service/identity/models"
 
@@ -31,7 +31,7 @@ func (l *StatusLogic) Status(in *identity.StatusReq) (*identity.StatusResp, erro
 	if in.Token == "" {
 		return &identity.StatusResp{
 			IsLogin: false,
-		}, errutil.ErrTokenInvalid
+		}, errx.ErrTokenInvalid
 	}
 
 	var err error

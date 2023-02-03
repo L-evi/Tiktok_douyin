@@ -2,11 +2,10 @@ package identity
 
 import (
 	"context"
-	"train-tiktok/service/identity/identityclient"
-	"train-tiktok/service/identity/types/identity"
-
+	"train-tiktok/gateway/common/errx"
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
+	"train-tiktok/service/identity/types/identity"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -25,9 +24,21 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 	}
 }
 
-func (l *LoginLogic) Login(req *types.LoginReq) (resp *identityclient.LoginResp, err error) {
-	return l.svcCtx.IdentityRpc.Login(l.ctx, &identity.LoginReq{
+func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err error) {
+	rpcResp, err := l.svcCtx.IdentityRpc.Login(l.ctx, &identity.LoginReq{
 		Username: req.Username,
 		Password: req.Password,
 	})
+
+	if err != nil {
+		return &types.LoginResp{
+			Resp: errx.HandleRpcErr(err),
+		}, nil
+	}
+
+	return &types.LoginResp{
+		Resp:   errx.SUCCESS_RESP,
+		UserId: rpcResp.UserId,
+		Token:  rpcResp.Token,
+	}, nil
 }

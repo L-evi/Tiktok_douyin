@@ -5,6 +5,8 @@ info (
     desc: "video proc file"
 )
 
+import "common.api"
+
 type publishReq {
     Token string `form:"token"`
     //   data byte `form:"data"` // handler from l.r.FormFile
@@ -17,5 +19,5 @@ type publishReq {
 )
 service gateway {
     @handler publish
-    post /douyin/public/action (publishReq)
+    post /douyin/public/action (publishReq) returns (Resp)
 }

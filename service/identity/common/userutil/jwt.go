@@ -5,7 +5,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"time"
 	"train-tiktok/common/tool"
-	"train-tiktok/service/identity/common/errutil"
+	"train-tiktok/service/identity/common/errx"
 	"train-tiktok/service/identity/internal/svc"
 	"train-tiktok/service/identity/models"
 )
@@ -34,12 +34,12 @@ func CheckPermission(l *svc.ServiceContext, _jwt string) (models.User, error) {
 		return l.JwtSigningKey, nil
 	})
 	if err != nil {
-		return models.User{}, errutil.ErrTokenInvalid
+		return models.User{}, errx.ErrTokenInvalid
 	}
 
 	_jwtClaims, ok := token.Claims.(*JwtClaims)
 	if !ok || !token.Valid {
-		return models.User{}, errutil.ErrTokenInvalid
+		return models.User{}, errx.ErrTokenInvalid
 	}
 
 	return models.User{

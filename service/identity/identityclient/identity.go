@@ -19,7 +19,6 @@ type (
 	LoginResp       = identity.LoginResp
 	RegisterReq     = identity.RegisterReq
 	RegisterResp    = identity.RegisterResp
-	Resp            = identity.Resp
 	StatusReq       = identity.StatusReq
 	StatusResp      = identity.StatusResp
 

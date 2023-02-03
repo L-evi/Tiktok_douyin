@@ -5,18 +5,21 @@ info (
 	desc: "user file"
 )
 
-type UserReq {
-	User_id int64  `form:"user_id"`
-	Token   string `form:"token"`
-}
+import "common.api"
 
-//type UserResp {
-//	Status_code    int64  `json:"status_code"`
-//	Status_msg     string `json:"status_msg"`
-//	Follow_count   int64  `json:"follow_count"`
-//	Follower_count int64  `json:"follower_count"`
-//	Is_follow      bool   `json:"is_follow"`
-//}
+type (
+	UserReq {
+		UserId int64  `form:"user_id"`
+		Token   string `form:"token"`
+	}
+	UserResp {
+		Resp
+		FollowCount   int64  `json:"follow_count"`
+		FollowerCount int64  `json:"follower_count"`
+		IsFollow      bool   `json:"is_follow"`
+	}
+
+)
 
 @server(
 	group: user
@@ -24,5 +27,5 @@ type UserReq {
 )
 service gateway {
 	@handler user
-	get /douyin/user (UserReq)
+	get /douyin/user (UserReq) returns (UserResp)
 }

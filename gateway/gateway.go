@@ -7,6 +7,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"google.golang.org/grpc/status"
+	"log"
 	"net/http"
 	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/internal/config"
@@ -34,11 +35,12 @@ func main() {
 	httpx.SetErrorHandlerCtx(func(ctx context.Context, err error) (int, interface{}) {
 		_, ok := status.FromError(err)
 		if !ok {
-			logx.Errorf("error when handler err: %v", err)
+			logx.Errorf("error when handler rpc err: %v", err)
 			return http.StatusOK, errorx.ErrorResp{Code: 3004, Msg: err.Error()}
 		}
 
-		return http.StatusOK, errorx.FromRpcStatus(err)
+		log.Printf("error when handler err: %v", err)
+		return http.StatusOK, errorx.FromRpcStatus(errorx.ErrSystemError)
 	})
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
