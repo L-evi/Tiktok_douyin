@@ -81,6 +81,6 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 		Name:          rpcResp.Nickname,
 		FollowCount:   followCount,
 		FollowerCount: followerCount,
-		IsFollowed:    isFollowed,
+		IsFollow:      isFollowed,
 	}, nil
 }
