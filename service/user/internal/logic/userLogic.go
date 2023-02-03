@@ -31,8 +31,8 @@ func NewUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLogic {
 //
 //	对应 /douyin/user 接口 用于获取用户相关信息
 func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
-	var followerCount *int64
-	var followCount *int64
+	var followerCount int64
+	var followCount int64
 	var isFollowed bool
 
 	var err error
@@ -40,7 +40,7 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 	// get followCount
 	if err = l.svcCtx.Db.Model(&models.Follow{}).
 		Where(&models.Follow{UserId: in.TargetId}).
-		Count(followCount).Error; err != nil {
+		Count(&followCount).Error; err != nil {
 		logx.Errorf("failed to query followCount: %v", err)
 		return &user.UserResp{}, errorx.ErrDatabaseError
 
@@ -49,7 +49,7 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 	// get followerCount
 	if err = l.svcCtx.Db.Model(&models.Fans{}).
 		Where(&models.Fans{UserId: in.TargetId}).
-		Count(followerCount).Error; err != nil {
+		Count(&followerCount).Error; err != nil {
 		logx.Errorf("failed to query followerCount: %v", err)
 		return &user.UserResp{}, errorx.ErrDatabaseError
 	}
@@ -79,8 +79,8 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 
 	return &user.UserResp{
 		Name:          rpcResp.Nickname,
-		FollowCount:   followCount,
-		FollowerCount: followerCount,
+		FollowCount:   &followCount,
+		FollowerCount: &followerCount,
 		IsFollow:      isFollowed,
 	}, nil
 }
