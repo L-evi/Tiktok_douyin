@@ -16,7 +16,7 @@ message publishReq {
   string title = 5;
 }
 message publishResp{
-  Resp response = 1;
+  bool success = 1;
 }
 
 service video {

@@ -149,14 +149,17 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 	}
 
 	// 请求 video service 存储文件
-	request, err := l.svcCtx.VideoRpc.Publish(l.ctx, &videoclient.PublishReq{
+	if _, err := l.svcCtx.VideoRpc.Publish(l.ctx, &videoclient.PublishReq{
 		Title:     req.Title,
 		FilePath:  _fileTmpPath,
 		CoverPath: _coverPath,
 		UserId:    UserId,
-	})
+	}); err != nil {
+		closeAndRemove(f, _fileTmpPath)
+		_ = os.Remove(_coverPath)
+		return &SystemErrResp, nil
+	}
 
-	logx.Info(request)
 	return &types.Resp{
 		Code: 0,
 		Msg:  "success",
