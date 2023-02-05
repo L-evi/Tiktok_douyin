@@ -8,3 +8,8 @@ Mysql:
     DataSource: tiktok:tiktok@tcp(127.0.0.1)/tiktok?charset=utf8mb4
 Jwt:
   SigningKey: tiktok
+Log:
+  level: info
+  Mode: console
+  Encoding: plain
+  ServiceName: service-identity

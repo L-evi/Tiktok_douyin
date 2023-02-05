@@ -2,18 +2,26 @@ Name: Gateway
 Host: 127.0.0.1
 Port: 8888
 VideoTmpPath: ./tmp/video
+Log:
+  level: info
+  Mode: console
+  Encoding: plain
+  ServiceName: Gateway
 IdentityRpc:
   Etcd:
     Hosts:
       - 127.0.0.1:2379
     Key: identity.rpc
+    Timeout: 10000
 VideoRpc:
   Etcd:
     Hosts:
       - 127.0.0.1:2379
     Key: video.rpc
+    Timeout: 10000
 UserRpc:
   Etcd:
     Hosts:
       - 127.0.0.1:2379
     Key: user.rpc
+    Timeout: 10000

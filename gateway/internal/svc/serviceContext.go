@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"os"
@@ -19,8 +20,8 @@ type ServiceContext struct {
 	IdentityRpc  identity.IdentityClient
 	VideoRpc     video.VideoClient
 	UserRpc      user.UserClient
-	VideoTmpPath string
 	Auth         rest.Middleware
+	VideoTmpPath string
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -30,6 +31,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if _videoTmpPath == "" {
 		_videoTmpPath = c.VideoTmpPath
 	}
+
+	logx.MustSetup(c.Log)
 
 	return &ServiceContext{
 		Config:       c,

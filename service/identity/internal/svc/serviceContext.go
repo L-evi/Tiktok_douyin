@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 	"log"
 	"os"
@@ -16,6 +17,8 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+
+	logx.MustSetup(c.Log)
 
 	// Gorm
 	dsn := os.Getenv("MYSQL_DSN")

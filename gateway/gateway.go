@@ -7,7 +7,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"google.golang.org/grpc/status"
-	"log"
 	"net/http"
 	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/internal/config"
@@ -39,7 +38,7 @@ func main() {
 			return http.StatusOK, errorx.ErrorResp{Code: 3004, Msg: err.Error()}
 		}
 
-		log.Printf("error when handler err: %v", err)
+		logx.Errorf("error when handler err: %v", err)
 		return http.StatusOK, errorx.FromRpcStatus(errorx.ErrSystemError)
 	})
 

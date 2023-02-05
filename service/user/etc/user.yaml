@@ -11,3 +11,8 @@ IdentityRpcConf:
     Hosts:
       - 127.0.0.1:2379
     Key: identity.rpc
+LogConf:
+  level: info
+  Mode: console
+  Encoding: plain
+  ServiceName: service-user

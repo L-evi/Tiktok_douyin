@@ -6,3 +6,8 @@ Etcd:
   Key: video.rpc
 Mysql:
   DataSource: tiktok:tiktok@tcp(127.0.0.1)/tiktok?charset=utf8mb4
+Log:
+  level: info
+  Mode: console
+  Encoding: plain
+  ServiceName: service-video
