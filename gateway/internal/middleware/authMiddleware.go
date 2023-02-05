@@ -5,19 +5,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"github.com/zeromicro/go-zero/zrpc"
-	"log"
 	"net/http"
 	"train-tiktok/common/errorx"
 	"train-tiktok/service/identity/identityclient"
 )
 
 type AuthMiddleware struct {
-	IdentityRpcConf zrpc.RpcClientConf
+	identityRpc identityclient.Identity
 }
 
 func NewAuthMiddleware(IdentityRpcConf zrpc.RpcClientConf) *AuthMiddleware {
+	_identityService := identityclient.NewIdentity(zrpc.MustNewClient(IdentityRpcConf))
+	logx.Info("identityRpc: ", _identityService)
+
 	return &AuthMiddleware{
-		IdentityRpcConf: IdentityRpcConf,
+		identityRpc: _identityService,
 	}
 }
 
@@ -36,16 +38,12 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			}
 		}
 
-		log.Println("token: ", token)
+		logx.Info("token: ", token)
 
 		// verify token in identity service
-		identityRpc := identityclient.NewIdentity(zrpc.MustNewClient(m.IdentityRpcConf))
-
-		logx.Info("identityRpc: ", identityRpc)
-
 		var resp *identityclient.StatusResp
 		var err error
-		if resp, err = identityRpc.Status(r.Context(), &identityclient.StatusReq{
+		if resp, err = m.identityRpc.Status(r.Context(), &identityclient.StatusReq{
 			Token: token,
 		}); err != nil {
 			logx.Errorf("Auth middleware: identity rpc status err: %v", err)
@@ -58,6 +56,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			httpx.WriteJson(w, http.StatusUnauthorized, errorx.FromRpcStatus(errorx.ErrLoginTimeout))
 			return
 		}
+		// how to close identityRpc?
 
 		// 传递 User_id
 		ctx := context.WithValue(r.Context(), "user_id", resp.UserId)
