@@ -2,7 +2,10 @@ package logic
 
 import (
 	"context"
+	"strings"
+	"train-tiktok/common/errorx"
 	"train-tiktok/service/video/internal/svc"
+	"train-tiktok/service/video/models"
 	"train-tiktok/service/video/types/video"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -23,7 +26,24 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLo
 }
 
 func (l *PublishLogic) Publish(in *video.PublishReq) (*video.PublishResp, error) {
-	logx.Errorf("PublishLogic Publish")
+
+	// 去除开头的 "./"
+	in.CoverPath = strings.TrimLeft(in.CoverPath, "./")
+	in.FilePath = strings.TrimLeft(in.FilePath, "./")
+
+	// insert to db
+	if err := l.svcCtx.Db.Model(&models.Video{}).Create(&models.Video{
+		UserID:        in.UserId,
+		Title:         in.Title,
+		PlayUrl:       in.CoverPath,
+		CoverUrl:      in.FilePath,
+		FavoriteCount: 0,
+		CommentCount:  0,
+		Position:      "local",
+	}).Error; err != nil {
+		logx.Errorf("insert video failed: %v", err)
+		return &video.PublishResp{}, errorx.ErrDatabaseError
+	}
 
 	return &video.PublishResp{}, nil
 }

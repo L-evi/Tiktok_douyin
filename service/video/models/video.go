@@ -7,8 +7,10 @@ type Video struct {
 	Title         string `gorm:"size:255"`
 	PlayUrl       string `gorm:"size:255"`
 	CoverUrl      string `gorm:"type:text"`
-	FavoriteCount int64
-	CommentCount  int64
+	FavoriteCount int64  `gorm:"size:11"`
+	CommentCount  int64  `gorm:"size:11"`
+	Position      string `gorm:"size:10"` // video 存储节点 cos / local
+	CreateAt      int64  `gorm:"index;autoCreateTime"`
 }
 
 // Redis SET

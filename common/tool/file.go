@@ -3,6 +3,8 @@ package tool
 import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
+	"os"
+	"os/exec"
 	"path"
 	"sort"
 	"strings"
@@ -61,6 +63,18 @@ func IsVideoByHead(buf []byte) bool {
 	}
 }
 
+// GenerateVideoCover 生成视频封面 / 使用ffmpeg取视频第一帧
+func GenerateVideoCover(videoPath string, coverPath string) error {
+	// ffmpeg -i 1.mp4 -y -f mjpeg -ss 1 -t 0.001 // -s 320x240 1.jpg
+	cmd := exec.Command("ffmpeg", "-i", videoPath, "-y", "-f", "mjpeg", "-ss", "1", "-t", "0.001", coverPath)
+	err := cmd.Run()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// IsFilenameDangerous 判断文件名是否有危险字符
 func IsFilenameDangerous(filename string) bool {
 	for _, illegal := range IllegalFileNames {
 		if strings.Contains(filename, illegal) {
@@ -68,6 +82,17 @@ func IsFilenameDangerous(filename string) bool {
 		}
 	}
 	return false
+}
+
+// CheckPathOrCreate 检查路径是否存在，不存在则创建
+func CheckPathOrCreate(path string) error {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		err = os.MkdirAll(path, 0755)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetFileExt 获取文件扩展名

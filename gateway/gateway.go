@@ -8,6 +8,7 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"google.golang.org/grpc/status"
 	"net/http"
+	"os/exec"
 	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/internal/config"
 	"train-tiktok/gateway/internal/handler"
@@ -21,6 +22,11 @@ var configFile = flag.String("f", "etc/gateway.yaml", "the config file")
 
 func main() {
 	flag.Parse()
+
+	// check if ffmpeg is installed
+	if _, err := exec.LookPath("ffmpeg"); err != nil {
+		panic("ffmpeg is not installed")
+	}
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)

@@ -36,7 +36,9 @@ func NewPublishLogic(r *http.Request, ctx context.Context, svcCtx *svc.ServiceCo
 
 func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err error) {
 	var UserId = l.ctx.Value("user_id").(int64)
-	var _fileBaseDir = l.svcCtx.VideoTmpPath
+	var _fileBaseDir = l.svcCtx.PublicPath
+	var _videoBaseDir = _fileBaseDir + "video"
+	var _coverBaseDir = _fileBaseDir + "cover"
 	var _fileTypNotSupport = types.Resp{
 		Code: 199,
 		Msg:  "不支持的文件类型",
@@ -63,11 +65,13 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 	}(file)
 
 	// 判断 文件目录是否存在
-	if _, err := os.Stat(l.svcCtx.VideoTmpPath); os.IsNotExist(err) {
-		if err := os.Mkdir(l.svcCtx.VideoTmpPath, 0755); err != nil {
-			logx.Errorf("mkdir %s failed: %v", l.svcCtx.VideoTmpPath, err)
-			return &SystemErrResp, nil
-		}
+	if tool.CheckPathOrCreate(_videoBaseDir) != nil {
+		logx.Errorf("mkdir %s failed: %v", _videoBaseDir, err)
+		return &SystemErrResp, nil
+	}
+	if tool.CheckPathOrCreate(_coverBaseDir) != nil {
+		logx.Errorf("mkdir %s failed: %v", _coverBaseDir, err)
+		return &SystemErrResp, nil
 	}
 
 	// 通过文件 filename 判断是否为视频
@@ -85,6 +89,9 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 		return &_fileTypNotSupport, nil
 	}
 
+	// 判断标题合法性
+	// TODO
+
 	// 生成文件路径
 	logx.Info(header.Filename, req.Title)
 	_timeMd5 := strconv.Itoa(int(time.Now().UnixNano()))
@@ -94,7 +101,7 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 	if _fileExt == "" {
 		return &_fileTypNotSupport, nil
 	}
-	_fileTmpPath := fmt.Sprintf("%s/%d_%s_%s_%s.%s", _fileBaseDir, UserId, _filenameMd5, _titleMd5, _timeMd5, _fileExt)
+	_fileTmpPath := fmt.Sprintf("%s/%d_%s_%s_%s.%s", _videoBaseDir, UserId, _filenameMd5, _titleMd5, _timeMd5, _fileExt)
 
 	// 打开临时文件句柄
 	var f *os.File
@@ -134,11 +141,19 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 		}
 	}
 
+	// 生成封面
+	_coverPath := fmt.Sprintf("%s/%d_%s_%s_%s.jpg", _coverBaseDir, UserId, _filenameMd5, _titleMd5, _timeMd5)
+	if err := tool.GenerateVideoCover(_fileTmpPath, _coverPath); err != nil {
+		closeAndRemove(f, _fileTmpPath)
+		return &SystemErrResp, nil
+	}
+
 	// 请求 video service 存储文件
 	request, err := l.svcCtx.VideoRpc.Publish(l.ctx, &videoclient.PublishReq{
-		Title:    header.Filename,
-		FilePath: _fileTmpPath,
-		UserId:   UserId,
+		Title:     req.Title,
+		FilePath:  _fileTmpPath,
+		CoverPath: _coverPath,
+		UserId:    UserId,
 	})
 
 	logx.Info(request)

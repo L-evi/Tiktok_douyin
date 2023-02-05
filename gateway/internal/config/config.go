@@ -7,8 +7,8 @@ import (
 
 type Config struct {
 	rest.RestConf
-	IdentityRpc  zrpc.RpcClientConf
-	VideoRpc     zrpc.RpcClientConf
-	UserRpc      zrpc.RpcClientConf
-	VideoTmpPath string
+	IdentityRpc zrpc.RpcClientConf
+	VideoRpc    zrpc.RpcClientConf
+	UserRpc     zrpc.RpcClientConf
+	PublicPath  string
 }

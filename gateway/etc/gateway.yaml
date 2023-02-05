@@ -1,8 +1,9 @@
 Name: Gateway
 Host: 127.0.0.1
 Port: 8888
-VideoTmpPath: ./video
+PublicPath: ./public/ # end with /
 MaxBytes: 0
+Timeout: 10000
 Log:
   level: info
   Mode: console

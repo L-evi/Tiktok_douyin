@@ -11,8 +11,9 @@ message Resp {
 
 message publishReq {
   int64 user_id = 1;
-  string file_path = 2; // 视频绝对目录
-  string title = 3;
+  string file_path = 2; // 视频目录
+  string cover_path = 3; // 封面目录
+  string title = 5;
 }
 message publishResp{
   Resp response = 1;

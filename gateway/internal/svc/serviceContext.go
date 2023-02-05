@@ -16,30 +16,36 @@ import (
 )
 
 type ServiceContext struct {
-	Config       config.Config
-	IdentityRpc  identity.IdentityClient
-	VideoRpc     video.VideoClient
-	UserRpc      user.UserClient
-	Auth         rest.Middleware
-	VideoTmpPath string
+	Config      config.Config
+	IdentityRpc identity.IdentityClient
+	VideoRpc    video.VideoClient
+	UserRpc     user.UserClient
+	Auth        rest.Middleware
+	PublicPath  string
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 
 	// 视频临时存储路径
-	_videoTmpPath := os.Getenv("VIDEO_TMP_PATH")
-	if _videoTmpPath == "" {
-		_videoTmpPath = c.VideoTmpPath
+	_publicPath := os.Getenv("PUBLIC_BASE_PATH")
+	if _publicPath == "" {
+		_publicPath = c.PublicPath
+	}
+
+	// 视频临时存储前缀URL // http://localhost:8888 or Cos/Oss url
+	_publicBasePath := os.Getenv("PUBLIC_BASE_URL")
+	if _publicBasePath == "" {
+		_publicBasePath = c.PublicPath
 	}
 
 	logx.MustSetup(c.Log)
 
 	return &ServiceContext{
-		Config:       c,
-		IdentityRpc:  identityclient.NewIdentity(zrpc.MustNewClient(c.IdentityRpc)),
-		VideoRpc:     videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpc)),
-		UserRpc:      userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
-		VideoTmpPath: _videoTmpPath,
-		Auth:         middleware.NewAuthMiddleware(c.IdentityRpc).Handle,
+		Config:      c,
+		IdentityRpc: identityclient.NewIdentity(zrpc.MustNewClient(c.IdentityRpc)),
+		VideoRpc:    videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpc)),
+		UserRpc:     userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
+		Auth:        middleware.NewAuthMiddleware(c.IdentityRpc).Handle,
+		PublicPath:  _publicPath,
 	}
 }
