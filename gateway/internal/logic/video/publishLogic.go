@@ -2,10 +2,12 @@ package video
 
 import (
 	"context"
+	"fmt"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 	"train-tiktok/common/errorx"
 	"train-tiktok/common/tool"
 	"train-tiktok/gateway/common/errx"
@@ -78,19 +80,21 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 	}
 
 	// 判断文件名是否存在安全风险
-	if !tool.IsFilenameDangerous(header.Filename) {
+	if tool.IsFilenameDangerous(header.Filename) {
 		logx.Infof("文件名存在安全风险: %s", header.Filename)
 		return &_fileTypNotSupport, nil
 	}
 
 	// 生成文件路径
 	logx.Info(header.Filename, req.Title)
-	_filenameMd5 := tool.Md5(req.Title)
+	_timeMd5 := strconv.Itoa(int(time.Now().UnixNano()))
+	_titleMd5 := tool.Md5(req.Title)
+	_filenameMd5 := tool.Md5(header.Filename)
 	_fileExt := tool.GetFileExt(header.Filename)
 	if _fileExt == "" {
 		return &_fileTypNotSupport, nil
 	}
-	_fileTmpPath := _fileBaseDir + "/" + strconv.FormatInt(UserId, 10) + "_" + _filenameMd5 + "." + _fileExt
+	_fileTmpPath := fmt.Sprintf("%s/%d_%s_%s_%s.%s", _fileBaseDir, UserId, _filenameMd5, _titleMd5, _timeMd5, _fileExt)
 
 	// 打开临时文件句柄
 	var f *os.File
