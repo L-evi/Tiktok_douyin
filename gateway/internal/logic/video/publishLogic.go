@@ -55,7 +55,7 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 	// check if _fileTmpPath exists
 	if _, err := os.Stat(l.svcCtx.VideoTmpPath); os.IsNotExist(err) {
 		if err := os.Mkdir(l.svcCtx.VideoTmpPath, 0755); err != nil {
-			logx.Errorf("mkdir %s failed", l.svcCtx.VideoTmpPath)
+			logx.Errorf("mkdir %s failed: %v", l.svcCtx.VideoTmpPath, err)
 			return &SystemErrResp, nil
 		}
 	}

@@ -18,4 +18,6 @@
 .idea
 default.etcd
 script/run-private.sh
-gateway/tmp
+tmp
+./gateway/video
+./video
