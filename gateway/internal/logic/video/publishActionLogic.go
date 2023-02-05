@@ -11,22 +11,23 @@ import (
 	"train-tiktok/common/errorx"
 	"train-tiktok/common/tool"
 	"train-tiktok/gateway/common/errx"
+	"train-tiktok/service/video/videoclient"
+
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
-	"train-tiktok/service/video/videoclient"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type PublishLogic struct {
+type PublishActionLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	r      *http.Request
 }
 
-func NewPublishLogic(r *http.Request, ctx context.Context, svcCtx *svc.ServiceContext) *PublishLogic {
-	return &PublishLogic{
+func NewPublishActionLogic(r *http.Request, ctx context.Context, svcCtx *svc.ServiceContext) *PublishActionLogic {
+	return &PublishActionLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		r:      r,
@@ -34,7 +35,7 @@ func NewPublishLogic(r *http.Request, ctx context.Context, svcCtx *svc.ServiceCo
 	}
 }
 
-func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err error) {
+func (l *PublishActionLogic) PublishAction(req *types.PublishReq) (resp *types.Resp, err error) {
 	var UserId = l.ctx.Value("user_id").(int64)
 	var _fileBaseDir = l.svcCtx.PublicPath
 	var _videoBaseDir = _fileBaseDir + "video"
@@ -173,7 +174,6 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 	// 	logx.Error(err)
 	// 	return err
 	// }
-
 }
 
 // closeAndRemove 关闭文件句柄并删除已经创建的临时文件

@@ -9,12 +9,12 @@ import (
 	"train-tiktok/gateway/internal/types"
 )
 
-func PublishHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func PublishActionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.PublishReq
 
-		l := video.NewPublishLogic(r, r.Context(), svcCtx)
-		resp, err := l.Publish(&req)
+		l := video.NewPublishActionLogic(r, r.Context(), svcCtx)
+		resp, err := l.PublishAction(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
