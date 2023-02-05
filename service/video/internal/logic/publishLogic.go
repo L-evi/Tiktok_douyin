@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
 
@@ -24,7 +23,7 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLo
 }
 
 func (l *PublishLogic) Publish(in *video.PublishReq) (*video.PublishResp, error) {
-	// todo: add your logic here and delete this line
+	logx.Errorf("PublishLogic Publish")
 
 	return &video.PublishResp{}, nil
 }

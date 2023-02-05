@@ -9,7 +9,6 @@ import (
 	"train-tiktok/common/dbutil"
 	"train-tiktok/service/identity/identityclient"
 	"train-tiktok/service/user/internal/config"
-
 	"train-tiktok/service/user/models"
 )
 
@@ -44,10 +43,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err := _db.AutoMigrate(models.UserFavorite{}); err != nil {
 		log.Panicf("failed to autoMigrate: %v", err)
 	}
-	if err := _db.AutoMigrate(models.VideoLike{}); err != nil {
-		log.Panicf("failed to autoMigrate: %v", err)
-	}
-
 	// connect identityRpc
 	_identityRpc := identityclient.NewIdentity(zrpc.MustNewClient(c.IdentityRpcConf))
 

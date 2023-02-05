@@ -31,7 +31,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		if token = r.URL.Query().Get("token"); token == "" {
 			if token = r.PostFormValue("token"); token == "" {
-				httpx.WriteJson(w, http.StatusUnauthorized, errorx.ErrLoginTimeout)
+				httpx.WriteJson(w, http.StatusForbidden, errorx.FromRpcStatus(errorx.ErrTokenExperition))
 				return
 			}
 		}
@@ -49,13 +49,13 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			Token: token,
 		}); err != nil {
 			logx.Errorf("Auth middleware: identity rpc status err: %v", err)
-			httpx.WriteJson(w, http.StatusInternalServerError, errorx.ErrSystemError)
+			httpx.WriteJson(w, http.StatusInternalServerError, errorx.FromRpcStatus(errorx.ErrSystemError))
 			return
 		}
 
 		// process request from unlogged user
 		if resp.IsLogin == false {
-			httpx.WriteJson(w, http.StatusUnauthorized, errorx.ErrLoginTimeout)
+			httpx.WriteJson(w, http.StatusUnauthorized, errorx.FromRpcStatus(errorx.ErrLoginTimeout))
 			return
 		}
 

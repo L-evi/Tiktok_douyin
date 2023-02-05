@@ -10,11 +10,10 @@ message Resp {
 }
 
 message publishReq {
-  string user_id = 3;
-  string filePath = 1;
-  string title = 2;
+  int64 user_id = 1;
+  string file_path = 2; // 视频绝对目录
+  string title = 3;
 }
-
 message publishResp{
   Resp response = 1;
 }

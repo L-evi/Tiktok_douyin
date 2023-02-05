@@ -18,3 +18,4 @@
 .idea
 default.etcd
 script/run-private.sh
+gateway/tmp
