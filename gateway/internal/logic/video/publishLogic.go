@@ -2,10 +2,10 @@ package video
 
 import (
 	"context"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
+	"strconv"
 	"train-tiktok/common/errorx"
 	"train-tiktok/common/tool"
 	"train-tiktok/gateway/common/errx"
@@ -33,7 +33,15 @@ func NewPublishLogic(r *http.Request, ctx context.Context, svcCtx *svc.ServiceCo
 }
 
 func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err error) {
+	var UserId = l.ctx.Value("user_id").(int64)
+	var _fileBaseDir = l.svcCtx.VideoTmpPath
+	var _fileTypNotSupport = types.Resp{
+		Code: 199,
+		Msg:  "不支持的文件类型",
+	}
+
 	var SystemErrResp = errx.HandleRpcErr(errorx.ErrSystemError)
+
 	// 限制文件大小 150M
 	err = l.r.ParseMultipartForm(150 << 20)
 	if err != nil {
@@ -52,7 +60,7 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 		_ = file.Close()
 	}(file)
 
-	// check if _fileTmpPath exists
+	// 判断 文件目录是否存在
 	if _, err := os.Stat(l.svcCtx.VideoTmpPath); os.IsNotExist(err) {
 		if err := os.Mkdir(l.svcCtx.VideoTmpPath, 0755); err != nil {
 			logx.Errorf("mkdir %s failed: %v", l.svcCtx.VideoTmpPath, err)
@@ -60,13 +68,31 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 		}
 	}
 
-	// 生成文件路径
-	logx.Info(header.Filename)
-	_tmp := l.svcCtx.VideoTmpPath
-	_FilenameMd5 := tool.Md5(header.Filename)
-	_fileTmpPath := _tmp + "/" + _FilenameMd5
+	// 通过文件 filename 判断是否为视频
+	if !tool.IsVideo(header.Filename) {
+		logx.Infof("不支持的文件类型: %s", header.Filename)
+		return &types.Resp{
+			Code: 1,
+			Msg:  "不支持的文件类型",
+		}, nil
+	}
 
-	// save file to /tmp
+	// 判断文件名是否存在安全风险
+	if !tool.IsFilenameDangerous(header.Filename) {
+		logx.Infof("文件名存在安全风险: %s", header.Filename)
+		return &_fileTypNotSupport, nil
+	}
+
+	// 生成文件路径
+	logx.Info(header.Filename, req.Title)
+	_filenameMd5 := tool.Md5(req.Title)
+	_fileExt := tool.GetFileExt(header.Filename)
+	if _fileExt == "" {
+		return &_fileTypNotSupport, nil
+	}
+	_fileTmpPath := _fileBaseDir + "/" + strconv.FormatInt(UserId, 10) + "_" + _filenameMd5 + "." + _fileExt
+
+	// 打开临时文件句柄
 	var f *os.File
 	if f, err = os.OpenFile(_fileTmpPath, os.O_WRONLY|os.O_CREATE, 0666); err != nil {
 		logx.Errorf("open file failed: %v", err)
@@ -76,23 +102,39 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 		_ = f.Close()
 	}(f)
 
-	// 1M 分割 读取
+	// 先获取文件开头字符 判断是否为视频
+	var bufHead = make([]byte, 512)
+	if n, _ := file.Read(bufHead); n == 0 {
+		closeAndRemove(f, _fileTmpPath)
+		return &_fileTypNotSupport, nil
+	}
+	if !tool.IsVideoByHead(bufHead) {
+		closeAndRemove(f, _fileTmpPath)
+		return &_fileTypNotSupport, nil
+	}
+
+	// 1M 分割 写文件
 	buf := make([]byte, 1<<20)
+	if _, err := f.Write(bufHead); err != nil {
+		closeAndRemove(f, _fileTmpPath)
+		return &SystemErrResp, nil
+	}
 	for {
 		n, _ := file.Read(buf)
 		if n == 0 {
 			break
 		}
 		if _, err := f.Write(buf[:n]); err != nil {
+			closeAndRemove(f, _fileTmpPath)
 			return &SystemErrResp, nil
 		}
-		log.Printf("read %d bytes, percent %d%%\n", n, n*100/1024)
 	}
 
+	// 请求 video service 存储文件
 	request, err := l.svcCtx.VideoRpc.Publish(l.ctx, &videoclient.PublishReq{
 		Title:    header.Filename,
 		FilePath: _fileTmpPath,
-		UserId:   l.ctx.Value("userId").(int64),
+		UserId:   UserId,
 	})
 
 	logx.Info(request)
@@ -110,4 +152,14 @@ func (l *PublishLogic) Publish(req *types.PublishReq) (resp *types.Resp, err err
 	// 	return err
 	// }
 
+}
+
+// closeAndRemove 关闭文件句柄并删除已经创建的临时文件
+func closeAndRemove(f *os.File, path string) {
+	if err := f.Close(); err != nil {
+		logx.Errorf("close file failed: %v", err)
+	}
+	if err := os.Remove(path); err != nil {
+		logx.Errorf("remove tmp file failed: %v", err)
+	}
 }

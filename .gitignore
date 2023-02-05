@@ -19,5 +19,4 @@
 default.etcd
 script/run-private.sh
 tmp
-./gateway/video
-./video
+gateway/video/

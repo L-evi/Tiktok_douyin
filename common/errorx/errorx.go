@@ -19,6 +19,7 @@ var (
 	ErrIoOperationError         = status.Error(3002, "IO操作错误")
 	ErrSystemError              = status.Error(3003, "服务器开小差了, 过会儿再试吧")
 	ErrRequestTimeout           = status.Error(3004, "请求超时")
+	ErrFileTypeNotSupport       = status.Error(4001, "文件类型不支持")
 )
 
 type ErrorResp struct {
