@@ -41,6 +41,24 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthPass},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/publish/list",
+					Handler: video.PublishListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/feed",
+					Handler: video.FeedHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.Auth},
 			[]rest.Route{
 				{

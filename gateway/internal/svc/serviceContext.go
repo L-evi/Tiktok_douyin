@@ -21,6 +21,7 @@ type ServiceContext struct {
 	VideoRpc    video.VideoClient
 	UserRpc     user.UserClient
 	Auth        rest.Middleware
+	AuthPass    rest.Middleware
 	PublicPath  string
 }
 
@@ -46,6 +47,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		VideoRpc:    videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpc)),
 		UserRpc:     userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
 		Auth:        middleware.NewAuthMiddleware(c.IdentityRpc).Handle,
+		AuthPass:    middleware.NewAuthPassMiddleware(c.IdentityRpc).Handle,
 		PublicPath:  _publicPath,
 	}
 }

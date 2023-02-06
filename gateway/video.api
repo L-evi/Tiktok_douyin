@@ -56,6 +56,7 @@ type (
 
 @server(
     group: video
+    middleware: AuthPass
 )
 service gateway {
     @handler publishList
