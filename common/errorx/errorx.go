@@ -4,6 +4,7 @@ package errorx
 // 以及当 Gateway 请求 rpc模块 时，如果 rpc 模块返回错误，将会将错误信息转换为 ErrorResp
 
 import (
+	"errors"
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/grpc/status"
 )
@@ -12,7 +13,7 @@ var (
 	ErrInvalidParameter         = status.Error(1001, "参数无效")
 	ErrFrequentVisits           = status.Error(1003, "访问频繁")
 	ErrNumberInterfaceCallsOver = status.Error(1004, "接口调用次数已达上限")
-	ErrTokenExperition          = status.Error(2001, "用户未登录，无权限或当前令牌已过期")
+	ErrTokenInvalid             = status.Error(2001, "用户未登录，无权限或当前令牌已过期")
 	ErrLoginTimeout             = status.Error(2002, "登录超时")
 	ErrLoginError               = status.Error(2004, "帐号或密码错误")
 	ErrDatabaseError            = status.Error(3001, "数据库错误")
@@ -28,11 +29,26 @@ type ErrorResp struct {
 }
 
 // RespErrFormat 格式化错误响应输出
-func RespErrFormat(Code int32, Msg string) *ErrorResp {
-	return &ErrorResp{
+func RespErrFormat(Code int32, Msg string) ErrorResp {
+	return ErrorResp{
 		Code: Code,
 		Msg:  Msg,
 	}
+}
+
+func ParseRpcError(err error) error {
+	info, ok := status.FromError(err)
+	if !ok {
+		return ErrSystemError
+	}
+	return info.Err()
+}
+
+func IsRpcError(err error, err2 error) bool {
+	if errors.Is(ParseRpcError(err), err2) {
+		return true
+	}
+	return false
 }
 
 // FromRpcStatus 格式化 status.Error 为标准错误响应输出
@@ -48,8 +64,5 @@ func FromRpcStatus(err error) ErrorResp {
 		return FromRpcStatus(ErrSystemError)
 	}
 
-	return ErrorResp{
-		Code: int32(info.Code()),
-		Msg:  info.Message(),
-	}
+	return RespErrFormat(int32(info.Code()), info.Message())
 }

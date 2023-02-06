@@ -33,7 +33,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		if token = r.URL.Query().Get("token"); token == "" {
 			if token = r.PostFormValue("token"); token == "" {
-				httpx.WriteJson(w, http.StatusForbidden, errorx.FromRpcStatus(errorx.ErrTokenExperition))
+				httpx.WriteJson(w, http.StatusForbidden, errorx.FromRpcStatus(errorx.ErrTokenInvalid))
 				return
 			}
 		}
@@ -45,18 +45,13 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		var err error
 		if resp, err = m.identityRpc.Status(r.Context(), &identityclient.StatusReq{
 			Token: token,
-		}); err != nil {
-			logx.Errorf("Auth middleware: identity rpc status err: %v", err)
-			httpx.WriteJson(w, http.StatusInternalServerError, errorx.FromRpcStatus(errorx.ErrSystemError))
+		}); errorx.IsRpcError(err, errorx.ErrTokenInvalid) {
+			httpx.WriteJson(w, http.StatusUnauthorized, errorx.FromRpcStatus(errorx.ErrTokenInvalid))
 			return
+		} else if err != nil {
+			logx.WithContext(r.Context()).Errorf("identityRpc.Status error: %v", err)
+			httpx.WriteJson(w, http.StatusInternalServerError, errorx.FromRpcStatus(err))
 		}
-
-		// process request from unlogged user
-		if resp.IsLogin == false {
-			httpx.WriteJson(w, http.StatusUnauthorized, errorx.FromRpcStatus(errorx.ErrLoginTimeout))
-			return
-		}
-		// how to close identityRpc?
 
 		// 传递 User_id
 		ctx := context.WithValue(r.Context(), "user_id", resp.UserId)

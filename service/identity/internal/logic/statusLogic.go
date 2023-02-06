@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	"train-tiktok/service/identity/common/errx"
+	"train-tiktok/common/errorx"
 	"train-tiktok/service/identity/common/userutil"
 	"train-tiktok/service/identity/models"
 
@@ -29,9 +29,7 @@ func NewStatusLogic(ctx context.Context, svcCtx *svc.ServiceContext) *StatusLogi
 // Status check user login status
 func (l *StatusLogic) Status(in *identity.StatusReq) (*identity.StatusResp, error) {
 	if in.Token == "" {
-		return &identity.StatusResp{
-			IsLogin: false,
-		}, errx.ErrTokenInvalid
+		return &identity.StatusResp{}, errorx.ErrTokenInvalid
 	}
 
 	var err error
@@ -41,7 +39,6 @@ func (l *StatusLogic) Status(in *identity.StatusReq) (*identity.StatusResp, erro
 	}
 
 	return &identity.StatusResp{
-		IsLogin:  true,
 		UserId:   _user.ID,
 		Username: _user.Username,
 	}, nil

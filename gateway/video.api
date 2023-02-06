@@ -7,11 +7,64 @@ info (
 
 import "common.api"
 
-type publishReq {
+type publishActionReq {
     Token string `form:"token"`
     //   data byte `form:"data"` // handler from l.r.FormFile
     Title string `form:"Title"`
 }
+
+type (
+    Video {
+        Id int64 `json:"id"`
+        Author Author `json:"author"`
+        PlayUrl string `json:"play_url"`
+        CoverUrl string `json:"cover_url"`
+        FavoriteCount int64 `json:"favorite_count"`
+        CommentCount int64 `json:"comment_count"`
+        IsFavorite bool `json:"is_favorite"`
+        Title string `json:"title"`
+    }
+
+    Author {
+        Id int64 `json:"id"`
+        Name string `json:"name"`
+        FollowCount int64 `json:"follow_count"`
+        FollowerCount int64 `json:"follower_count"`
+        IsFollow bool `json:"is_follow"`
+    }
+
+    publishListReq {
+        Token string `form:"token"`
+        UserId int64 `form:"user_id"`
+    }
+    publishListResp {
+        Resp
+        VideoList []Video `json:"video_list"`
+    }
+)
+
+type (
+    feedReq {
+        Token string `form:"token"`
+        LatestTime int64 `form:"latest_time"`
+    }
+    feedResp {
+        Resp
+        VideoList []Video `json:"video_list"`
+    }
+)
+
+@server(
+    group: video
+)
+service gateway {
+    @handler publishList
+    get /douyin/publish/list (publishListReq) returns (publishListResp) // TODO
+
+    @handler feed
+    get /douyin/feed (feedReq) returns (feedResp)
+}
+
 
 @server(
     group: video
@@ -19,5 +72,5 @@ type publishReq {
 )
 service gateway {
     @handler publishAction
-    post /douyin/publish/action (publishReq) returns (Resp)
+    post /douyin/publish/action (publishActionReq) returns (Resp)
 }
