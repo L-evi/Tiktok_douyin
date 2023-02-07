@@ -13,12 +13,17 @@ import (
 )
 
 type (
+	FeedReq     = video.FeedReq
+	FeedResp    = video.FeedResp
 	PublishReq  = video.PublishReq
 	PublishResp = video.PublishResp
 	Resp        = video.Resp
+	User        = video.User
+	Video       = video.Video
 
 	Video interface {
 		Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error)
+		Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOption) (*FeedResp, error)
 	}
 
 	defaultVideo struct {
@@ -35,4 +40,9 @@ func NewVideo(cli zrpc.Client) Video {
 func (m *defaultVideo) Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error) {
 	client := video.NewVideoClient(m.cli.Conn())
 	return client.Publish(ctx, in, opts...)
+}
+
+func (m *defaultVideo) Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOption) (*FeedResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.Feed(ctx, in, opts...)
 }
