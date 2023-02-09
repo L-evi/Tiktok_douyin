@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 	"net/http"
 	"os/exec"
+	"strings"
 	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/internal/config"
 	"train-tiktok/gateway/internal/handler"
@@ -19,6 +20,28 @@ import (
 )
 
 var configFile = flag.String("f", "etc/gateway.yaml", "the config file")
+
+// videoStaticHandler 视频对外路由
+func videoStaticHandler(engine *rest.Server, conf config.Config) {
+	level := []string{":1", ":2", ":3"}
+	pattern := fmt.Sprintf("/%s/", conf.PublicPath)
+	fileDir := fmt.Sprintf("./%s/", conf.PublicPath)
+	for i := 1; i < len(level); i++ {
+		path := "/" + strings.Join(level[:i], "/")
+		//最后生成 /asset
+		engine.AddRoute(
+			rest.Route{
+				Method: http.MethodGet,
+				Path:   path,
+				Handler: func(pattern string, fileDir string) http.HandlerFunc {
+					return func(w http.ResponseWriter, req *http.Request) {
+						http.StripPrefix(pattern, http.FileServer(http.Dir(fileDir))).ServeHTTP(w, req)
+					}
+				}(pattern, fileDir),
+			})
+	}
+
+}
 
 func main() {
 	flag.Parse()
@@ -34,19 +57,22 @@ func main() {
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
-	ctx := svc.NewServiceContext(c)
-	handler.RegisterHandlers(server, ctx)
+	// 注册视频对外路由
+	videoStaticHandler(server, c)
 
+	ctx := svc.NewServiceContext(c)
 	httpx.SetErrorHandlerCtx(func(ctx context.Context, err error) (int, interface{}) {
 		_, ok := status.FromError(err)
 		if !ok {
-			logx.Errorf("error when handler rpc err: %v", err)
+			logx.WithContext(ctx).Errorf("error when handler rpc err: %v", err)
 			return http.StatusOK, errorx.ErrorResp{Code: 3004, Msg: err.Error()}
 		}
 
-		logx.Errorf("error when handler err: %v", err)
+		logx.WithContext(ctx).Errorf("error when handler err: %v", err)
 		return http.StatusOK, errorx.FromRpcStatus(errorx.ErrSystemError)
 	})
+
+	handler.RegisterHandlers(server, ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
