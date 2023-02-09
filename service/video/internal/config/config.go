@@ -9,4 +9,10 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
+	StorageBaseUrl StorageStruct
+}
+
+type StorageStruct struct {
+	Local string
+	Cos   string
 }

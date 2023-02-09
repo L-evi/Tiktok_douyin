@@ -33,10 +33,23 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		}, nil
 	}
 
-	videoList :=
+	var videoList []types.Video
+	videoList = make([]types.Video, 0, len(rpcResp.VideoList))
+	for _, v := range rpcResp.VideoList {
+		// TODO need get favorite and comment here
+		videoList = append(videoList, types.Video{
+			Id:            v.Id,
+			Title:         v.Title,
+			PlayUrl:       v.PlayUrl,
+			CoverUrl:      v.CoverUrl,
+			FavoriteCount: 0,
+			CommentCount:  0,
+			IsFavorite:    false,
+		})
+	}
 
 	return &types.FeedResp{
 		Resp:      errx.SUCCESS_RESP,
-		VideoList: rpcResp.VideoList,
+		VideoList: videoList,
 	}, nil
 }

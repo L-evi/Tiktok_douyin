@@ -11,3 +11,6 @@ Log:
   Mode: console
   Encoding: plain
   ServiceName: service-video
+StorageBaseUrl:
+  Local: "http://127.0.0.1:8080"
+  Cos: "-"
