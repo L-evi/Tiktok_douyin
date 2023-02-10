@@ -83,7 +83,7 @@ message commentListReq {
 
 message commentListResp {
   Resp resp = 1;
-  Comment comment_list = 2; // 评论列表
+  repeated Comment comment_list = 2; // 评论列表
 }
 
 // favorite count

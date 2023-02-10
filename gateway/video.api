@@ -46,7 +46,7 @@ type (
     }
     CommentListResp {
         Resp
-        CommentList Comment `json:"comment_list"`
+        CommentList []Comment `json:"comment_list"`
     }
 )
 

@@ -104,7 +104,7 @@ type CommentListReq struct {
 
 type CommentListResp struct {
 	Resp
-	CommentList Comment `json:"comment_list"`
+	CommentList []Comment `json:"comment_list"`
 }
 
 type UserReq struct {

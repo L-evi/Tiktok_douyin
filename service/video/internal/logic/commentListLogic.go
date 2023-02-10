@@ -24,7 +24,22 @@ func NewCommentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Comme
 }
 
 func (l *CommentListLogic) CommentList(in *video.CommentListReq) (*video.CommentListResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &video.CommentListResp{}, nil
+	var commentList []video.Comment
+	res := l.svcCtx.Db.Where(&video.Comment{Id: in.VideoId}).Find(&commentList)
+	if res.Error != nil {
+		logx.Errorf("get comment list failed: %v", res.Error)
+		return &video.CommentListResp{}, res.Error
+	}
+	var list []*video.Comment
+	for _, v := range commentList {
+		list = append(list, &video.Comment{
+			Id:         v.Id,
+			UserId:     v.UserId,
+			Content:    v.Content,
+			CreateDate: v.CreateDate,
+		})
+	}
+	return &video.CommentListResp{
+		CommentList: list,
+	}, nil
 }

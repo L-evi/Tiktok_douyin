@@ -2,6 +2,7 @@ package video
 
 import (
 	"context"
+	"log"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/service/user/types/user"
 	"train-tiktok/service/video/types/video"
@@ -33,6 +34,7 @@ func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteListReq) (resp *type
 	})
 	// consult failed
 	if err != nil {
+		log.Printf("get favorite list failed, err: %v", err)
 		return &types.FovoriteListResp{
 			Resp:      errx.HandleRpcErr(err),
 			VideoList: nil,
@@ -49,6 +51,7 @@ func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteListReq) (resp *type
 		})
 		// consult failed
 		if err != nil {
+			log.Printf("get user information failed: %v", err)
 			return &types.FovoriteListResp{
 				Resp:      errx.HandleRpcErr(err),
 				VideoList: nil,
