@@ -6,7 +6,7 @@ type (
         Msg string `json:"status_msg"`
     }
     Video {
-        Id int32 `json:"id"`
+        Id int64 `json:"id"`
         Author User `json:"author"`
         PlayUrl string `json:"play_url"`
         CoverUrl string `json:"cover_url"`

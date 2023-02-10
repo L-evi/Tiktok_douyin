@@ -12,7 +12,7 @@ type Resp struct {
 }
 
 type Video struct {
-	Id            int32  `json:"id"`
+	Id            int64  `json:"id"`
 	Author        User   `json:"author"`
 	PlayUrl       string `json:"play_url"`
 	CoverUrl      string `json:"cover_url"`
@@ -81,7 +81,7 @@ type FavoriteListReq struct {
 
 type FovoriteListResp struct {
 	Resp
-	VideoList Video `json:"video_list"`
+	VideoList []Video `json:"video_list"`
 }
 
 type CommentActionReq struct {

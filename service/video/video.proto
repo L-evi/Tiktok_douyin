@@ -36,12 +36,12 @@ message favoriteListReq {
 
 message favoriteListResp {
   Resp resp = 1;
-  Video video_list = 2; // 视频id列表
+  repeated Video video_list = 2; // 视频id列表
 }
 
 message Video {
   int64 id = 1; // 视频唯一标识
-  User author = 2; // 视频作者信息
+  int64 user_id = 2;// 视频作者的用户id
   string play_url = 3; // 视频播放地址
   string cover_url = 4; // 视频封面地址
   int64 favorite_count = 5; // 视频的点赞总数
@@ -55,6 +55,7 @@ message User {
   string name = 2; // 用户名称
   int64 follow_count = 3; // 关注总数
   int64 follower_count = 4; // 粉丝总数
+  bool isFollow = 5; // true-已关注，false-未关注
 }
 
 message Comment {

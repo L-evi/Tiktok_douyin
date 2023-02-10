@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	UserModels "train-tiktok/service/user/models"
+	"train-tiktok/service/video/models"
 
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
@@ -24,7 +26,35 @@ func NewFavoriteListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Favo
 }
 
 func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.FavoriteListResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &video.FavoriteListResp{}, nil
+	// get user_favorite list
+	var userFavoriteList []UserModels.UserFavorite
+	res := l.svcCtx.Db.Where(&UserModels.UserFavorite{UserId: in.UserId}).Find(&userFavoriteList)
+	if res.Error != nil {
+		logx.Errorf("failed to get user favorite, err: %v", res.Error)
+		return &video.FavoriteListResp{}, res.Error
+	}
+	var favoriteList []*video.Video
+	for _, v := range userFavoriteList {
+		// get favorite video information
+		var myVideo models.Video
+		result := l.svcCtx.Db.Where(&models.Video{ID: v.VideoId}).First(&myVideo)
+		if result.Error != nil {
+			logx.Errorf("failed to get video, err: %v", result.Error)
+			return &video.FavoriteListResp{}, result.Error
+		}
+		favoriteList = append(favoriteList, &video.Video{
+			Id:            myVideo.ID,
+			UserId:        myVideo.UserID,
+			PlayUrl:       myVideo.PlayUrl,
+			CoverUrl:      myVideo.CoverUrl,
+			FavoriteCount: myVideo.FavoriteCount,
+			CommentCount:  myVideo.CommentCount,
+			IsFavorite:    true,
+			Title:         myVideo.Title,
+		})
+	}
+	// consult success
+	return &video.FavoriteListResp{
+		VideoList: favoriteList,
+	}, nil
 }

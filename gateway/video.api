@@ -27,7 +27,7 @@ type (
     }
     FovoriteListResp {
         Resp
-        VideoList Video `json:"video_list"`
+        VideoList []Video `json:"video_list"`
     }
     CommentActionReq {
         Token string `form:"token"`
