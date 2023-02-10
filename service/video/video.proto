@@ -85,10 +85,32 @@ message commentListResp {
   Comment comment_list = 2; // 评论列表
 }
 
+// favorite count
+message favoriteCountReq {
+  int64 video_id = 1; // 视频id
+}
+
+message favoriteCountResp {
+  Resp resp = 1;
+  int64 favorite_count = 2; // 点赞总数
+}
+
+// comment count
+message commentCountReq {
+  int64 video_id = 1; // 视频id
+}
+
+message commentCountResp {
+  Resp resp = 1;
+  int64 comment_count = 2; // 评论总数
+}
+
 service video {
   rpc publish(publishReq) returns (publishResp);
   rpc commentAction(commentActionReq) returns (commentActionResp);
   rpc commentList(commentListReq) returns (commentListResp);
   rpc favoriteAction(favoriteActionReq) returns (favoriteActionResp);
   rpc favoriteList(favoriteListReq) returns (favoriteListResp);
+  rpc favoriteCount(favoriteCountReq) returns (favoriteCountResp);
+  rpc commentCount(commentCountReq) returns (commentCountResp);
 }

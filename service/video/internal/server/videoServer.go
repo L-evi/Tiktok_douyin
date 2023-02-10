@@ -46,3 +46,13 @@ func (s *VideoServer) FavoriteList(ctx context.Context, in *video.FavoriteListRe
 	l := logic.NewFavoriteListLogic(ctx, s.svcCtx)
 	return l.FavoriteList(in)
 }
+
+func (s *VideoServer) FavoriteCount(ctx context.Context, in *video.FavoriteCountReq) (*video.FavoriteCountResp, error) {
+	l := logic.NewFavoriteCountLogic(ctx, s.svcCtx)
+	return l.FavoriteCount(in)
+}
+
+func (s *VideoServer) CommentCount(ctx context.Context, in *video.CommentCountReq) (*video.CommentCountResp, error) {
+	l := logic.NewCommentCountLogic(ctx, s.svcCtx)
+	return l.CommentCount(in)
+}

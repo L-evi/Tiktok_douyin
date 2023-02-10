@@ -58,6 +58,25 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 				return &video.FavoriteActionResp{}, err
 			}
 		}
+	} else if in.ActionType == 2 {
+		// conceal favorite
+		key := strconv.FormatInt(in.VideoId, 10) + "_favorite_count"
+		result, err := rdb.Get(ctx, key).Result()
+		if err != nil {
+			log.Printf("redis Get error: %v", err)
+			return &video.FavoriteActionResp{}, err
+		}
+		count, err := strconv.Atoi(result)
+		if err != nil {
+			log.Printf("string to int error: %v", err)
+			return &video.FavoriteActionResp{}, err
+		}
+		count--
+		err = rdb.Set(ctx, key, count, 0).Err()
+		if err != nil {
+			log.Printf("redis Set error: %v", err)
+			return &video.FavoriteActionResp{}, err
+		}
 	}
 	return &video.FavoriteActionResp{}, nil
 }

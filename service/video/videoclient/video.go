@@ -16,10 +16,14 @@ type (
 	Comment            = video.Comment
 	CommentActionReq   = video.CommentActionReq
 	CommentActionResp  = video.CommentActionResp
+	CommentCountReq    = video.CommentCountReq
+	CommentCountResp   = video.CommentCountResp
 	CommentListReq     = video.CommentListReq
 	CommentListResp    = video.CommentListResp
 	FavoriteActionReq  = video.FavoriteActionReq
 	FavoriteActionResp = video.FavoriteActionResp
+	FavoriteCountReq   = video.FavoriteCountReq
+	FavoriteCountResp  = video.FavoriteCountResp
 	FavoriteListReq    = video.FavoriteListReq
 	FavoriteListResp   = video.FavoriteListResp
 	PublishReq         = video.PublishReq
@@ -34,6 +38,8 @@ type (
 		CommentList(ctx context.Context, in *CommentListReq, opts ...grpc.CallOption) (*CommentListResp, error)
 		FavoriteAction(ctx context.Context, in *FavoriteActionReq, opts ...grpc.CallOption) (*FavoriteActionResp, error)
 		FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error)
+		FavoriteCount(ctx context.Context, in *FavoriteCountReq, opts ...grpc.CallOption) (*FavoriteCountResp, error)
+		CommentCount(ctx context.Context, in *CommentCountReq, opts ...grpc.CallOption) (*CommentCountResp, error)
 	}
 
 	defaultVideo struct {
@@ -70,4 +76,14 @@ func (m *defaultVideo) FavoriteAction(ctx context.Context, in *FavoriteActionReq
 func (m *defaultVideo) FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error) {
 	client := video.NewVideoClient(m.cli.Conn())
 	return client.FavoriteList(ctx, in, opts...)
+}
+
+func (m *defaultVideo) FavoriteCount(ctx context.Context, in *FavoriteCountReq, opts ...grpc.CallOption) (*FavoriteCountResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.FavoriteCount(ctx, in, opts...)
+}
+
+func (m *defaultVideo) CommentCount(ctx context.Context, in *CommentCountReq, opts ...grpc.CallOption) (*CommentCountResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.CommentCount(ctx, in, opts...)
 }
