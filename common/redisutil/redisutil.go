@@ -11,7 +11,6 @@ type RedisConf struct {
 	Addr        string
 	Password    string
 	DB          int
-	MaxIdle     int
 	MinIdle     int
 	PoolSize    int
 	MaxLifeTime int
