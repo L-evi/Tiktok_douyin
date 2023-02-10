@@ -1,17 +1,55 @@
 syntax = "v1"
 
-info (
+info(
     title: "video"
     desc: "video proc file"
 )
 
 import "common.api"
 
-type publishReq {
-    Token string `form:"token"`
-    //   data byte `form:"data"` // handler from l.r.FormFile
-    Title string `form:"Title"`
-}
+type (
+    publishReq {
+        Token string `form:"token"`
+        //   data byte `form:"data"` // handler from l.r.FormFile
+        Title string `form:"Title"`
+    }
+    FavoriteActionReq {
+        Token string `form:"token"`
+        VideoId int64 `form:"video_id"`
+        action int32 `form:"action"` // 1: favorite, 2: unfavorite
+    }
+    FavoriteActionResp {
+        Resp
+    }
+    FavoriteListReq {
+        Token string `form:"token"`
+        UserId int64 `form:"user_id"`
+    }
+    FovoriteListResp {
+        Resp
+        VideoList Video `json:"video_list"`
+    }
+    CommentActionReq {
+        Token string `form:"token"`
+        VideoId int64 `form:"video_id"`
+        ActionType int32 `form:"action_type"`
+        CommentText string `form:"comment_text"`
+        CommentId int64 `form:"comment_id"`
+    }
+    CommentActionResp {
+        Resp
+        Comment
+    }
+    CommentListReq {
+        Token string `form:"token"`
+        VideoId int64 `form:"video_id"`
+    }
+    CommentListResp {
+        Resp
+        CommentList Comment `json:"comment_list"`
+    }
+)
+
 
 
 
@@ -22,4 +60,12 @@ type publishReq {
 service gateway {
     @handler publishAction
     post /douyin/publish/action (publishReq) returns (Resp)
+    @handler favoriteAction
+    post /douyin/favorite/action (FavoriteActionReq) returns (FavoriteActionResp)
+    @handler favoriteList
+    get /douyin/favorite/list (FavoriteListReq) returns (FovoriteListResp)
+    @handler commentAction
+    post /douyin/comment/action (CommentActionReq) returns (CommentActionResp)
+    @handler commentList
+    get /douyin/comment/list (CommentListReq) returns (CommentListResp)
 }
