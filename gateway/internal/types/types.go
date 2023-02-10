@@ -11,6 +11,32 @@ type Resp struct {
 	Msg  string `json:"status_msg"`
 }
 
+type Video struct {
+	Id            int32  `json:"id"`
+	Author        User   `json:"author"`
+	PlayUrl       string `json:"play_url"`
+	CoverUrl      string `json:"cover_url"`
+	FavoriteCount int64  `json:"favorite_count"`
+	CommentCount  int64  `json:"comment_count"`
+	IsForavite    bool   `json:"is_favorite"`
+	Title         string `json:"title"`
+}
+
+type User struct {
+	Id            int32  `json:"id"`
+	Name          string `json:"name"`
+	FollowCount   int64  `json:"follow_count"`
+	FollowerCount int64  `json:"follower_count"`
+	IsFollow      bool   `json:"is_follow"`
+}
+
+type Comment struct {
+	Id         int64  `json:"id"`
+	User       User   `json:"user"`
+	Content    string `json:"content"`
+	CreateDate string `json:"create_date"`
+}
+
 type LoginReq struct {
 	Username string `form:"username"`
 	Password string `form:"password"`
@@ -36,6 +62,49 @@ type RegisterResp struct {
 type PublishReq struct {
 	Token string `form:"token"`
 	Title string `form:"Title"`
+}
+
+type FavoriteActionReq struct {
+	Token      string `form:"token"`
+	VideoId    int64  `form:"video_id"`
+	ActionType int32  `form:"action_type"` // 1: favorite, 2: unfavorite
+}
+
+type FavoriteActionResp struct {
+	Resp
+}
+
+type FavoriteListReq struct {
+	Token  string `form:"token"`
+	UserId int64  `form:"user_id"`
+}
+
+type FovoriteListResp struct {
+	Resp
+	VideoList Video `json:"video_list"`
+}
+
+type CommentActionReq struct {
+	Token       string `form:"token"`
+	VideoId     int64  `form:"video_id"`
+	ActionType  int32  `form:"action_type"`
+	CommentText string `form:"comment_text"`
+	CommentId   int64  `form:"comment_id"`
+}
+
+type CommentActionResp struct {
+	Resp
+	Comment
+}
+
+type CommentListReq struct {
+	Token   string `form:"token"`
+	VideoId int64  `form:"video_id"`
+}
+
+type CommentListResp struct {
+	Resp
+	CommentList Comment `json:"comment_list"`
 }
 
 type UserReq struct {

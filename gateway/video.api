@@ -16,7 +16,7 @@ type (
     FavoriteActionReq {
         Token string `form:"token"`
         VideoId int64 `form:"video_id"`
-        action int32 `form:"action"` // 1: favorite, 2: unfavorite
+        ActionType int32 `form:"action_type"` // 1: favorite, 2: unfavorite
     }
     FavoriteActionResp {
         Resp
