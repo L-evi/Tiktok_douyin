@@ -87,13 +87,8 @@ message commentListResp {
 
 service video {
   rpc publish(publishReq) returns (publishResp);
-}
-service favorite {
-  rpc favoriteAction(favoriteActionReq) returns (favoriteActionResp);
-  rpc favoriteList(favoriteListReq) returns (favoriteListResp);
-}
-
-service comment {
   rpc commentAction(commentActionReq) returns (commentActionResp);
   rpc commentList(commentListReq) returns (commentListResp);
+  rpc favoriteAction(favoriteActionReq) returns (favoriteActionResp);
+  rpc favoriteList(favoriteListReq) returns (favoriteListResp);
 }

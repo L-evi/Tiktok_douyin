@@ -2,7 +2,7 @@ Name: video.rpc
 ListenOn: 127.0.0.1:8081
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+    - 127.0.0.1:2379
   Key: video.rpc
 Mysql:
   DataSource: tiktok:tiktok@tcp(127.0.0.1)/tiktok?charset=utf8mb4
@@ -11,3 +11,10 @@ Log:
   Mode: console
   Encoding: plain
   ServiceName: service-video
+Redis:
+  Addr: 127.0.0.1:6379
+  Password:
+  DB: 1
+  MinIdle: 5
+  PoolSize: 100
+  MaxLifeTime: 180

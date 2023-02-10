@@ -13,6 +13,8 @@ type publishReq {
     Title string `form:"Title"`
 }
 
+
+
 @server(
     group: video
     middleware: Auth

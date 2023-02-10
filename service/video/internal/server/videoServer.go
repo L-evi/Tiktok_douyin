@@ -26,3 +26,23 @@ func (s *VideoServer) Publish(ctx context.Context, in *video.PublishReq) (*video
 	l := logic.NewPublishLogic(ctx, s.svcCtx)
 	return l.Publish(in)
 }
+
+func (s *VideoServer) CommentAction(ctx context.Context, in *video.CommentActionReq) (*video.CommentActionResp, error) {
+	l := logic.NewCommentActionLogic(ctx, s.svcCtx)
+	return l.CommentAction(in)
+}
+
+func (s *VideoServer) CommentList(ctx context.Context, in *video.CommentListReq) (*video.CommentListResp, error) {
+	l := logic.NewCommentListLogic(ctx, s.svcCtx)
+	return l.CommentList(in)
+}
+
+func (s *VideoServer) FavoriteAction(ctx context.Context, in *video.FavoriteActionReq) (*video.FavoriteActionResp, error) {
+	l := logic.NewFavoriteActionLogic(ctx, s.svcCtx)
+	return l.FavoriteAction(in)
+}
+
+func (s *VideoServer) FavoriteList(ctx context.Context, in *video.FavoriteListReq) (*video.FavoriteListResp, error) {
+	l := logic.NewFavoriteListLogic(ctx, s.svcCtx)
+	return l.FavoriteList(in)
+}
