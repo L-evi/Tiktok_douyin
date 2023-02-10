@@ -26,17 +26,19 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 }
 
 func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionReq) (resp *types.FavoriteActionResp, err error) {
-	// todo: add your logic here and delete this line
+	// sent to rpc to consult
 	_, err = l.svcCtx.VideoRpc.FavoriteAction(l.ctx, &video.FavoriteActionReq{
 		UserId:     l.ctx.Value("user_id").(int64),
 		VideoId:    req.VideoId,
 		ActionType: req.ActionType,
 	})
+	// consult failed
 	if err != nil {
 		return &types.FavoriteActionResp{
 			Resp: errx.HandleRpcErr(err),
 		}, nil
 	}
+	// consult success
 	return &types.FavoriteActionResp{
 		Resp: errx.SUCCESS_RESP,
 	}, nil

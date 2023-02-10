@@ -59,7 +59,7 @@ message User {
 
 message Comment {
   int64 id = 1;
-  User user = 2;
+  int64 user_id = 2;
   string content = 3;
   string create_date = 4;
 }

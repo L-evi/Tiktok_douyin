@@ -1,11 +1,13 @@
 package svc
 
 import (
+	"github.com/go-redis/redis/v8"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 	"log"
 	"os"
 	"train-tiktok/common/dbutil"
+	"train-tiktok/common/redisutil"
 	"train-tiktok/service/video/internal/config"
 	"train-tiktok/service/video/models"
 )
@@ -13,6 +15,7 @@ import (
 type ServiceContext struct {
 	Config config.Config
 	Db     *gorm.DB
+	Rdb    *redis.Client
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -33,9 +36,21 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err := _db.AutoMigrate(models.Video{}); err != nil {
 		log.Panicf("failed to autoMigrate: %v", err)
 	}
-
+	if err := _db.AutoMigrate(models.Comment{}); err != nil {
+		log.Panicf("failed to autoMigrate: %v", err)
+	}
+	// redis
+	rdb := redisutil.New(redisutil.RedisConf{
+		Addr:        c.Redis.Addr,
+		Password:    c.Redis.Password,
+		DB:          c.Redis.DB,
+		MinIdle:     c.Redis.MinIdle,
+		PoolSize:    c.Redis.PoolSize,
+		MaxLifeTime: c.Redis.MaxLifeTime,
+	})
 	return &ServiceContext{
 		Config: c,
 		Db:     _db,
+		Rdb:    rdb,
 	}
 }

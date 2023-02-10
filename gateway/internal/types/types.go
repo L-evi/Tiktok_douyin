@@ -23,7 +23,7 @@ type Video struct {
 }
 
 type User struct {
-	Id            int32  `json:"id"`
+	Id            int64  `json:"id"`
 	Name          string `json:"name"`
 	FollowCount   int64  `json:"follow_count"`
 	FollowerCount int64  `json:"follower_count"`
