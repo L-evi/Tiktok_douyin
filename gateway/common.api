@@ -1,6 +1,31 @@
 syntax = "v1"
 
-type Resp {
-    Code int32  `json:"status_code"`
-    Msg  string `json:"status_msg"`
-}
+type (
+    Resp {
+        Code int32 `json:"status_code"`
+        Msg string `json:"status_msg"`
+    }
+    Video {
+        Id int64 `json:"id"`
+        Author User `json:"author"`
+        PlayUrl string `json:"play_url"`
+        CoverUrl string `json:"cover_url"`
+        FavoriteCount int64 `json:"favorite_count"`
+        CommentCount int64 `json:"comment_count"`
+        IsForavite bool `json:"is_favorite"`
+        Title string `json:"title"`
+    }
+    User {
+        Id int64 `json:"id"`
+        Name string `json:"name"`
+        FollowCount int64 `json:"follow_count"`
+        FollowerCount int64 `json:"follower_count"`
+        IsFollow bool `json:"is_follow"`
+    }
+    Comment {
+        Id int64 `json:"id"`
+        User User `json:"user"`
+        Content string `json:"content"`
+        CreateDate string `json:"create_date"`
+    }
+)

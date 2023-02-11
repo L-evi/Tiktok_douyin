@@ -193,108 +193,6 @@ func (x *PublishResp) GetResp() *Resp {
 	return nil
 }
 
-type FeedReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	LatestTime int64 `protobuf:"varint,1,opt,name=latest_time,json=latestTime,proto3" json:"latest_time,omitempty"` // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
-}
-
-func (x *FeedReq) Reset() {
-	*x = FeedReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_video_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *FeedReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FeedReq) ProtoMessage() {}
-
-func (x *FeedReq) ProtoReflect() protoreflect.Message {
-	mi := &file_video_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use FeedReq.ProtoReflect.Descriptor instead.
-func (*FeedReq) Descriptor() ([]byte, []int) {
-	return file_video_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *FeedReq) GetLatestTime() int64 {
-	if x != nil {
-		return x.LatestTime
-	}
-	return 0
-}
-
-type FeedResp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	VideoList []*Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`     // 视频列表
-	NextTime  *int64   `protobuf:"varint,4,opt,name=next_time,json=nextTime,proto3,oneof" json:"next_time,omitempty"` // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
-}
-
-func (x *FeedResp) Reset() {
-	*x = FeedResp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_video_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *FeedResp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FeedResp) ProtoMessage() {}
-
-func (x *FeedResp) ProtoReflect() protoreflect.Message {
-	mi := &file_video_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use FeedResp.ProtoReflect.Descriptor instead.
-func (*FeedResp) Descriptor() ([]byte, []int) {
-	return file_video_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *FeedResp) GetVideoList() []*Video {
-	if x != nil {
-		return x.VideoList
-	}
-	return nil
-}
-
-func (x *FeedResp) GetNextTime() int64 {
-	if x != nil && x.NextTime != nil {
-		return *x.NextTime
-	}
-	return 0
-}
-
 type Video struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -314,7 +212,7 @@ type Video struct {
 func (x *Video) Reset() {
 	*x = Video{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_video_proto_msgTypes[5]
+		mi := &file_video_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -327,7 +225,7 @@ func (x *Video) String() string {
 func (*Video) ProtoMessage() {}
 
 func (x *Video) ProtoReflect() protoreflect.Message {
-	mi := &file_video_proto_msgTypes[5]
+	mi := &file_video_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -340,7 +238,7 @@ func (x *Video) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Video.ProtoReflect.Descriptor instead.
 func (*Video) Descriptor() ([]byte, []int) {
-	return file_video_proto_rawDescGZIP(), []int{5}
+	return file_video_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Video) GetId() int64 {
@@ -378,20 +276,120 @@ func (x *Video) GetTitle() string {
 	return ""
 }
 
-type User struct {
+type FeedReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id            int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                                  // 用户id
-	Name          string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                                               // 用户名称
-	FollowCount   *int64 `protobuf:"varint,3,opt,name=follow_count,json=followCount,proto3,oneof" json:"follow_count,omitempty"`       // 关注总数
-	FollowerCount *int64 `protobuf:"varint,4,opt,name=follower_count,json=followerCount,proto3,oneof" json:"follower_count,omitempty"` // 粉丝总数
-	IsFollow      bool   `protobuf:"varint,5,opt,name=is_follow,json=isFollow,proto3" json:"is_follow,omitempty"`                      // true-已关注，false-未关注
+	LatestTime int64 `protobuf:"varint,1,opt,name=latest_time,json=latestTime,proto3" json:"latest_time,omitempty"` // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
 }
 
-func (x *User) Reset() {
-	*x = User{}
+func (x *FeedReq) Reset() {
+	*x = FeedReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FeedReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FeedReq) ProtoMessage() {}
+
+func (x *FeedReq) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FeedReq.ProtoReflect.Descriptor instead.
+func (*FeedReq) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *FeedReq) GetLatestTime() int64 {
+	if x != nil {
+		return x.LatestTime
+	}
+	return 0
+}
+
+type FeedResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	VideoList []*Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`     // 视频列表
+	NextTime  *int64   `protobuf:"varint,4,opt,name=next_time,json=nextTime,proto3,oneof" json:"next_time,omitempty"` // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+}
+
+func (x *FeedResp) Reset() {
+	*x = FeedResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FeedResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FeedResp) ProtoMessage() {}
+
+func (x *FeedResp) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FeedResp.ProtoReflect.Descriptor instead.
+func (*FeedResp) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *FeedResp) GetVideoList() []*Video {
+	if x != nil {
+		return x.VideoList
+	}
+	return nil
+}
+
+func (x *FeedResp) GetNextTime() int64 {
+	if x != nil && x.NextTime != nil {
+		return *x.NextTime
+	}
+	return 0
+}
+
+type FavoriteActionReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	VideoId    int64 `protobuf:"varint,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`          // 视频id
+	ActionType int32 `protobuf:"varint,2,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"` // 1-点赞，2-取消点赞
+	UserId     int64 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`             // 用户id
+}
+
+func (x *FavoriteActionReq) Reset() {
+	*x = FavoriteActionReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_video_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -399,13 +397,13 @@ func (x *User) Reset() {
 	}
 }
 
-func (x *User) String() string {
+func (x *FavoriteActionReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*User) ProtoMessage() {}
+func (*FavoriteActionReq) ProtoMessage() {}
 
-func (x *User) ProtoReflect() protoreflect.Message {
+func (x *FavoriteActionReq) ProtoReflect() protoreflect.Message {
 	mi := &file_video_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -417,44 +415,796 @@ func (x *User) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use User.ProtoReflect.Descriptor instead.
-func (*User) Descriptor() ([]byte, []int) {
+// Deprecated: Use FavoriteActionReq.ProtoReflect.Descriptor instead.
+func (*FavoriteActionReq) Descriptor() ([]byte, []int) {
 	return file_video_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *User) GetId() int64 {
+func (x *FavoriteActionReq) GetVideoId() int64 {
+	if x != nil {
+		return x.VideoId
+	}
+	return 0
+}
+
+func (x *FavoriteActionReq) GetActionType() int32 {
+	if x != nil {
+		return x.ActionType
+	}
+	return 0
+}
+
+func (x *FavoriteActionReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+type FavoriteActionResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Resp *Resp `protobuf:"bytes,1,opt,name=resp,proto3" json:"resp,omitempty"`
+}
+
+func (x *FavoriteActionResp) Reset() {
+	*x = FavoriteActionResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FavoriteActionResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FavoriteActionResp) ProtoMessage() {}
+
+func (x *FavoriteActionResp) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FavoriteActionResp.ProtoReflect.Descriptor instead.
+func (*FavoriteActionResp) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *FavoriteActionResp) GetResp() *Resp {
+	if x != nil {
+		return x.Resp
+	}
+	return nil
+}
+
+type FavoriteListReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // 用户id
+	Token  string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`                  // 用户鉴权token
+}
+
+func (x *FavoriteListReq) Reset() {
+	*x = FavoriteListReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FavoriteListReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FavoriteListReq) ProtoMessage() {}
+
+func (x *FavoriteListReq) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FavoriteListReq.ProtoReflect.Descriptor instead.
+func (*FavoriteListReq) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *FavoriteListReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *FavoriteListReq) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type FavoriteListResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Resp      *Resp            `protobuf:"bytes,1,opt,name=resp,proto3" json:"resp,omitempty"`
+	VideoList []*FavoriteVideo `protobuf:"bytes,2,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"` // 视频id列表
+}
+
+func (x *FavoriteListResp) Reset() {
+	*x = FavoriteListResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FavoriteListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FavoriteListResp) ProtoMessage() {}
+
+func (x *FavoriteListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FavoriteListResp.ProtoReflect.Descriptor instead.
+func (*FavoriteListResp) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *FavoriteListResp) GetResp() *Resp {
+	if x != nil {
+		return x.Resp
+	}
+	return nil
+}
+
+func (x *FavoriteListResp) GetVideoList() []*FavoriteVideo {
+	if x != nil {
+		return x.VideoList
+	}
+	return nil
+}
+
+type FavoriteVideo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id            int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                            // 视频唯一标识
+	UserId        int64  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`                      // 视频作者的用户id
+	PlayUrl       string `protobuf:"bytes,3,opt,name=play_url,json=playUrl,proto3" json:"play_url,omitempty"`                    // 视频播放地址
+	CoverUrl      string `protobuf:"bytes,4,opt,name=cover_url,json=coverUrl,proto3" json:"cover_url,omitempty"`                 // 视频封面地址
+	FavoriteCount int64  `protobuf:"varint,5,opt,name=favorite_count,json=favoriteCount,proto3" json:"favorite_count,omitempty"` // 视频的点赞总数
+	CommentCount  int64  `protobuf:"varint,6,opt,name=comment_count,json=commentCount,proto3" json:"comment_count,omitempty"`    // 视频的评论总数
+	IsFavorite    bool   `protobuf:"varint,7,opt,name=is_favorite,json=isFavorite,proto3" json:"is_favorite,omitempty"`          // true-已点赞，false-未点赞
+	Title         string `protobuf:"bytes,8,opt,name=title,proto3" json:"title,omitempty"`                                       // 视频标题
+}
+
+func (x *FavoriteVideo) Reset() {
+	*x = FavoriteVideo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FavoriteVideo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FavoriteVideo) ProtoMessage() {}
+
+func (x *FavoriteVideo) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FavoriteVideo.ProtoReflect.Descriptor instead.
+func (*FavoriteVideo) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *FavoriteVideo) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *User) GetName() string {
+func (x *FavoriteVideo) GetUserId() int64 {
 	if x != nil {
-		return x.Name
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *FavoriteVideo) GetPlayUrl() string {
+	if x != nil {
+		return x.PlayUrl
 	}
 	return ""
 }
 
-func (x *User) GetFollowCount() int64 {
-	if x != nil && x.FollowCount != nil {
-		return *x.FollowCount
-	}
-	return 0
-}
-
-func (x *User) GetFollowerCount() int64 {
-	if x != nil && x.FollowerCount != nil {
-		return *x.FollowerCount
-	}
-	return 0
-}
-
-func (x *User) GetIsFollow() bool {
+func (x *FavoriteVideo) GetCoverUrl() string {
 	if x != nil {
-		return x.IsFollow
+		return x.CoverUrl
+	}
+	return ""
+}
+
+func (x *FavoriteVideo) GetFavoriteCount() int64 {
+	if x != nil {
+		return x.FavoriteCount
+	}
+	return 0
+}
+
+func (x *FavoriteVideo) GetCommentCount() int64 {
+	if x != nil {
+		return x.CommentCount
+	}
+	return 0
+}
+
+func (x *FavoriteVideo) GetIsFavorite() bool {
+	if x != nil {
+		return x.IsFavorite
 	}
 	return false
+}
+
+func (x *FavoriteVideo) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+// Comment
+type Comment struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id         int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId     int64  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Content    string `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	CreateDate string `protobuf:"bytes,4,opt,name=create_date,json=createDate,proto3" json:"create_date,omitempty"`
+}
+
+func (x *Comment) Reset() {
+	*x = Comment{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Comment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Comment) ProtoMessage() {}
+
+func (x *Comment) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Comment.ProtoReflect.Descriptor instead.
+func (*Comment) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *Comment) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Comment) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *Comment) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *Comment) GetCreateDate() string {
+	if x != nil {
+		return x.CreateDate
+	}
+	return ""
+}
+
+type CommentActionReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	VideoId     int64  `protobuf:"varint,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`            // 视频id
+	ActionType  int32  `protobuf:"varint,2,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"`   // 1-发布评论，2-删除评论
+	CommentText string `protobuf:"bytes,3,opt,name=comment_text,json=commentText,proto3" json:"comment_text,omitempty"` // 用户填写的评论内容，在action_type=1的时候使用
+	CommentId   int64  `protobuf:"varint,4,opt,name=comment_id,json=commentId,proto3" json:"comment_id,omitempty"`      // 要删除的评论id，在action_type=2的时候使用
+}
+
+func (x *CommentActionReq) Reset() {
+	*x = CommentActionReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommentActionReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentActionReq) ProtoMessage() {}
+
+func (x *CommentActionReq) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentActionReq.ProtoReflect.Descriptor instead.
+func (*CommentActionReq) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CommentActionReq) GetVideoId() int64 {
+	if x != nil {
+		return x.VideoId
+	}
+	return 0
+}
+
+func (x *CommentActionReq) GetActionType() int32 {
+	if x != nil {
+		return x.ActionType
+	}
+	return 0
+}
+
+func (x *CommentActionReq) GetCommentText() string {
+	if x != nil {
+		return x.CommentText
+	}
+	return ""
+}
+
+func (x *CommentActionReq) GetCommentId() int64 {
+	if x != nil {
+		return x.CommentId
+	}
+	return 0
+}
+
+type CommentActionResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Resp    *Resp    `protobuf:"bytes,1,opt,name=resp,proto3" json:"resp,omitempty"`
+	Comment *Comment `protobuf:"bytes,2,opt,name=comment,proto3" json:"comment,omitempty"` // 评论信息
+}
+
+func (x *CommentActionResp) Reset() {
+	*x = CommentActionResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommentActionResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentActionResp) ProtoMessage() {}
+
+func (x *CommentActionResp) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentActionResp.ProtoReflect.Descriptor instead.
+func (*CommentActionResp) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CommentActionResp) GetResp() *Resp {
+	if x != nil {
+		return x.Resp
+	}
+	return nil
+}
+
+func (x *CommentActionResp) GetComment() *Comment {
+	if x != nil {
+		return x.Comment
+	}
+	return nil
+}
+
+type CommentListReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	VideoId int64 `protobuf:"varint,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"` // 视频id
+}
+
+func (x *CommentListReq) Reset() {
+	*x = CommentListReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommentListReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentListReq) ProtoMessage() {}
+
+func (x *CommentListReq) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentListReq.ProtoReflect.Descriptor instead.
+func (*CommentListReq) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *CommentListReq) GetVideoId() int64 {
+	if x != nil {
+		return x.VideoId
+	}
+	return 0
+}
+
+type CommentListResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Resp        *Resp      `protobuf:"bytes,1,opt,name=resp,proto3" json:"resp,omitempty"`
+	CommentList []*Comment `protobuf:"bytes,2,rep,name=comment_list,json=commentList,proto3" json:"comment_list,omitempty"` // 评论列表
+}
+
+func (x *CommentListResp) Reset() {
+	*x = CommentListResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommentListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentListResp) ProtoMessage() {}
+
+func (x *CommentListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentListResp.ProtoReflect.Descriptor instead.
+func (*CommentListResp) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *CommentListResp) GetResp() *Resp {
+	if x != nil {
+		return x.Resp
+	}
+	return nil
+}
+
+func (x *CommentListResp) GetCommentList() []*Comment {
+	if x != nil {
+		return x.CommentList
+	}
+	return nil
+}
+
+// favorite count
+type FavoriteCountReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	VideoId int64 `protobuf:"varint,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"` // 视频id
+}
+
+func (x *FavoriteCountReq) Reset() {
+	*x = FavoriteCountReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FavoriteCountReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FavoriteCountReq) ProtoMessage() {}
+
+func (x *FavoriteCountReq) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FavoriteCountReq.ProtoReflect.Descriptor instead.
+func (*FavoriteCountReq) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *FavoriteCountReq) GetVideoId() int64 {
+	if x != nil {
+		return x.VideoId
+	}
+	return 0
+}
+
+type FavoriteCountResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Resp          *Resp `protobuf:"bytes,1,opt,name=resp,proto3" json:"resp,omitempty"`
+	FavoriteCount int64 `protobuf:"varint,2,opt,name=favorite_count,json=favoriteCount,proto3" json:"favorite_count,omitempty"` // 点赞总数
+}
+
+func (x *FavoriteCountResp) Reset() {
+	*x = FavoriteCountResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FavoriteCountResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FavoriteCountResp) ProtoMessage() {}
+
+func (x *FavoriteCountResp) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FavoriteCountResp.ProtoReflect.Descriptor instead.
+func (*FavoriteCountResp) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *FavoriteCountResp) GetResp() *Resp {
+	if x != nil {
+		return x.Resp
+	}
+	return nil
+}
+
+func (x *FavoriteCountResp) GetFavoriteCount() int64 {
+	if x != nil {
+		return x.FavoriteCount
+	}
+	return 0
+}
+
+// comment count
+type CommentCountReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	VideoId int64 `protobuf:"varint,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"` // 视频id
+}
+
+func (x *CommentCountReq) Reset() {
+	*x = CommentCountReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommentCountReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentCountReq) ProtoMessage() {}
+
+func (x *CommentCountReq) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentCountReq.ProtoReflect.Descriptor instead.
+func (*CommentCountReq) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *CommentCountReq) GetVideoId() int64 {
+	if x != nil {
+		return x.VideoId
+	}
+	return 0
+}
+
+type CommentCountResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Resp         *Resp `protobuf:"bytes,1,opt,name=resp,proto3" json:"resp,omitempty"`
+	CommentCount int64 `protobuf:"varint,2,opt,name=comment_count,json=commentCount,proto3" json:"comment_count,omitempty"` // 评论总数
+}
+
+func (x *CommentCountResp) Reset() {
+	*x = CommentCountResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_video_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommentCountResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentCountResp) ProtoMessage() {}
+
+func (x *CommentCountResp) ProtoReflect() protoreflect.Message {
+	mi := &file_video_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentCountResp.ProtoReflect.Descriptor instead.
+func (*CommentCountResp) Descriptor() ([]byte, []int) {
+	return file_video_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *CommentCountResp) GetResp() *Resp {
+	if x != nil {
+		return x.Resp
+	}
+	return nil
+}
+
+func (x *CommentCountResp) GetCommentCount() int64 {
+	if x != nil {
+		return x.CommentCount
+	}
+	return 0
 }
 
 var File_video_proto protoreflect.FileDescriptor
@@ -476,7 +1226,15 @@ var file_video_proto_rawDesc = []byte{
 	0x74, 0x69, 0x74, 0x6c, 0x65, 0x22, 0x2e, 0x0a, 0x0b, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68,
 	0x52, 0x65, 0x73, 0x70, 0x12, 0x1f, 0x0a, 0x04, 0x72, 0x65, 0x73, 0x70, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x52,
-	0x04, 0x72, 0x65, 0x73, 0x70, 0x22, 0x2a, 0x0a, 0x07, 0x66, 0x65, 0x65, 0x64, 0x52, 0x65, 0x71,
+	0x04, 0x72, 0x65, 0x73, 0x70, 0x22, 0x7e, 0x0a, 0x05, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x17,
+	0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x5f,
+	0x75, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x6c, 0x61, 0x79, 0x55,
+	0x72, 0x6c, 0x12, 0x1b, 0x0a, 0x09, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x5f, 0x75, 0x72, 0x6c, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x55, 0x72, 0x6c, 0x12,
+	0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x74, 0x69, 0x74, 0x6c, 0x65, 0x22, 0x2a, 0x0a, 0x07, 0x66, 0x65, 0x65, 0x64, 0x52, 0x65, 0x71,
 	0x12, 0x1f, 0x0a, 0x0b, 0x6c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x6c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x54, 0x69, 0x6d,
 	0x65, 0x22, 0x67, 0x0a, 0x08, 0x66, 0x65, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2b, 0x0a,
@@ -485,35 +1243,124 @@ var file_video_proto_rawDesc = []byte{
 	0x09, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x20, 0x0a, 0x09, 0x6e, 0x65,
 	0x78, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x48, 0x00, 0x52,
 	0x08, 0x6e, 0x65, 0x78, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x88, 0x01, 0x01, 0x42, 0x0c, 0x0a, 0x0a,
-	0x5f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x22, 0x7e, 0x0a, 0x05, 0x56, 0x69,
-	0x64, 0x65, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52,
-	0x02, 0x69, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x08,
-	0x70, 0x6c, 0x61, 0x79, 0x5f, 0x75, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
-	0x70, 0x6c, 0x61, 0x79, 0x55, 0x72, 0x6c, 0x12, 0x1b, 0x0a, 0x09, 0x63, 0x6f, 0x76, 0x65, 0x72,
-	0x5f, 0x75, 0x72, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x6f, 0x76, 0x65,
-	0x72, 0x55, 0x72, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x08, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x22, 0xbf, 0x01, 0x0a, 0x04, 0x55,
-	0x73, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52,
-	0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x26, 0x0a, 0x0c, 0x66, 0x6f, 0x6c, 0x6c, 0x6f,
-	0x77, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x48, 0x00, 0x52,
-	0x0b, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x88, 0x01, 0x01, 0x12,
-	0x2a, 0x0a, 0x0e, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x75, 0x6e,
-	0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x48, 0x01, 0x52, 0x0d, 0x66, 0x6f, 0x6c, 0x6c, 0x6f,
-	0x77, 0x65, 0x72, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x88, 0x01, 0x01, 0x12, 0x1b, 0x0a, 0x09, 0x69,
-	0x73, 0x5f, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x18, 0x05, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08,
-	0x69, 0x73, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x42, 0x0f, 0x0a, 0x0d, 0x5f, 0x66, 0x6f, 0x6c,
-	0x6c, 0x6f, 0x77, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x11, 0x0a, 0x0f, 0x5f, 0x66, 0x6f,
-	0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x32, 0x62, 0x0a, 0x05,
-	0x76, 0x69, 0x64, 0x65, 0x6f, 0x12, 0x30, 0x0a, 0x07, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68,
-	0x12, 0x11, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68,
-	0x52, 0x65, 0x71, 0x1a, 0x12, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x70, 0x75, 0x62, 0x6c,
-	0x69, 0x73, 0x68, 0x52, 0x65, 0x73, 0x70, 0x12, 0x27, 0x0a, 0x04, 0x46, 0x65, 0x65, 0x64, 0x12,
-	0x0e, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x52, 0x65, 0x71, 0x1a,
-	0x0f, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70,
-	0x42, 0x09, 0x5a, 0x07, 0x2e, 0x2f, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x5f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x22, 0x68, 0x0a, 0x11, 0x66, 0x61,
+	0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x12,
+	0x19, 0x0a, 0x08, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x07, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x61, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x0a, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x17, 0x0a, 0x07, 0x75,
+	0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73,
+	0x65, 0x72, 0x49, 0x64, 0x22, 0x35, 0x0a, 0x12, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65,
+	0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x1f, 0x0a, 0x04, 0x72, 0x65,
+	0x73, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f,
+	0x2e, 0x52, 0x65, 0x73, 0x70, 0x52, 0x04, 0x72, 0x65, 0x73, 0x70, 0x22, 0x40, 0x0a, 0x0f, 0x66,
+	0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x17,
+	0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x68, 0x0a,
+	0x10, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73,
+	0x70, 0x12, 0x1f, 0x0a, 0x04, 0x72, 0x65, 0x73, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0b, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x52, 0x04, 0x72, 0x65,
+	0x73, 0x70, 0x12, 0x33, 0x0a, 0x0a, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x5f, 0x6c, 0x69, 0x73, 0x74,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x46,
+	0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x09, 0x76, 0x69,
+	0x64, 0x65, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x22, 0xf3, 0x01, 0x0a, 0x0d, 0x46, 0x61, 0x76, 0x6f,
+	0x72, 0x69, 0x74, 0x65, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65,
+	0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72,
+	0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x5f, 0x75, 0x72, 0x6c, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x6c, 0x61, 0x79, 0x55, 0x72, 0x6c, 0x12, 0x1b, 0x0a,
+	0x09, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x5f, 0x75, 0x72, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x55, 0x72, 0x6c, 0x12, 0x25, 0x0a, 0x0e, 0x66, 0x61,
+	0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x0d, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x43, 0x6f, 0x75, 0x6e,
+	0x74, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
+	0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x69, 0x73, 0x5f, 0x66, 0x61, 0x76,
+	0x6f, 0x72, 0x69, 0x74, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x69, 0x73, 0x46,
+	0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65,
+	0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x22, 0x6d, 0x0a,
+	0x07, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72,
+	0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49,
+	0x64, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x63,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x5f, 0x64, 0x61, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x44, 0x61, 0x74, 0x65, 0x22, 0x90, 0x01, 0x0a,
+	0x10, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x71, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x07, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x64, 0x12, 0x1f, 0x0a, 0x0b,
+	0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x0a, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x21, 0x0a,
+	0x0c, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x74, 0x65, 0x78, 0x74, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x54, 0x65, 0x78, 0x74,
+	0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x22,
+	0x5e, 0x0a, 0x11, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x1f, 0x0a, 0x04, 0x72, 0x65, 0x73, 0x70, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x52,
+	0x04, 0x72, 0x65, 0x73, 0x70, 0x12, 0x28, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x43,
+	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x22,
+	0x2b, 0x0a, 0x0e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65,
+	0x71, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x07, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x64, 0x22, 0x65, 0x0a, 0x0f,
+	0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12,
+	0x1f, 0x0a, 0x04, 0x72, 0x65, 0x73, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e,
+	0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x52, 0x04, 0x72, 0x65, 0x73, 0x70,
+	0x12, 0x31, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x6c, 0x69, 0x73, 0x74,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x43,
+	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c,
+	0x69, 0x73, 0x74, 0x22, 0x2d, 0x0a, 0x10, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x43,
+	0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x69, 0x64, 0x65, 0x6f,
+	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x76, 0x69, 0x64, 0x65, 0x6f,
+	0x49, 0x64, 0x22, 0x5b, 0x0a, 0x11, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x43, 0x6f,
+	0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x1f, 0x0a, 0x04, 0x72, 0x65, 0x73, 0x70, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x52, 0x65,
+	0x73, 0x70, 0x52, 0x04, 0x72, 0x65, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x0e, 0x66, 0x61, 0x76, 0x6f,
+	0x72, 0x69, 0x74, 0x65, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x0d, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x22,
+	0x2c, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52,
+	0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x5f, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x64, 0x22, 0x58, 0x0a,
+	0x10, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73,
+	0x70, 0x12, 0x1f, 0x0a, 0x04, 0x72, 0x65, 0x73, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0b, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x52, 0x04, 0x72, 0x65,
+	0x73, 0x70, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x63, 0x6f,
+	0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
+	0x6e, 0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x32, 0xf1, 0x03, 0x0a, 0x05, 0x76, 0x69, 0x64, 0x65,
+	0x6f, 0x12, 0x30, 0x0a, 0x07, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x12, 0x11, 0x2e, 0x76,
+	0x69, 0x64, 0x65, 0x6f, 0x2e, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x52, 0x65, 0x71, 0x1a,
+	0x12, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x52,
+	0x65, 0x73, 0x70, 0x12, 0x27, 0x0a, 0x04, 0x66, 0x65, 0x65, 0x64, 0x12, 0x0e, 0x2e, 0x76, 0x69,
+	0x64, 0x65, 0x6f, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x52, 0x65, 0x71, 0x1a, 0x0f, 0x2e, 0x76, 0x69,
+	0x64, 0x65, 0x6f, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x12, 0x42, 0x0a, 0x0d,
+	0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x17, 0x2e,
+	0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x41, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x18, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x63,
+	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x3c, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x12,
+	0x15, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c,
+	0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x63,
+	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x45,
+	0x0a, 0x0e, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x18, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74,
+	0x65, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x19, 0x2e, 0x76, 0x69, 0x64,
+	0x65, 0x6f, 0x2e, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x41, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3f, 0x0a, 0x0c, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74,
+	0x65, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x16, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x66, 0x61,
+	0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x1a, 0x17, 0x2e,
+	0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x4c, 0x69,
+	0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x42, 0x0a, 0x0d, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69,
+	0x74, 0x65, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x17, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e,
+	0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71,
+	0x1a, 0x18, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x66, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74,
+	0x65, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3f, 0x0a, 0x0c, 0x63, 0x6f,
+	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x16, 0x2e, 0x76, 0x69, 0x64,
+	0x65, 0x6f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52,
+	0x65, 0x71, 0x1a, 0x17, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
+	0x6e, 0x74, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x42, 0x09, 0x5a, 0x07, 0x2e,
+	0x2f, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -528,28 +1375,62 @@ func file_video_proto_rawDescGZIP() []byte {
 	return file_video_proto_rawDescData
 }
 
-var file_video_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_video_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_video_proto_goTypes = []interface{}{
-	(*Resp)(nil),        // 0: video.Resp
-	(*PublishReq)(nil),  // 1: video.publishReq
-	(*PublishResp)(nil), // 2: video.publishResp
-	(*FeedReq)(nil),     // 3: video.feedReq
-	(*FeedResp)(nil),    // 4: video.feedResp
-	(*Video)(nil),       // 5: video.Video
-	(*User)(nil),        // 6: video.User
+	(*Resp)(nil),               // 0: video.Resp
+	(*PublishReq)(nil),         // 1: video.publishReq
+	(*PublishResp)(nil),        // 2: video.publishResp
+	(*Video)(nil),              // 3: video.Video
+	(*FeedReq)(nil),            // 4: video.feedReq
+	(*FeedResp)(nil),           // 5: video.feedResp
+	(*FavoriteActionReq)(nil),  // 6: video.favoriteActionReq
+	(*FavoriteActionResp)(nil), // 7: video.favoriteActionResp
+	(*FavoriteListReq)(nil),    // 8: video.favoriteListReq
+	(*FavoriteListResp)(nil),   // 9: video.favoriteListResp
+	(*FavoriteVideo)(nil),      // 10: video.FavoriteVideo
+	(*Comment)(nil),            // 11: video.Comment
+	(*CommentActionReq)(nil),   // 12: video.commentActionReq
+	(*CommentActionResp)(nil),  // 13: video.commentActionResp
+	(*CommentListReq)(nil),     // 14: video.commentListReq
+	(*CommentListResp)(nil),    // 15: video.commentListResp
+	(*FavoriteCountReq)(nil),   // 16: video.favoriteCountReq
+	(*FavoriteCountResp)(nil),  // 17: video.favoriteCountResp
+	(*CommentCountReq)(nil),    // 18: video.commentCountReq
+	(*CommentCountResp)(nil),   // 19: video.commentCountResp
 }
 var file_video_proto_depIdxs = []int32{
-	0, // 0: video.publishResp.resp:type_name -> video.Resp
-	5, // 1: video.feedResp.video_list:type_name -> video.Video
-	1, // 2: video.video.publish:input_type -> video.publishReq
-	3, // 3: video.video.Feed:input_type -> video.feedReq
-	2, // 4: video.video.publish:output_type -> video.publishResp
-	4, // 5: video.video.Feed:output_type -> video.feedResp
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0,  // 0: video.publishResp.resp:type_name -> video.Resp
+	3,  // 1: video.feedResp.video_list:type_name -> video.Video
+	0,  // 2: video.favoriteActionResp.resp:type_name -> video.Resp
+	0,  // 3: video.favoriteListResp.resp:type_name -> video.Resp
+	10, // 4: video.favoriteListResp.video_list:type_name -> video.FavoriteVideo
+	0,  // 5: video.commentActionResp.resp:type_name -> video.Resp
+	11, // 6: video.commentActionResp.comment:type_name -> video.Comment
+	0,  // 7: video.commentListResp.resp:type_name -> video.Resp
+	11, // 8: video.commentListResp.comment_list:type_name -> video.Comment
+	0,  // 9: video.favoriteCountResp.resp:type_name -> video.Resp
+	0,  // 10: video.commentCountResp.resp:type_name -> video.Resp
+	1,  // 11: video.video.publish:input_type -> video.publishReq
+	4,  // 12: video.video.feed:input_type -> video.feedReq
+	12, // 13: video.video.commentAction:input_type -> video.commentActionReq
+	14, // 14: video.video.commentList:input_type -> video.commentListReq
+	6,  // 15: video.video.favoriteAction:input_type -> video.favoriteActionReq
+	8,  // 16: video.video.favoriteList:input_type -> video.favoriteListReq
+	16, // 17: video.video.favoriteCount:input_type -> video.favoriteCountReq
+	18, // 18: video.video.commentCount:input_type -> video.commentCountReq
+	2,  // 19: video.video.publish:output_type -> video.publishResp
+	5,  // 20: video.video.feed:output_type -> video.feedResp
+	13, // 21: video.video.commentAction:output_type -> video.commentActionResp
+	15, // 22: video.video.commentList:output_type -> video.commentListResp
+	7,  // 23: video.video.favoriteAction:output_type -> video.favoriteActionResp
+	9,  // 24: video.video.favoriteList:output_type -> video.favoriteListResp
+	17, // 25: video.video.favoriteCount:output_type -> video.favoriteCountResp
+	19, // 26: video.video.commentCount:output_type -> video.commentCountResp
+	19, // [19:27] is the sub-list for method output_type
+	11, // [11:19] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_video_proto_init() }
@@ -595,30 +1476,6 @@ func file_video_proto_init() {
 			}
 		}
 		file_video_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FeedReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_video_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FeedResp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_video_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Video); i {
 			case 0:
 				return &v.state
@@ -630,8 +1487,188 @@ func file_video_proto_init() {
 				return nil
 			}
 		}
+		file_video_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FeedReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FeedResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 		file_video_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*User); i {
+			switch v := v.(*FavoriteActionReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FavoriteActionResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FavoriteListReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FavoriteListResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FavoriteVideo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Comment); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommentActionReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommentActionResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommentListReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommentListResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FavoriteCountReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FavoriteCountResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommentCountReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_video_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommentCountResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -643,15 +1680,14 @@ func file_video_proto_init() {
 			}
 		}
 	}
-	file_video_proto_msgTypes[4].OneofWrappers = []interface{}{}
-	file_video_proto_msgTypes[6].OneofWrappers = []interface{}{}
+	file_video_proto_msgTypes[5].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_video_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

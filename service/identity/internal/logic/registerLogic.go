@@ -57,7 +57,7 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 	}
 
 	if res := l.svcCtx.Db.Create(&User); res.Error != nil || res.RowsAffected == 0 {
-		logx.Errorf("failed to create user: %v", err)
+		logx.Errorf("failed to create user: %v", res.Error)
 		return &identity.RegisterResp{}, errorx.ErrSystemError
 	}
 

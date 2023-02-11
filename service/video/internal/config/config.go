@@ -9,7 +9,16 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
-	StorageBaseUrl StorageStruct
+	Redis struct {
+		Addr        string
+		Password    string
+		DB          int
+		MinIdle     int
+		PoolSize    int
+		MaxLifeTime int
+	}
+	IdentityRpcConf zrpc.RpcClientConf
+	StorageBaseUrl  StorageStruct
 }
 
 type StorageStruct struct {

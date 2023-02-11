@@ -11,6 +11,32 @@ type Resp struct {
 	Msg  string `json:"status_msg"`
 }
 
+type Video struct {
+	Id            int64  `json:"id"`
+	Author        User   `json:"author"`
+	PlayUrl       string `json:"play_url"`
+	CoverUrl      string `json:"cover_url"`
+	FavoriteCount int64  `json:"favorite_count"`
+	CommentCount  int64  `json:"comment_count"`
+	IsForavite    bool   `json:"is_favorite"`
+	Title         string `json:"title"`
+}
+
+type User struct {
+	Id            int64  `json:"id"`
+	Name          string `json:"name"`
+	FollowCount   int64  `json:"follow_count"`
+	FollowerCount int64  `json:"follower_count"`
+	IsFollow      bool   `json:"is_follow"`
+}
+
+type Comment struct {
+	Id         int64  `json:"id"`
+	User       User   `json:"user"`
+	Content    string `json:"content"`
+	CreateDate string `json:"create_date"`
+}
+
 type LoginReq struct {
 	Username string `form:"username"`
 	Password string `form:"password"`
@@ -38,6 +64,7 @@ type PublishActionReq struct {
 	Title string `form:"Title"`
 }
 
+<<<<<<< HEAD
 type Video struct {
 	Id            int64  `json:"id"`
 	Author        Author `json:"author"`
@@ -58,15 +85,33 @@ type Author struct {
 }
 
 type PublishListReq struct {
+=======
+type FavoriteActionReq struct {
+	Token      string `form:"token"`
+	VideoId    int64  `form:"video_id"`
+	ActionType int32  `form:"action_type"` // 1: favorite, 2: unfavorite
+}
+
+type FavoriteActionResp struct {
+	Resp
+}
+
+type FavoriteListReq struct {
+>>>>>>> feta_favorite
 	Token  string `form:"token"`
 	UserId int64  `form:"user_id"`
 }
 
+<<<<<<< HEAD
 type PublishListResp struct {
+=======
+type FovoriteListResp struct {
+>>>>>>> feta_favorite
 	Resp
 	VideoList []Video `json:"video_list"`
 }
 
+<<<<<<< HEAD
 type FeedReq struct {
 	Token      string `form:"token"`
 	LatestTime int64  `form:"latest_time"`
@@ -75,6 +120,29 @@ type FeedReq struct {
 type FeedResp struct {
 	Resp
 	VideoList []Video `json:"video_list"`
+=======
+type CommentActionReq struct {
+	Token       string `form:"token"`
+	VideoId     int64  `form:"video_id"`
+	ActionType  int32  `form:"action_type"`
+	CommentText string `form:"comment_text"`
+	CommentId   int64  `form:"comment_id"`
+}
+
+type CommentActionResp struct {
+	Resp
+	Comment
+}
+
+type CommentListReq struct {
+	Token   string `form:"token"`
+	VideoId int64  `form:"video_id"`
+}
+
+type CommentListResp struct {
+	Resp
+	CommentList []Comment `json:"comment_list"`
+>>>>>>> feta_favorite
 }
 
 type UserReq struct {

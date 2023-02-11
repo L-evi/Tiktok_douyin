@@ -31,3 +31,33 @@ func (s *VideoServer) Feed(ctx context.Context, in *video.FeedReq) (*video.FeedR
 	l := logic.NewFeedLogic(ctx, s.svcCtx)
 	return l.Feed(in)
 }
+
+func (s *VideoServer) CommentAction(ctx context.Context, in *video.CommentActionReq) (*video.CommentActionResp, error) {
+	l := logic.NewCommentActionLogic(ctx, s.svcCtx)
+	return l.CommentAction(in)
+}
+
+func (s *VideoServer) CommentList(ctx context.Context, in *video.CommentListReq) (*video.CommentListResp, error) {
+	l := logic.NewCommentListLogic(ctx, s.svcCtx)
+	return l.CommentList(in)
+}
+
+func (s *VideoServer) FavoriteAction(ctx context.Context, in *video.FavoriteActionReq) (*video.FavoriteActionResp, error) {
+	l := logic.NewFavoriteActionLogic(ctx, s.svcCtx)
+	return l.FavoriteAction(in)
+}
+
+func (s *VideoServer) FavoriteList(ctx context.Context, in *video.FavoriteListReq) (*video.FavoriteListResp, error) {
+	l := logic.NewFavoriteListLogic(ctx, s.svcCtx)
+	return l.FavoriteList(in)
+}
+
+func (s *VideoServer) FavoriteCount(ctx context.Context, in *video.FavoriteCountReq) (*video.FavoriteCountResp, error) {
+	l := logic.NewFavoriteCountLogic(ctx, s.svcCtx)
+	return l.FavoriteCount(in)
+}
+
+func (s *VideoServer) CommentCount(ctx context.Context, in *video.CommentCountReq) (*video.CommentCountResp, error) {
+	l := logic.NewCommentCountLogic(ctx, s.svcCtx)
+	return l.CommentCount(in)
+}
