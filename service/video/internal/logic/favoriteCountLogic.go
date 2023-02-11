@@ -29,6 +29,7 @@ func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.F
 	// connect to redis
 	rdb := l.svcCtx.Rdb
 	var ctx context.Context
+
 	// get favorite count
 	key := strconv.FormatInt(in.VideoId, 10) + "_favorite_count"
 	result, err := rdb.Get(ctx, key).Result()
@@ -36,20 +37,22 @@ func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.F
 		log.Printf("redis Get error: %v", err)
 		return &video.FavoriteCountResp{}, err
 	}
-	if result == "" {
-		return &video.FavoriteCountResp{
-			FavoriteCount: 0,
-		}, nil
-	} else {
+
+	if result != "" {
 		// get value
 		count, err := strconv.Atoi(result)
 		if err != nil {
 			log.Printf("string to int error: %v", err)
+
 			return &video.FavoriteCountResp{}, err
 		}
+
 		return &video.FavoriteCountResp{
 			FavoriteCount: int64(count),
 		}, nil
 	}
-	return &video.FavoriteCountResp{}, nil
+
+	return &video.FavoriteCountResp{
+		FavoriteCount: 0,
+	}, nil
 }

@@ -26,6 +26,8 @@ func NewCommentCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Comm
 
 func (l *CommentCountLogic) CommentCount(in *video.CommentCountReq) (*video.CommentCountResp, error) {
 	// get comment count
+	// TODO  to redis
+
 	var commentCount int64
 	if err := l.svcCtx.Db.Model(&models.Comment{}).
 		Where(&models.Comment{ID: in.VideoId}).

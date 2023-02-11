@@ -37,6 +37,7 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 			log.Printf("redis Get error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
+		
 		if result == "" {
 			// new key and set value
 			err = rdb.Set(ctx, key, 1, 0).Err()
@@ -78,5 +79,6 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 			return &video.FavoriteActionResp{}, err
 		}
 	}
+
 	return &video.FavoriteActionResp{}, nil
 }

@@ -36,6 +36,7 @@ func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.C
 			logx.Errorf("failed to create comment, err: %v", res.Error)
 			return &video.CommentActionResp{}, errorx.ErrSystemError
 		}
+
 		return &video.CommentActionResp{
 			Comment: &video.Comment{
 				Id:         Comment.ID,
@@ -50,7 +51,9 @@ func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.C
 			logx.Errorf("failed to delete comment, err: %v", res.Error)
 			return &video.CommentActionResp{}, errorx.ErrSystemError
 		}
+
 		return &video.CommentActionResp{}, nil
 	}
+	
 	return &video.CommentActionResp{}, nil
 }

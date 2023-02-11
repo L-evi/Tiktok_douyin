@@ -46,6 +46,7 @@ func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.Favo
 			return &video.FavoriteListResp{}, result.Error
 		}
 
+		// TODO
 		favoriteList = append(favoriteList, &video.FavoriteVideo{
 			Id:            myVideo.ID,
 			UserId:        myVideo.UserID,
