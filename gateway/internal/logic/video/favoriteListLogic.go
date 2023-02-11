@@ -2,7 +2,6 @@ package video
 
 import (
 	"context"
-	"log"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/service/user/types/user"
 	"train-tiktok/service/video/types/video"
@@ -20,6 +19,7 @@ type FavoriteListLogic struct {
 }
 
 func NewFavoriteListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FavoriteListLogic {
+
 	return &FavoriteListLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
@@ -34,7 +34,8 @@ func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteListReq) (resp *type
 	})
 	// consult failed
 	if err != nil {
-		log.Printf("get favorite list failed, err: %v", err)
+		logx.Errorf("get favorite list failed, err: %v", err)
+
 		return &types.FovoriteListResp{
 			Resp:      errx.HandleRpcErr(err),
 			VideoList: nil,
@@ -51,7 +52,8 @@ func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteListReq) (resp *type
 		})
 		// consult failed
 		if err != nil {
-			log.Printf("get user information failed: %v", err)
+			logx.Errorf("get user information failed: %v", err)
+
 			return &types.FovoriteListResp{
 				Resp:      errx.HandleRpcErr(err),
 				VideoList: nil,
@@ -72,10 +74,11 @@ func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteListReq) (resp *type
 			CoverUrl:      v.CoverUrl,
 			FavoriteCount: v.FavoriteCount,
 			CommentCount:  v.CommentCount,
-			IsForavite:    v.IsFavorite,
+			IsFavorite:    v.IsFavorite,
 			Title:         v.Title,
 		})
 	}
+
 	return &types.FovoriteListResp{
 		Resp:      errx.SUCCESS_RESP,
 		VideoList: videoList,

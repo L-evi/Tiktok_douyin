@@ -18,6 +18,7 @@ type FavoriteListLogic struct {
 }
 
 func NewFavoriteListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FavoriteListLogic {
+
 	return &FavoriteListLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -31,6 +32,7 @@ func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.Favo
 	res := l.svcCtx.Db.Where(&UserModels.UserFavorite{UserId: in.UserId}).Find(&userFavoriteList)
 	if res.Error != nil {
 		logx.Errorf("failed to get user favorite, err: %v", res.Error)
+
 		return &video.FavoriteListResp{}, res.Error
 	}
 
@@ -43,6 +45,7 @@ func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.Favo
 		result := l.svcCtx.Db.Where(&models.Video{ID: v.VideoId}).First(&myVideo)
 		if result.Error != nil {
 			logx.Errorf("failed to get video, err: %v", result.Error)
+
 			return &video.FavoriteListResp{}, result.Error
 		}
 
@@ -59,6 +62,7 @@ func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.Favo
 		})
 	}
 	// consult success
+
 	return &video.FavoriteListResp{
 		VideoList: favoriteList,
 	}, nil

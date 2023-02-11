@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"log"
 	"strconv"
 
 	"train-tiktok/service/video/internal/svc"
@@ -34,7 +33,7 @@ func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.F
 	key := strconv.FormatInt(in.VideoId, 10) + "_favorite_count"
 	result, err := rdb.Get(ctx, key).Result()
 	if err != nil {
-		log.Printf("redis Get error: %v", err)
+		logx.Errorf("redis Get error: %v", err)
 		return &video.FavoriteCountResp{}, err
 	}
 
@@ -42,7 +41,7 @@ func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.F
 		// get value
 		count, err := strconv.Atoi(result)
 		if err != nil {
-			log.Printf("string to int error: %v", err)
+			logx.Errorf("string to int error: %v", err)
 
 			return &video.FavoriteCountResp{}, err
 		}

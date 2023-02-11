@@ -18,6 +18,7 @@ type FavoriteActionLogic struct {
 }
 
 func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FavoriteActionLogic {
+
 	return &FavoriteActionLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
@@ -34,11 +35,13 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionReq) (resp
 	})
 	// consult failed
 	if err != nil {
+
 		return &types.FavoriteActionResp{
 			Resp: errx.HandleRpcErr(err),
 		}, nil
 	}
 	// consult success
+
 	return &types.FavoriteActionResp{
 		Resp: errx.SUCCESS_RESP,
 	}, nil

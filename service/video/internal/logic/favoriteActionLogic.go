@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"log"
 	"strconv"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
@@ -31,31 +30,31 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 	// favorite action
 	if in.ActionType == 1 {
 		// get favorite count
-		key := strconv.FormatInt(in.VideoId, 10) + "_favorite_count"
+		key := "tiktok:favorite:count:" + strconv.FormatInt(in.VideoId, 10)
 		result, err := rdb.Get(ctx, key).Result()
 		if err != nil {
-			log.Printf("redis Get error: %v", err)
+			logx.Errorf("redis Get error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
-		
+
 		if result == "" {
 			// new key and set value
 			err = rdb.Set(ctx, key, 1, 0).Err()
 			if err != nil {
-				log.Printf("redis Set error: %v", err)
+				logx.Errorf("redis Set error: %v", err)
 				return &video.FavoriteActionResp{}, err
 			}
 		} else {
 			// get value and add 1
 			count, err := strconv.Atoi(result)
 			if err != nil {
-				log.Printf("string to int error: %v", err)
+				logx.Errorf("string to int error: %v", err)
 				return &video.FavoriteActionResp{}, err
 			}
 			count++
 			err = rdb.Set(ctx, key, count, 0).Err()
 			if err != nil {
-				log.Printf("redis Set error: %v", err)
+				logx.Errorf("redis Set error: %v", err)
 				return &video.FavoriteActionResp{}, err
 			}
 		}
@@ -64,18 +63,18 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 		key := strconv.FormatInt(in.VideoId, 10) + "_favorite_count"
 		result, err := rdb.Get(ctx, key).Result()
 		if err != nil {
-			log.Printf("redis Get error: %v", err)
+			logx.Errorf("redis Get error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
 		count, err := strconv.Atoi(result)
 		if err != nil {
-			log.Printf("string to int error: %v", err)
+			logx.Errorf("string to int error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
 		count--
 		err = rdb.Set(ctx, key, count, 0).Err()
 		if err != nil {
-			log.Printf("redis Set error: %v", err)
+			logx.Errorf("redis Set error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
 	}

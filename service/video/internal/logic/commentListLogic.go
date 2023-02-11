@@ -17,6 +17,7 @@ type CommentListLogic struct {
 }
 
 func NewCommentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CommentListLogic {
+
 	return &CommentListLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -29,6 +30,7 @@ func (l *CommentListLogic) CommentList(in *video.CommentListReq) (*video.Comment
 	res := l.svcCtx.Db.Where(&video.Comment{Id: in.VideoId}).Find(&commentList)
 	if res.Error != nil {
 		logx.Errorf("get comment list failed: %v", res.Error)
+
 		return &video.CommentListResp{}, res.Error
 	}
 
@@ -41,6 +43,7 @@ func (l *CommentListLogic) CommentList(in *video.CommentListReq) (*video.Comment
 			CreateDate: v.CreateDate,
 		})
 	}
+
 	return &video.CommentListResp{
 		CommentList: list,
 	}, nil

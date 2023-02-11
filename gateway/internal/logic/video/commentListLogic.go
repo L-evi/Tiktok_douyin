@@ -2,8 +2,8 @@ package video
 
 import (
 	"context"
-	"log"
 	"train-tiktok/gateway/common/errx"
+
 	"train-tiktok/service/user/types/user"
 	"train-tiktok/service/video/types/video"
 
@@ -20,6 +20,7 @@ type CommentListLogic struct {
 }
 
 func NewCommentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CommentListLogic {
+
 	return &CommentListLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
@@ -34,7 +35,8 @@ func (l *CommentListLogic) CommentList(req *types.CommentListReq) (resp *types.C
 	})
 	// consult failed
 	if err != nil {
-		log.Printf("get comment list failed: %v", err)
+		logx.Errorf("get comment list failed: %v", err)
+
 		return &types.CommentListResp{
 			Resp: errx.HandleRpcErr(err),
 		}, nil
@@ -50,7 +52,8 @@ func (l *CommentListLogic) CommentList(req *types.CommentListReq) (resp *types.C
 		})
 		// consult failed
 		if err != nil {
-			log.Printf("get user information failed: %v", err)
+			logx.Errorf("get user information failed: %v", err)
+
 			return &types.CommentListResp{
 				Resp: errx.HandleRpcErr(err),
 			}, nil
@@ -67,6 +70,7 @@ func (l *CommentListLogic) CommentList(req *types.CommentListReq) (resp *types.C
 			CreateDate: v.CreateDate,
 		})
 	}
+
 	return &types.CommentListResp{
 		Resp:        errx.SUCCESS_RESP,
 		CommentList: commentList,

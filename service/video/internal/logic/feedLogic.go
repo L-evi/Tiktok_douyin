@@ -21,6 +21,7 @@ type FeedLogic struct {
 }
 
 func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
+
 	return &FeedLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,

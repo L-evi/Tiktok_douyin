@@ -19,6 +19,7 @@ type CommentActionLogic struct {
 }
 
 func NewCommentActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CommentActionLogic {
+
 	return &CommentActionLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
@@ -36,6 +37,7 @@ func (l *CommentActionLogic) CommentAction(req *types.CommentActionReq) (resp *t
 	})
 	// consult failed
 	if err != nil {
+
 		return &types.CommentActionResp{
 			Resp: errx.HandleRpcErr(err),
 		}, nil
@@ -48,11 +50,13 @@ func (l *CommentActionLogic) CommentAction(req *types.CommentActionReq) (resp *t
 	})
 	// failed to get user information
 	if err != nil {
+
 		return &types.CommentActionResp{
 			Resp: errx.HandleRpcErr(err),
 		}, nil
 	}
 	// consult success
+
 	return &types.CommentActionResp{
 		Resp: errx.SUCCESS_RESP,
 		Comment: types.Comment{

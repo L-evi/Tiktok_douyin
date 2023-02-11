@@ -27,6 +27,7 @@ type PublishActionLogic struct {
 }
 
 func NewPublishActionLogic(r *http.Request, ctx context.Context, svcCtx *svc.ServiceContext) *PublishActionLogic {
+
 	return &PublishActionLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
@@ -51,6 +52,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	err = l.r.ParseMultipartForm(150 << 20)
 	if err != nil {
 		logx.Errorf("parse form failed: %v", err)
+
 		return &SystemErrResp, nil
 	}
 
@@ -59,6 +61,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	var header *multipart.FileHeader
 	if file, header, err = l.r.FormFile("data"); err != nil {
 		logx.Errorf("get form data failed: %v", err)
+
 		return &SystemErrResp, nil
 	}
 	defer func(file multipart.File) {
@@ -68,16 +71,19 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	// 判断 文件目录是否存在
 	if tool.CheckPathOrCreate(_videoBaseDir) != nil {
 		logx.Errorf("mkdir %s failed: %v", _videoBaseDir, err)
+
 		return &SystemErrResp, nil
 	}
 	if tool.CheckPathOrCreate(_coverBaseDir) != nil {
 		logx.Errorf("mkdir %s failed: %v", _coverBaseDir, err)
+
 		return &SystemErrResp, nil
 	}
 
 	// 通过文件 filename 判断是否为视频
 	if !tool.IsVideo(header.Filename) {
 		logx.Infof("不支持的文件类型: %s", header.Filename)
+
 		return &types.Resp{
 			Code: 1,
 			Msg:  "不支持的文件类型",
@@ -87,6 +93,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	// 判断文件名是否存在安全风险
 	if tool.IsFilenameDangerous(header.Filename) {
 		logx.Infof("文件名存在安全风险: %s", header.Filename)
+
 		return &_fileTypNotSupport, nil
 	}
 
@@ -100,6 +107,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	_filenameMd5 := tool.Md5(header.Filename)
 	_fileExt := tool.GetFileExt(header.Filename)
 	if _fileExt == "" {
+
 		return &_fileTypNotSupport, nil
 	}
 	_fileTmpPath := fmt.Sprintf("%s/%d_%s_%s_%s.%s", _videoBaseDir, UserId, _filenameMd5, _titleMd5, _timeMd5, _fileExt)
@@ -108,6 +116,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	var f *os.File
 	if f, err = os.OpenFile(_fileTmpPath, os.O_WRONLY|os.O_CREATE, 0666); err != nil {
 		logx.Errorf("open file failed: %v", err)
+
 		return &SystemErrResp, nil
 	}
 	defer func(f *os.File) {
@@ -118,10 +127,12 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	var bufHead = make([]byte, 512)
 	if n, _ := file.Read(bufHead); n == 0 {
 		closeAndRemove(f, _fileTmpPath)
+
 		return &_fileTypNotSupport, nil
 	}
 	if !tool.IsVideoByHead(bufHead) {
 		closeAndRemove(f, _fileTmpPath)
+
 		return &_fileTypNotSupport, nil
 	}
 
@@ -129,6 +140,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	buf := make([]byte, 1<<20)
 	if _, err := f.Write(bufHead); err != nil {
 		closeAndRemove(f, _fileTmpPath)
+
 		return &SystemErrResp, nil
 	}
 	for {
@@ -138,6 +150,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 		}
 		if _, err := f.Write(buf[:n]); err != nil {
 			closeAndRemove(f, _fileTmpPath)
+
 			return &SystemErrResp, nil
 		}
 	}
@@ -146,6 +159,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	_coverPath := fmt.Sprintf("%s/%d_%s_%s_%s.jpg", _coverBaseDir, UserId, _filenameMd5, _titleMd5, _timeMd5)
 	if err := tool.GenerateVideoCover(_fileTmpPath, _coverPath); err != nil {
 		closeAndRemove(f, _fileTmpPath)
+
 		return &SystemErrResp, nil
 	}
 
@@ -158,6 +172,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	}); err != nil {
 		closeAndRemove(f, _fileTmpPath)
 		_ = os.Remove(_coverPath)
+
 		return &SystemErrResp, nil
 	}
 

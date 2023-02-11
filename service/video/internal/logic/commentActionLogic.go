@@ -17,6 +17,7 @@ type CommentActionLogic struct {
 }
 
 func NewCommentActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CommentActionLogic {
+
 	return &CommentActionLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -34,6 +35,7 @@ func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.C
 		}
 		if res := l.svcCtx.Db.Create(&Comment); res.Error != nil || res.RowsAffected == 0 {
 			logx.Errorf("failed to create comment, err: %v", res.Error)
+
 			return &video.CommentActionResp{}, errorx.ErrSystemError
 		}
 
@@ -49,11 +51,12 @@ func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.C
 		// delete comment
 		if res := l.svcCtx.Db.Delete(&models.Comment{}, in.CommentId); res.Error != nil || res.RowsAffected == 0 {
 			logx.Errorf("failed to delete comment, err: %v", res.Error)
+
 			return &video.CommentActionResp{}, errorx.ErrSystemError
 		}
 
 		return &video.CommentActionResp{}, nil
 	}
-	
+
 	return &video.CommentActionResp{}, nil
 }

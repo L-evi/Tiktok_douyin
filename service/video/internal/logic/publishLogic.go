@@ -18,6 +18,7 @@ type PublishLogic struct {
 }
 
 func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLogic {
+
 	return &PublishLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -40,6 +41,7 @@ func (l *PublishLogic) Publish(in *video.PublishReq) (*video.PublishResp, error)
 		Position: "local",
 	}).Error; err != nil {
 		logx.Errorf("insert video failed: %v", err)
+
 		return &video.PublishResp{
 			Success: false,
 		}, errorx.ErrDatabaseError
