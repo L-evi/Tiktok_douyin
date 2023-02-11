@@ -15,8 +15,8 @@ message publishReq {
   string cover_path = 3; // 封面目录
   string title = 5;
 }
-message publishResp{
-  Resp resp = 1;
+message publishResp {
+  bool success = 1;
 }
 
 message Video {

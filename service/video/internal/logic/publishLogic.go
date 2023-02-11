@@ -33,17 +33,19 @@ func (l *PublishLogic) Publish(in *video.PublishReq) (*video.PublishResp, error)
 
 	// insert to db
 	if err := l.svcCtx.Db.Model(&models.Video{}).Create(&models.Video{
-		UserID:        in.UserId,
-		Title:         in.Title,
-		PlayUrl:       in.CoverPath,
-		CoverUrl:      in.FilePath,
-		FavoriteCount: 0,
-		CommentCount:  0,
-		Position:      "local",
+		UserID:   in.UserId,
+		Title:    in.Title,
+		PlayUrl:  in.CoverPath,
+		CoverUrl: in.FilePath,
+		Position: "local",
 	}).Error; err != nil {
 		logx.Errorf("insert video failed: %v", err)
-		return &video.PublishResp{}, errorx.ErrDatabaseError
+		return &video.PublishResp{
+			Success: false,
+		}, errorx.ErrDatabaseError
 	}
 
-	return &video.PublishResp{}, nil
+	return &video.PublishResp{
+		Success: true,
+	}, nil
 }
