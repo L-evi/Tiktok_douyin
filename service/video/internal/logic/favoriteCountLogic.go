@@ -2,8 +2,9 @@ package logic
 
 import (
 	"context"
-	"strconv"
-
+	"errors"
+	"fmt"
+	"github.com/go-redis/redis/v8"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
 
@@ -27,31 +28,18 @@ func NewFavoriteCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fav
 func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.FavoriteCountResp, error) {
 	// connect to redis
 	rdb := l.svcCtx.Rdb
-	var ctx context.Context
 
 	// get favorite count
-	key := strconv.FormatInt(in.VideoId, 10) + "_favorite_count"
-	result, err := rdb.Get(ctx, key).Result()
-	if err != nil {
-		logx.Errorf("redis Get error: %v", err)
+	_redisKey := fmt.Sprintf("%s:favorite:count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
+
+	var err error
+	var result int64
+	if result, err = rdb.Get(l.ctx, _redisKey).Int64(); !errors.Is(err, redis.Nil) && err != nil {
+		logx.WithContext(l.ctx).Errorf("redis Get error: %v", err)
 		return &video.FavoriteCountResp{}, err
 	}
 
-	if result != "" {
-		// get value
-		count, err := strconv.Atoi(result)
-		if err != nil {
-			logx.Errorf("string to int error: %v", err)
-
-			return &video.FavoriteCountResp{}, err
-		}
-
-		return &video.FavoriteCountResp{
-			FavoriteCount: int64(count),
-		}, nil
-	}
-
 	return &video.FavoriteCountResp{
-		FavoriteCount: 0,
+		FavoriteCount: result,
 	}, nil
 }

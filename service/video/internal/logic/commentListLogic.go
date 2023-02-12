@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"time"
 	"train-tiktok/service/video/models"
 
 	"train-tiktok/service/video/internal/svc"
@@ -36,11 +37,12 @@ func (l *CommentListLogic) CommentList(in *video.CommentListReq) (*video.Comment
 
 	var list []*video.Comment
 	for _, v := range commentList {
+		CreateDate := time.Unix(v.CreateAt, 0).Format("01-02")
 		list = append(list, &video.Comment{
 			Id:         v.ID,
 			UserId:     v.UserID,
 			Content:    v.Content,
-			CreateDate: v.CreateDate,
+			CreateDate: CreateDate,
 		})
 	}
 

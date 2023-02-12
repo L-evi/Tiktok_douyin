@@ -92,7 +92,7 @@ type (
 )
 service gateway {
     @handler publishList
-    get /douyin/publish/list (publishListReq) returns (publishListResp) // TODO
+    get /douyin/publish/list (publishListReq) returns (publishListResp)
 
     @handler feed
     get /douyin/feed (feedReq) returns (feedResp)

@@ -2,7 +2,8 @@ package logic
 
 import (
 	"context"
-	"strconv"
+	"fmt"
+	"train-tiktok/common/errorx"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
 
@@ -26,57 +27,25 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*video.FavoriteActionResp, error) {
 	// connect to redis
 	rdb := l.svcCtx.Rdb
-	var ctx context.Context
-	// favorite action
-	if in.ActionType == 1 {
-		// get favorite count
-		key := "tiktok:favorite:count:" + strconv.FormatInt(in.VideoId, 10)
-		result, err := rdb.Get(ctx, key).Result()
-		if err != nil {
-			logx.Errorf("redis Get error: %v", err)
-			return &video.FavoriteActionResp{}, err
-		}
 
-		if result == "" {
-			// new key and set value
-			err = rdb.Set(ctx, key, 1, 0).Err()
-			if err != nil {
-				logx.Errorf("redis Set error: %v", err)
-				return &video.FavoriteActionResp{}, err
-			}
-		} else {
-			// get value and add 1
-			count, err := strconv.Atoi(result)
-			if err != nil {
-				logx.Errorf("string to int error: %v", err)
-				return &video.FavoriteActionResp{}, err
-			}
-			count++
-			err = rdb.Set(ctx, key, count, 0).Err()
-			if err != nil {
-				logx.Errorf("redis Set error: %v", err)
-				return &video.FavoriteActionResp{}, err
-			}
-		}
-	} else if in.ActionType == 2 {
-		// conceal favorite
-		key := strconv.FormatInt(in.VideoId, 10) + "_favorite_count"
-		result, err := rdb.Get(ctx, key).Result()
-		if err != nil {
-			logx.Errorf("redis Get error: %v", err)
+	_redisKey := fmt.Sprintf("%s:favorite:count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
+
+	// favorite action
+	switch in.ActionType {
+	case 1:
+		if _, err := rdb.Incr(l.ctx, _redisKey).Result(); err != nil {
+			logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
-		count, err := strconv.Atoi(result)
-		if err != nil {
-			logx.Errorf("string to int error: %v", err)
+		break
+	case 2:
+		if _, err := rdb.Decr(l.ctx, _redisKey).Result(); err != nil {
+			logx.WithContext(l.ctx).Errorf("redis Decr error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
-		count--
-		err = rdb.Set(ctx, key, count, 0).Err()
-		if err != nil {
-			logx.Errorf("redis Set error: %v", err)
-			return &video.FavoriteActionResp{}, err
-		}
+		break
+	default:
+		return &video.FavoriteActionResp{}, errorx.ErrSystemError
 	}
 
 	return &video.FavoriteActionResp{}, nil

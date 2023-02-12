@@ -54,21 +54,24 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 		return &user.UserResp{}, errorx.ErrDatabaseError
 	}
 
-	// check isFollowed
-
-	if err = l.svcCtx.Db.Model(&models.Follow{}).Where(&models.Follow{
-		UserId:   in.UserId,
-		TargetId: in.TargetId,
-	}).First(&models.Follow{}).Error; err == nil {
-		isFollowed = true
-	} else if errors.Is(err, gorm.ErrRecordNotFound) {
-		isFollowed = false
+	if in.TargetId != in.UserId {
+		// check isFollowed
+		if err = l.svcCtx.Db.Model(&models.Follow{}).Where(&models.Follow{
+			UserId:   in.UserId,
+			TargetId: in.TargetId,
+		}).First(&models.Follow{}).Error; err == nil {
+			isFollowed = true
+		} else if errors.Is(err, gorm.ErrRecordNotFound) {
+			isFollowed = false
+		} else {
+			logx.Errorf("failed to query isFollowed: %v", err)
+			return &user.UserResp{}, errorx.ErrDatabaseError
+		}
 	} else {
-		logx.Errorf("failed to query isFollowed: %v", err)
-		return &user.UserResp{}, errorx.ErrDatabaseError
+		isFollowed = false
 	}
 
-	// GetUsername From Identity
+	// Get Username From Identity
 	var rpcResp *identity.GetUserInfoResp
 	if rpcResp, err = l.svcCtx.IdentityRpc.GetUserInfo(l.ctx, &identity.GetUserInfoReq{
 		UserId: in.TargetId,
