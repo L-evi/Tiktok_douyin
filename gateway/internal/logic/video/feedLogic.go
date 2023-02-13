@@ -35,10 +35,22 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		}, nil
 	}
 
+	// how to know if user_id in context
+	var userId int64
+	var isLogin bool
+	if isLogin = l.ctx.Value("is_login").(bool); isLogin {
+		userId = l.ctx.Value("user_id").(int64)
+	}
+
 	var videoList []types.Video
 	videoList = make([]types.Video, 0, len(rpcResp.VideoList))
 	for _, v := range rpcResp.VideoList {
-		// TODO need get favorite and comment here
+		// TODO 点赞
+		isFavo := false
+		if isLogin {
+			favo, err := isFavorite(l.svcCtx, userId, v.Id)
+			// if
+		}
 		videoList = append(videoList, types.Video{
 			Id:            v.Id,
 			Title:         v.Title,
@@ -54,4 +66,9 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		Resp:      errx.SUCCESS_RESP,
 		VideoList: videoList,
 	}, nil
+}
+
+func isFavorite(c *svc.ServiceContext, userId int64, videoId int64) (bool, error) {
+	// c.UserRpc
+	return false, nil
 }

@@ -16,8 +16,9 @@ StorageBaseUrl:
   Cos: "-"
 Redis:
   Addr: 127.0.0.1:6379
-  Password:
-  DB: 1
+  Passwd:
+  Db: 1
   MinIdle: 5
   PoolSize: 100
   MaxLifeTime: 180
+  Prefix: tiktok

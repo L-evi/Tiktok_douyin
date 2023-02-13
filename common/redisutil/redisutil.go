@@ -6,14 +6,15 @@ import (
 	"log"
 )
 
-// type RedisConf
+// RedisConf struct
 type RedisConf struct {
 	Addr        string
-	Password    string
-	DB          int
+	Passwd      string
+	Db          int
 	MinIdle     int
 	PoolSize    int
 	MaxLifeTime int
+	Prefix      string
 }
 
 // New xx
@@ -21,8 +22,8 @@ type RedisConf struct {
 func New(conf RedisConf) *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:         conf.Addr,
-		Password:     conf.Password,
-		DB:           conf.DB,
+		Password:     conf.Passwd,
+		DB:           conf.Db,
 		MinIdleConns: conf.MinIdle,
 		MaxRetries:   3,
 		PoolSize:     conf.PoolSize,
