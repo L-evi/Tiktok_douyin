@@ -16,7 +16,7 @@ type AuthMiddleware struct {
 
 func NewAuthMiddleware(IdentityRpcConf zrpc.RpcClientConf) *AuthMiddleware {
 	_identityService := identityclient.NewIdentity(zrpc.MustNewClient(IdentityRpcConf))
-	logx.Info("identityRpc: ", _identityService)
+	// logx.Info("identityRpc: ", _identityService)
 
 	return &AuthMiddleware{
 		identityRpc: _identityService,

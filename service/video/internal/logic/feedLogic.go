@@ -52,9 +52,9 @@ func (l *FeedLogic) Feed(in *video.FeedReq) (*video.FeedResp, error) {
 
 	// 处理数据
 	// 获取 videos 内的最老 时间 并生成 videoList
-	var videoList []*video.Video
+	var videoList []*video.FeedVideo
 	var nextTime = lastTime
-	videoList = make([]*video.Video, 0, len(videos))
+	videoList = make([]*video.FeedVideo, 0, len(videos))
 
 	for _, v := range videos {
 		if v.CreateAt < nextTime {
@@ -71,7 +71,7 @@ func (l *FeedLogic) Feed(in *video.FeedReq) (*video.FeedResp, error) {
 		}
 
 		// insert videoList
-		videoList = append(videoList, &video.Video{
+		videoList = append(videoList, &video.FeedVideo{
 			Id:       v.ID,
 			UserId:   v.UserID,
 			PlayUrl:  v.PlayUrl,

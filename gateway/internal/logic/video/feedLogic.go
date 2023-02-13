@@ -79,6 +79,7 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 			IsFavorite:    isFavor,
 		})
 	}
+	logx.WithContext(l.ctx).Infof("videoList: %v", videoList)
 
 	return &types.FeedResp{
 		Resp:      errx.SUCCESS_RESP,
