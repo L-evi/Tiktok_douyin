@@ -29,6 +29,8 @@ type (
 	FavoriteVideo      = video.FavoriteVideo
 	FeedReq            = video.FeedReq
 	FeedResp           = video.FeedResp
+	IsFavoriteReq      = video.IsFavoriteReq
+	IsFavoriteResp     = video.IsFavoriteResp
 	PublishReq         = video.PublishReq
 	PublishResp        = video.PublishResp
 	Resp               = video.Resp
@@ -43,6 +45,7 @@ type (
 		FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error)
 		FavoriteCount(ctx context.Context, in *FavoriteCountReq, opts ...grpc.CallOption) (*FavoriteCountResp, error)
 		CommentCount(ctx context.Context, in *CommentCountReq, opts ...grpc.CallOption) (*CommentCountResp, error)
+		IsFavorite(ctx context.Context, in *IsFavoriteReq, opts ...grpc.CallOption) (*IsFavoriteResp, error)
 	}
 
 	defaultVideo struct {
@@ -94,4 +97,9 @@ func (m *defaultVideo) FavoriteCount(ctx context.Context, in *FavoriteCountReq, 
 func (m *defaultVideo) CommentCount(ctx context.Context, in *CommentCountReq, opts ...grpc.CallOption) (*CommentCountResp, error) {
 	client := video.NewVideoClient(m.cli.Conn())
 	return client.CommentCount(ctx, in, opts...)
+}
+
+func (m *defaultVideo) IsFavorite(ctx context.Context, in *IsFavoriteReq, opts ...grpc.CallOption) (*IsFavoriteResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.IsFavorite(ctx, in, opts...)
 }

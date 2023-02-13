@@ -112,6 +112,15 @@ message commentCountResp {
   int64 comment_count = 2; // 评论总数
 }
 
+// comment count
+message isFavoriteReq {
+  int64 video_id = 1; // 视频id
+  int64 user_id = 2; // 用户 ID
+}
+message isFavoriteResp {
+  bool is_favorite = 1; // true-已点赞，false-未点赞
+}
+
 service video {
   rpc publish(publishReq) returns (publishResp);
   rpc feed(feedReq) returns (feedResp);
@@ -121,4 +130,5 @@ service video {
   rpc favoriteList(favoriteListReq) returns (favoriteListResp);
   rpc favoriteCount(favoriteCountReq) returns (favoriteCountResp);
   rpc commentCount(commentCountReq) returns (commentCountResp);
+  rpc isFavorite(isFavoriteReq) returns (isFavoriteResp);
 }

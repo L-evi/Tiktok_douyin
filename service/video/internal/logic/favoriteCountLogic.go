@@ -30,7 +30,7 @@ func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.F
 	rdb := l.svcCtx.Rdb
 
 	// get favorite count
-	_redisKey := fmt.Sprintf("%s:favorite:count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
+	_redisKey := fmt.Sprintf("%s:favorite_count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
 
 	var err error
 	var result int64

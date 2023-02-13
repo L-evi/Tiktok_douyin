@@ -61,3 +61,8 @@ func (s *VideoServer) CommentCount(ctx context.Context, in *video.CommentCountRe
 	l := logic.NewCommentCountLogic(ctx, s.svcCtx)
 	return l.CommentCount(in)
 }
+
+func (s *VideoServer) IsFavorite(ctx context.Context, in *video.IsFavoriteReq) (*video.IsFavoriteResp, error) {
+	l := logic.NewIsFavoriteLogic(ctx, s.svcCtx)
+	return l.IsFavorite(in)
+}

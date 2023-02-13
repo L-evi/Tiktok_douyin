@@ -30,6 +30,7 @@ type VideoClient interface {
 	FavoriteList(ctx context.Context, in *FavoriteListReq, opts ...grpc.CallOption) (*FavoriteListResp, error)
 	FavoriteCount(ctx context.Context, in *FavoriteCountReq, opts ...grpc.CallOption) (*FavoriteCountResp, error)
 	CommentCount(ctx context.Context, in *CommentCountReq, opts ...grpc.CallOption) (*CommentCountResp, error)
+	IsFavorite(ctx context.Context, in *IsFavoriteReq, opts ...grpc.CallOption) (*IsFavoriteResp, error)
 }
 
 type videoClient struct {
@@ -112,6 +113,15 @@ func (c *videoClient) CommentCount(ctx context.Context, in *CommentCountReq, opt
 	return out, nil
 }
 
+func (c *videoClient) IsFavorite(ctx context.Context, in *IsFavoriteReq, opts ...grpc.CallOption) (*IsFavoriteResp, error) {
+	out := new(IsFavoriteResp)
+	err := c.cc.Invoke(ctx, "/video.video/isFavorite", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VideoServer is the server API for Video service.
 // All implementations must embed UnimplementedVideoServer
 // for forward compatibility
@@ -124,6 +134,7 @@ type VideoServer interface {
 	FavoriteList(context.Context, *FavoriteListReq) (*FavoriteListResp, error)
 	FavoriteCount(context.Context, *FavoriteCountReq) (*FavoriteCountResp, error)
 	CommentCount(context.Context, *CommentCountReq) (*CommentCountResp, error)
+	IsFavorite(context.Context, *IsFavoriteReq) (*IsFavoriteResp, error)
 	mustEmbedUnimplementedVideoServer()
 }
 
@@ -154,6 +165,9 @@ func (UnimplementedVideoServer) FavoriteCount(context.Context, *FavoriteCountReq
 }
 func (UnimplementedVideoServer) CommentCount(context.Context, *CommentCountReq) (*CommentCountResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommentCount not implemented")
+}
+func (UnimplementedVideoServer) IsFavorite(context.Context, *IsFavoriteReq) (*IsFavoriteResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsFavorite not implemented")
 }
 func (UnimplementedVideoServer) mustEmbedUnimplementedVideoServer() {}
 
@@ -312,6 +326,24 @@ func _Video_CommentCount_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Video_IsFavorite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsFavoriteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServer).IsFavorite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.video/isFavorite",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServer).IsFavorite(ctx, req.(*IsFavoriteReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Video_ServiceDesc is the grpc.ServiceDesc for Video service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -350,6 +382,10 @@ var Video_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "commentCount",
 			Handler:    _Video_CommentCount_Handler,
+		},
+		{
+			MethodName: "isFavorite",
+			Handler:    _Video_IsFavorite_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
