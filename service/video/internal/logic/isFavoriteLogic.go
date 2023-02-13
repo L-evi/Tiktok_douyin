@@ -28,6 +28,11 @@ func NewIsFavoriteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IsFavo
 
 func (l *IsFavoriteLogic) IsFavorite(in *video.IsFavoriteReq) (*video.IsFavoriteResp, error) {
 	rdb := l.svcCtx.Rdb
+	if in.UserId == 0 || in.VideoId == 0 {
+		return &video.IsFavoriteResp{
+			IsFavorite: false,
+		}, nil
+	}
 
 	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.RedisConf.Prefix, in.UserId)
 	videoIdStr := strconv.FormatInt(in.VideoId, 10)
