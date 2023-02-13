@@ -26,5 +26,5 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.PublishListResp, err error) {
 	// todo: add your logic here and delete this line
 
-	return
+	return &types.PublishListResp{}, nil
 }
