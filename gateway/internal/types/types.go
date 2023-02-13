@@ -61,7 +61,7 @@ type RegisterResp struct {
 
 type PublishActionReq struct {
 	Token string `form:"token"`
-	Title string `form:"Title"`
+	Title string `form:"title"`
 }
 
 type FavoriteActionReq struct {
@@ -119,7 +119,7 @@ type PublishListResp struct {
 
 type FeedReq struct {
 	Token      string `form:"token"`
-	LatestTime int64  `form:"latest_time"`
+	LatestTime int64  `form:"latest_time,optional"`
 }
 
 type FeedResp struct {

@@ -11,14 +11,18 @@ import (
 
 func PublishActionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.PublishReq
+		var req types.PublishActionReq
+		if err := httpx.Parse(r, &req); err != nil {
+			httpx.ErrorCtx(r.Context(), w, err)
+			return
+		}
 
 		l := video.NewPublishActionLogic(r, r.Context(), svcCtx)
 		resp, err := l.PublishAction(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.OkJson(w, resp)
+			httpx.OkJsonCtx(r.Context(), w, resp)
 		}
 	}
 }

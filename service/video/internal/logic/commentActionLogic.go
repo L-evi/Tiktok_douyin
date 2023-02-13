@@ -32,7 +32,7 @@ func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.C
 	rdb := l.svcCtx.Rdb
 
 	// get comment count from redis
-	_redisKey := fmt.Sprintf("%s:comment_count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
+	_redisKey := fmt.Sprintf("%s:comment_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)
 
 	if in.ActionType == 1 {
 		// add comment

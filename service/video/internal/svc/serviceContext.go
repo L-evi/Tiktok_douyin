@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 	"log"
@@ -37,29 +37,30 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err := _db.AutoMigrate(models.Video{}); err != nil {
 		log.Panicf("failed to autoMigrate: %v", err)
 	}
+	if err := _db.AutoMigrate(models.Comment{}); err != nil {
+		log.Panicf("failed to autoMigrate: %v", err)
+	}
 
 	// 读取 LocalBaseUrl
 	if local, ok := os.LookupEnv("STORAGE_BASE_URL_LOCAL"); ok {
 		c.StorageBaseUrl.Local = local
 	}
-	if err := _db.AutoMigrate(models.Comment{}); err != nil {
-		log.Panicf("failed to autoMigrate: %v", err)
-	}
 
 	// redis
 	if rdbAddr, ok := os.LookupEnv("REDIS_ADDR"); ok {
-		c.Redis.Addr = rdbAddr
+		c.RedisConf.Addr = rdbAddr
 	}
 	if rdbPwd, ok := os.LookupEnv("REDIS_PASSWD"); ok {
-		c.Redis.Passwd = rdbPwd
+		c.RedisConf.Passwd = rdbPwd
 	}
 	if rdbDb, ok := os.LookupEnv("REDIS_DB"); ok {
-		c.Redis.Addr = rdbDb
+		c.RedisConf.Addr = rdbDb
 	}
 	if rdbPrefix, ok := os.LookupEnv("REDIS_PREFIX"); ok {
-		c.Redis.Prefix = rdbPrefix
+		c.RedisConf.Prefix = rdbPrefix
 	}
-	_rdb := redisutil.New(c.Redis)
+
+	_rdb := redisutil.New(c.RedisConf)
 
 	return &ServiceContext{
 		Config: c,

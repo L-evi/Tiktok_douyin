@@ -3,7 +3,9 @@ package logic
 import (
 	"context"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
+	"strings"
 	"time"
 	"train-tiktok/service/video/common/errx"
 	"train-tiktok/service/video/models"
@@ -52,9 +54,9 @@ func (l *FeedLogic) Feed(in *video.FeedReq) (*video.FeedResp, error) {
 
 	// 处理数据
 	// 获取 videos 内的最老 时间 并生成 videoList
-	var videoList []*video.Video
+	var videoList []*video.FeedVideo
 	var nextTime = lastTime
-	videoList = make([]*video.Video, 0, len(videos))
+	videoList = make([]*video.FeedVideo, 0, len(videos))
 
 	for _, v := range videos {
 		if v.CreateAt < nextTime {
@@ -64,14 +66,15 @@ func (l *FeedLogic) Feed(in *video.FeedReq) (*video.FeedResp, error) {
 		position := v.Position // 视频 存储节点  cos or  local
 		switch position {
 		case "local":
-			v.PlayUrl = l.svcCtx.StorageBaseUrl.Local + v.PlayUrl
+			v.PlayUrl = getFullPlayUrl(l.svcCtx, position, v.PlayUrl)
+			v.CoverUrl = getFullCoverUrl(l.svcCtx, position, v.CoverUrl)
 			break
 		default:
 			break
 		}
 
 		// insert videoList
-		videoList = append(videoList, &video.Video{
+		videoList = append(videoList, &video.FeedVideo{
 			Id:       v.ID,
 			UserId:   v.UserID,
 			PlayUrl:  v.PlayUrl,
@@ -84,4 +87,28 @@ func (l *FeedLogic) Feed(in *video.FeedReq) (*video.FeedResp, error) {
 		NextTime:  &nextTime,
 		VideoList: videoList,
 	}, nil
+}
+
+func getFullPlayUrl(svcCtx *svc.ServiceContext, position, playUrl string) string {
+	if strings.HasPrefix(playUrl, "http") {
+		return playUrl
+	}
+	switch position {
+	case "local":
+		return fmt.Sprintf("%s/%s", svcCtx.StorageBaseUrl.Local, playUrl)
+	default:
+		return playUrl
+	}
+}
+
+func getFullCoverUrl(svcCtx *svc.ServiceContext, position, coverUrl string) string {
+	if strings.HasPrefix(coverUrl, "http") {
+		return coverUrl
+	}
+	switch position {
+	case "local":
+		return fmt.Sprintf("%s/%s", svcCtx.StorageBaseUrl.Local, coverUrl)
+	default:
+		return coverUrl
+	}
 }

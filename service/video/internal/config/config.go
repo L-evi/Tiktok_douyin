@@ -10,7 +10,7 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
-	Redis           redisutil.RedisConf
+	RedisConf       redisutil.RedisConf
 	IdentityRpcConf zrpc.RpcClientConf
 	StorageBaseUrl  StorageStruct
 }

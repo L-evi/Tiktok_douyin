@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
 
@@ -30,7 +30,7 @@ func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.F
 	rdb := l.svcCtx.Rdb
 
 	// get favorite count
-	_redisKey := fmt.Sprintf("%s:favorite_count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
+	_redisKey := fmt.Sprintf("%s:favorite_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)
 
 	var err error
 	var result int64

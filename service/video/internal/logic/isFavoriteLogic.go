@@ -4,9 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"strconv"
-
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
 
@@ -30,7 +29,7 @@ func NewIsFavoriteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IsFavo
 func (l *IsFavoriteLogic) IsFavorite(in *video.IsFavoriteReq) (*video.IsFavoriteResp, error) {
 	rdb := l.svcCtx.Rdb
 
-	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.Redis.Prefix, in.UserId)
+	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.RedisConf.Prefix, in.UserId)
 	videoIdStr := strconv.FormatInt(in.VideoId, 10)
 
 	var err error
