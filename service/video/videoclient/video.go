@@ -26,15 +26,14 @@ type (
 	FavoriteCountResp  = video.FavoriteCountResp
 	FavoriteListReq    = video.FavoriteListReq
 	FavoriteListResp   = video.FavoriteListResp
-	FavoriteVideo      = video.FavoriteVideo
 	FeedReq            = video.FeedReq
 	FeedResp           = video.FeedResp
-	FeedVideo          = video.FeedVideo
 	IsFavoriteReq      = video.IsFavoriteReq
 	IsFavoriteResp     = video.IsFavoriteResp
 	PublishReq         = video.PublishReq
 	PublishResp        = video.PublishResp
 	Resp               = video.Resp
+	VideoX             = video.VideoX
 
 	Video interface {
 		Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error)

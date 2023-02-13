@@ -3,7 +3,9 @@ package logic
 import (
 	"context"
 	"fmt"
+	"github.com/redis/go-redis/v9"
 	"strconv"
+	"time"
 	"train-tiktok/common/errorx"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
@@ -36,6 +38,7 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 
 	videoIdStr := strconv.FormatInt(in.VideoId, 10)
 
+	timeNow := time.Now().Unix()
 	// favorite action
 	switch in.ActionType {
 	case 1:
@@ -44,7 +47,10 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 			logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
-		if _, err := pipe.HSet(l.ctx, _userKey, videoIdStr, 1).Result(); err != nil {
+		if _, err := pipe.ZAdd(l.ctx, _userKey, redis.Z{
+			Score:  float64(timeNow),
+			Member: videoIdStr,
+		}).Result(); err != nil {
 			logx.WithContext(l.ctx).Errorf("redis HSet error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
@@ -59,7 +65,7 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 			logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
-		if _, err := pipe.HDel(l.ctx, _userKey, videoIdStr).Result(); err != nil {
+		if _, err := pipe.ZRem(l.ctx, _userKey, videoIdStr).Result(); err != nil {
 			logx.WithContext(l.ctx).Errorf("redis HSet error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
