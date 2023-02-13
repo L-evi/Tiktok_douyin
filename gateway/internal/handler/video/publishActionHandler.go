@@ -11,7 +11,7 @@ import (
 
 func PublishActionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.PublishReq
+		var req types.PublishActionReq
 
 		l := video.NewPublishActionLogic(r, r.Context(), svcCtx)
 		resp, err := l.PublishAction(&req)
