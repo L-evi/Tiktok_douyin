@@ -38,8 +38,8 @@ func (l *IsFavoriteLogic) IsFavorite(in *video.IsFavoriteReq) (*video.IsFavorite
 	videoIdStr := strconv.FormatInt(in.VideoId, 10)
 
 	var err error
-	var isFavorite bool
-	if isFavorite, err = rdb.HExists(l.ctx, _userKey, videoIdStr).Result(); errors.Is(err, redis.Nil) {
+	var isFavorite float64
+	if isFavorite, err = rdb.ZScore(l.ctx, _userKey, videoIdStr).Result(); errors.Is(err, redis.Nil) {
 		return &video.IsFavoriteResp{
 			IsFavorite: false,
 		}, nil
@@ -49,6 +49,6 @@ func (l *IsFavoriteLogic) IsFavorite(in *video.IsFavoriteReq) (*video.IsFavorite
 	}
 
 	return &video.IsFavoriteResp{
-		IsFavorite: isFavorite,
+		IsFavorite: isFavorite > 0,
 	}, nil
 }
