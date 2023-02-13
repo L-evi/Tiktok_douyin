@@ -7,6 +7,7 @@ import (
 	"os"
 	"train-tiktok/gateway/internal/config"
 	"train-tiktok/gateway/internal/middleware"
+	"train-tiktok/service/chat/types/chat"
 	"train-tiktok/service/identity/identityclient"
 	"train-tiktok/service/identity/types/identity"
 	"train-tiktok/service/user/types/user"
@@ -23,6 +24,7 @@ type ServiceContext struct {
 	Auth        rest.Middleware
 	AuthPass    rest.Middleware
 	PublicPath  string
+	ChatRpc     chat.ChatClient
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

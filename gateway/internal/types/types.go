@@ -37,6 +37,14 @@ type Comment struct {
 	CreateDate string `json:"create_date"`
 }
 
+type Message struct {
+	Id         int64  `json:"id"`
+	FromUserId int64  `json:"from_user_id"`
+	Content    string `json:"content"`
+	CreateTime string `json:"create_time"`
+	ToUserId   int64  `json:"to_user_id"`
+}
+
 type LoginReq struct {
 	Username string `form:"username"`
 	Password string `form:"password"`
@@ -137,4 +145,25 @@ type UserResp struct {
 	FollowCount   int64 `json:"follow_count"`
 	FollowerCount int64 `json:"follower_count"`
 	IsFollow      bool  `json:"is_follow"`
+}
+
+type ChatActionReq struct {
+	Token      string `json:"token"`
+	ToUserId   int64  `json:"to_user_id"`
+	ActionType int32  `json:"action_type"`
+	Content    string `json:"content"`
+}
+
+type ChatActionResp struct {
+	Resp
+}
+
+type ChatMessageReq struct {
+	Token    string `json:"token"`
+	ToUserId int64  `json:"to_user_id"`
+}
+
+type ChatMessageResp struct {
+	Resp
+	MessageList []Message `json:"message_list"`
 }

@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	chat "train-tiktok/gateway/internal/handler/chat"
 	gateway "train-tiktok/gateway/internal/handler/gateway"
 	identity "train-tiktok/gateway/internal/handler/identity"
 	user "train-tiktok/gateway/internal/handler/user"
@@ -98,6 +99,24 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/douyin/user",
 					Handler: user.UserHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Auth},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/douyin/message/action",
+					Handler: chat.ChatActionHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/message/chat",
+					Handler: chat.ChatMessageHandler(serverCtx),
 				},
 			}...,
 		),

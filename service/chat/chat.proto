@@ -1,0 +1,43 @@
+syntax = "proto3";
+package chat;
+
+option go_package = "./chat";
+
+message Resp {
+  int32 status_code = 1;
+  string status_msg = 2;
+}
+
+message chatActionReq {
+  int64 from_user_id = 1;
+  int64 to_user_id = 2;
+  int32 action_type = 3;
+  string content = 4;
+}
+
+message charActionResp {
+  Resp resp = 1;
+}
+
+message chatMessageReq {
+  int64 to_user_id = 1;
+  int64 from_user_id = 2;
+}
+
+message chatMessageResp {
+  Resp resp = 1;
+  repeated Message message_list = 2;
+}
+
+message Message {
+  int64 id = 1;
+  int64 to_user_id = 2;
+  int64 from_user_id = 3;
+  string content = 4;
+  int64 create_time = 5;
+}
+
+service chat {
+  rpc chatAction(chatActionReq) returns (charActionResp);
+  rpc chatMessage(chatMessageReq) returns (chatMessageResp);
+}
