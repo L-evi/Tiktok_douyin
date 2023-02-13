@@ -2,8 +2,9 @@ package video
 
 import (
 	"context"
+	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/common/errx"
-	"train-tiktok/service/user/types/user"
+	"train-tiktok/gateway/common/tool/rpcutil"
 	"train-tiktok/service/video/types/video"
 
 	"train-tiktok/gateway/internal/svc"
@@ -29,11 +30,16 @@ func NewFavoriteListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Favo
 
 func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteListReq) (resp *types.FovoriteListResp, err error) {
 	// sent to rpc to consult
-	rpcResp, err := l.svcCtx.VideoRpc.FavoriteList(l.ctx, &video.FavoriteListReq{
+	var userId int64
+	var isLogin bool
+	if isLogin = l.ctx.Value("is_login").(bool); isLogin {
+		userId = l.ctx.Value("user_id").(int64)
+	}
+
+	var rpcResp *video.FavoriteListResp
+	if rpcResp, err = l.svcCtx.VideoRpc.FavoriteList(l.ctx, &video.FavoriteListReq{
 		UserId: req.UserId,
-	})
-	// consult failed
-	if err != nil {
+	}); err != nil {
 		logx.Errorf("get favorite list failed, err: %v", err)
 
 		return &types.FovoriteListResp{
@@ -41,40 +47,55 @@ func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteListReq) (resp *type
 			VideoList: nil,
 		}, nil
 	}
+
 	// consult success
 	var videoList []types.Video
 	for _, v := range rpcResp.VideoList {
-		var userId = v.UserId
-		// get author info from user-rpc-service
-		userRpcResp, err := l.svcCtx.UserRpc.User(l.ctx, &user.UserReq{
-			UserId:   l.ctx.Value("user_id").(int64),
-			TargetId: userId,
-		})
-		// consult failed
-		if err != nil {
-			logx.Errorf("get user information failed: %v", err)
+		// 点赞
+		var isFavor = false
+		var CommentCount int64
+		var FavoriteCount int64
 
-			return &types.FovoriteListResp{
-				Resp:      errx.HandleRpcErr(err),
-				VideoList: nil,
-			}, nil
+		if isLogin {
+			if favorite, err := rpcutil.IsFavorite(l.svcCtx, l.ctx, userId, v.Id); err != nil {
+				return &types.FovoriteListResp{}, errorx.ErrSystemError
+			} else {
+				isFavor = favorite
+			}
 		}
-		// consult success
-		var author = types.User{
-			Id:            userId,
-			Name:          userRpcResp.Name,
-			FollowCount:   *userRpcResp.FollowCount,
-			FollowerCount: *userRpcResp.FollowerCount,
-			IsFollow:      userRpcResp.IsFollow,
+		if favorCount, err := rpcutil.GetFavoriteCount(l.svcCtx, l.ctx, v.Id); err != nil {
+			return &types.FovoriteListResp{}, errorx.ErrSystemError
+		} else {
+			FavoriteCount = favorCount
 		}
+		if _commentCount, err := rpcutil.GetCommentCount(l.svcCtx, l.ctx, v.Id); err != nil {
+			return &types.FovoriteListResp{}, errorx.ErrSystemError
+		} else {
+			CommentCount = _commentCount
+		}
+		// getUserInfo
+		var userInfo types.User
+		if !isLogin {
+			userId = v.UserId
+		}
+		if userInfo, err = rpcutil.GetUserInfo(l.svcCtx, l.ctx, userId, v.UserId); err != nil {
+			return &types.FovoriteListResp{}, errorx.ErrSystemError
+		}
+
 		videoList = append(videoList, types.Video{
-			Id:            v.Id,
-			Author:        author,
+			Id: v.Id,
+			Author: types.User{
+				Id:            userId,
+				Name:          userInfo.Name,
+				FollowCount:   userInfo.FollowCount,
+				FollowerCount: userInfo.FollowerCount,
+				IsFollow:      userInfo.IsFollow,
+			},
 			PlayUrl:       v.PlayUrl,
 			CoverUrl:      v.CoverUrl,
-			FavoriteCount: v.FavoriteCount,
-			CommentCount:  v.CommentCount,
-			IsFavorite:    v.IsFavorite,
+			FavoriteCount: FavoriteCount,
+			CommentCount:  CommentCount,
+			IsFavorite:    isFavor,
 			Title:         v.Title,
 		})
 	}

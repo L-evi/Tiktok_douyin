@@ -1,7 +1,7 @@
 package models
 
 // UserFavorite 用户点赞视频列表
-type UserFavorite struct {
+type _UserFavorite struct {
 	ID       int64 `gorm:"primary_key;auto_increment" json:"id"`
 	UserId   int64
 	VideoId  int64

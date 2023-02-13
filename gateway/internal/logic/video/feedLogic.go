@@ -4,7 +4,7 @@ import (
 	"context"
 	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/common/errx"
-	"train-tiktok/service/user/types/user"
+	"train-tiktok/gateway/common/tool/rpcutil"
 	"train-tiktok/service/video/types/video"
 
 	"train-tiktok/gateway/internal/svc"
@@ -50,18 +50,18 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		var FavoriteCount int64
 
 		if isLogin {
-			if favorite, err := isFavorite(l.svcCtx, l.ctx, userId, v.Id); err != nil {
+			if favorite, err := rpcutil.IsFavorite(l.svcCtx, l.ctx, userId, v.Id); err != nil {
 				return &types.FeedResp{}, errorx.ErrSystemError
 			} else {
 				isFavor = favorite
 			}
 		}
-		if favorCount, err := getFavoriteCount(l.svcCtx, l.ctx, v.Id); err != nil {
+		if favorCount, err := rpcutil.GetFavoriteCount(l.svcCtx, l.ctx, v.Id); err != nil {
 			return &types.FeedResp{}, errorx.ErrSystemError
 		} else {
 			FavoriteCount = favorCount
 		}
-		if _commentCount, err := getCommentCount(l.svcCtx, l.ctx, v.Id); err != nil {
+		if _commentCount, err := rpcutil.GetCommentCount(l.svcCtx, l.ctx, v.Id); err != nil {
 			return &types.FeedResp{}, errorx.ErrSystemError
 		} else {
 			CommentCount = _commentCount
@@ -71,7 +71,7 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		if !isLogin {
 			userId = v.UserId
 		}
-		if userInfo, err = getUserInfo(l.svcCtx, l.ctx, userId, v.UserId); err != nil {
+		if userInfo, err = rpcutil.GetUserInfo(l.svcCtx, l.ctx, userId, v.UserId); err != nil {
 			return &types.FeedResp{}, errorx.ErrSystemError
 		}
 
@@ -91,58 +91,5 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	return &types.FeedResp{
 		Resp:      errx.SUCCESS_RESP,
 		VideoList: videoList,
-	}, nil
-}
-
-func isFavorite(c *svc.ServiceContext, ctx context.Context, userId int64, videoId int64) (bool, error) {
-	var err error
-	var resp *video.IsFavoriteResp
-	if resp, err = c.VideoRpc.IsFavorite(ctx, &video.IsFavoriteReq{
-		UserId:  userId,
-		VideoId: videoId,
-	}); err != nil {
-		return false, err
-	}
-	return resp.IsFavorite, nil
-}
-
-func getFavoriteCount(c *svc.ServiceContext, ctx context.Context, videoId int64) (int64, error) {
-	var err error
-	var resp *video.FavoriteCountResp
-	if resp, err = c.VideoRpc.FavoriteCount(ctx, &video.FavoriteCountReq{
-		VideoId: videoId,
-	}); err != nil {
-		return 0, err
-	}
-	return resp.FavoriteCount, nil
-}
-
-func getCommentCount(c *svc.ServiceContext, ctx context.Context, videoId int64) (int64, error) {
-	var err error
-	var resp *video.CommentCountResp
-	if resp, err = c.VideoRpc.CommentCount(ctx, &video.CommentCountReq{
-		VideoId: videoId,
-	}); err != nil {
-		return 0, err
-	}
-	return resp.CommentCount, nil
-}
-
-func getUserInfo(c *svc.ServiceContext, ctx context.Context, userId int64, targetId int64) (types.User, error) {
-	var err error
-	var resp *user.UserResp
-	if resp, err = c.UserRpc.User(ctx, &user.UserReq{
-		UserId:   userId,
-		TargetId: targetId,
-	}); err != nil {
-		return types.User{}, err
-	}
-
-	return types.User{
-		Id:            targetId,
-		Name:          resp.Name,
-		FollowCount:   *resp.FollowCount,
-		FollowerCount: *resp.FollowerCount,
-		IsFollow:      resp.IsFollow,
 	}, nil
 }
