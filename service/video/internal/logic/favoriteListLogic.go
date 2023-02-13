@@ -18,7 +18,6 @@ type FavoriteListLogic struct {
 }
 
 func NewFavoriteListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FavoriteListLogic {
-
 	return &FavoriteListLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,

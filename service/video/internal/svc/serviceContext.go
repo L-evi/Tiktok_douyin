@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 	"log"
@@ -37,13 +37,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err := _db.AutoMigrate(models.Video{}); err != nil {
 		log.Panicf("failed to autoMigrate: %v", err)
 	}
+	if err := _db.AutoMigrate(models.Comment{}); err != nil {
+		log.Panicf("failed to autoMigrate: %v", err)
+	}
 
 	// 读取 LocalBaseUrl
 	if local, ok := os.LookupEnv("STORAGE_BASE_URL_LOCAL"); ok {
 		c.StorageBaseUrl.Local = local
-	}
-	if err := _db.AutoMigrate(models.Comment{}); err != nil {
-		log.Panicf("failed to autoMigrate: %v", err)
 	}
 
 	// redis
@@ -59,6 +59,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if rdbPrefix, ok := os.LookupEnv("REDIS_PREFIX"); ok {
 		c.RedisConf.Prefix = rdbPrefix
 	}
+
 	_rdb := redisutil.New(c.RedisConf)
 
 	return &ServiceContext{

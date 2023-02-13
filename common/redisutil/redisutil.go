@@ -2,7 +2,8 @@ package redisutil
 
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
+
 	"log"
 )
 
@@ -28,8 +29,8 @@ func New(conf RedisConf) *redis.Client {
 		MaxRetries:   3,
 		PoolSize:     conf.PoolSize,
 	})
-	var ctx context.Context
-	if _, err := rdb.Ping(ctx).Result(); err != nil {
+	//  check if connect
+	if _, err := rdb.Ping(context.Background()).Result(); err != nil {
 		log.Panicf("redis init failed, err:%v", err)
 	}
 	return rdb

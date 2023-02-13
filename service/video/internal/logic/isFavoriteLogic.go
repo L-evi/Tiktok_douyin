@@ -4,9 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"strconv"
-
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
 
