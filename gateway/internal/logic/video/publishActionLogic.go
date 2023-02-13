@@ -39,11 +39,18 @@ func NewPublishActionLogic(r *http.Request, ctx context.Context, svcCtx *svc.Ser
 func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *types.Resp, err error) {
 	var UserId = l.ctx.Value("user_id").(int64)
 	var _fileBaseDir = l.svcCtx.PublicPath
-	var _videoBaseDir = _fileBaseDir + "video"
-	var _coverBaseDir = _fileBaseDir + "cover"
+	var _videoBaseDir = _fileBaseDir + "/video"
+	var _coverBaseDir = _fileBaseDir + "/cover"
 	var _fileTypNotSupport = types.Resp{
 		Code: 199,
 		Msg:  "不支持的文件类型",
+	}
+
+	if req.Title == "" {
+		return &types.Resp{
+			Code: 199,
+			Msg:  "标题不能为空",
+		}, nil
 	}
 
 	var SystemErrResp = errx.HandleRpcErr(errorx.ErrSystemError)

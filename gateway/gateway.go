@@ -23,7 +23,7 @@ var configFile = flag.String("f", "etc/gateway.yaml", "the config file")
 
 // videoStaticHandler 视频对外路由
 func videoStaticHandler(engine *rest.Server, conf config.Config) {
-	level := []string{":1", ":2", ":3"}
+	level := []string{":1", ":2", ":3", ":4"}
 	pattern := fmt.Sprintf("/%s/", conf.PublicPath)
 	fileDir := fmt.Sprintf("./%s/", conf.PublicPath)
 	for i := 1; i < len(level); i++ {
@@ -34,11 +34,13 @@ func videoStaticHandler(engine *rest.Server, conf config.Config) {
 				Method: http.MethodGet,
 				Path:   path,
 				Handler: func(pattern string, fileDir string) http.HandlerFunc {
+					// log.Println(fileDir, pattern)
 					return func(w http.ResponseWriter, req *http.Request) {
 						http.StripPrefix(pattern, http.FileServer(http.Dir(fileDir))).ServeHTTP(w, req)
 					}
 				}(pattern, fileDir),
 			})
+		//log.Println("videoStaticHandler", path, pattern, fileDir)
 	}
 
 }
@@ -57,9 +59,6 @@ func main() {
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
-	// 注册视频对外路由
-	videoStaticHandler(server, c)
-
 	ctx := svc.NewServiceContext(c)
 	httpx.SetErrorHandlerCtx(func(ctx context.Context, err error) (int, interface{}) {
 		_, ok := status.FromError(err)
@@ -72,6 +71,8 @@ func main() {
 		return http.StatusOK, errorx.FromRpcStatus(errorx.ErrSystemError)
 	})
 
+	// 注册视频对外路由
+	videoStaticHandler(server, c)
 	handler.RegisterHandlers(server, ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)

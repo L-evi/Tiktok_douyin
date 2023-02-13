@@ -54,7 +54,7 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 		return &user.UserResp{}, errorx.ErrDatabaseError
 	}
 
-	if in.TargetId != in.UserId {
+	if in.TargetId != in.UserId && in.UserId != 0 {
 		// check isFollowed
 		if err = l.svcCtx.Db.Model(&models.Follow{}).Where(&models.Follow{
 			UserId:   in.UserId,
@@ -68,7 +68,7 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 			return &user.UserResp{}, errorx.ErrDatabaseError
 		}
 	} else {
-		isFollowed = false
+		isFollowed = true
 	}
 
 	// Get Username From Identity

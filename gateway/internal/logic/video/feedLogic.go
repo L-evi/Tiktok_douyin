@@ -4,6 +4,7 @@ import (
 	"context"
 	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/common/errx"
+	"train-tiktok/service/user/types/user"
 	"train-tiktok/service/video/types/video"
 
 	"train-tiktok/gateway/internal/svc"
@@ -30,10 +31,7 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	rpcResp, err := l.svcCtx.VideoRpc.Feed(l.ctx, &video.FeedReq{})
 	if err != nil {
-
-		return &types.FeedResp{
-			Resp: errx.HandleRpcErr(err),
-		}, nil
+		return &types.FeedResp{}, err
 	}
 
 	// how to know if user_id in context
@@ -68,6 +66,14 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		} else {
 			CommentCount = _commentCount
 		}
+		// getUserInfo
+		var userInfo types.User
+		if !isLogin {
+			userId = v.UserId
+		}
+		if userInfo, err = getUserInfo(l.svcCtx, l.ctx, userId, v.UserId); err != nil {
+			return &types.FeedResp{}, errorx.ErrSystemError
+		}
 
 		videoList = append(videoList, types.Video{
 			Id:            v.Id,
@@ -77,6 +83,7 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 			FavoriteCount: FavoriteCount,
 			CommentCount:  CommentCount,
 			IsFavorite:    isFavor,
+			Author:        userInfo,
 		})
 	}
 	logx.WithContext(l.ctx).Infof("videoList: %v", videoList)
@@ -119,4 +126,23 @@ func getCommentCount(c *svc.ServiceContext, ctx context.Context, videoId int64) 
 		return 0, err
 	}
 	return resp.CommentCount, nil
+}
+
+func getUserInfo(c *svc.ServiceContext, ctx context.Context, userId int64, targetId int64) (types.User, error) {
+	var err error
+	var resp *user.UserResp
+	if resp, err = c.UserRpc.User(ctx, &user.UserReq{
+		UserId:   userId,
+		TargetId: targetId,
+	}); err != nil {
+		return types.User{}, err
+	}
+
+	return types.User{
+		Id:            targetId,
+		Name:          resp.Name,
+		FollowCount:   *resp.FollowCount,
+		FollowerCount: *resp.FollowerCount,
+		IsFollow:      resp.IsFollow,
+	}, nil
 }

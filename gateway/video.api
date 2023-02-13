@@ -10,7 +10,7 @@ import "common.api"
 type publishActionReq {
     Token string `form:"token"`
     //   data byte `form:"data"` // handler from l.r.FormFile
-    Title string `form:"Title"`
+    Title string `form:"title"`
 }
 
 type (
@@ -78,7 +78,7 @@ type (
 type (
     feedReq {
         Token string `form:"token"`
-        LatestTime int64 `form:"latest_time"`
+        LatestTime int64 `form:"latest_time,optional"`
     }
     feedResp {
         Resp
