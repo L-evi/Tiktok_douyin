@@ -14,7 +14,7 @@ Log:
 StorageBaseUrl:
   Local: "http://127.0.0.1:8080"
   Cos: "-"
-Redis:
+RedisConf:
   Addr: 127.0.0.1:6379
   Passwd:
   Db: 1

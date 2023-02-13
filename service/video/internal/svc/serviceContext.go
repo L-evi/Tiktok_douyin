@@ -48,18 +48,18 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	// redis
 	if rdbAddr, ok := os.LookupEnv("REDIS_ADDR"); ok {
-		c.Redis.Addr = rdbAddr
+		c.RedisConf.Addr = rdbAddr
 	}
 	if rdbPwd, ok := os.LookupEnv("REDIS_PASSWD"); ok {
-		c.Redis.Passwd = rdbPwd
+		c.RedisConf.Passwd = rdbPwd
 	}
 	if rdbDb, ok := os.LookupEnv("REDIS_DB"); ok {
-		c.Redis.Addr = rdbDb
+		c.RedisConf.Addr = rdbDb
 	}
 	if rdbPrefix, ok := os.LookupEnv("REDIS_PREFIX"); ok {
-		c.Redis.Prefix = rdbPrefix
+		c.RedisConf.Prefix = rdbPrefix
 	}
-	_rdb := redisutil.New(c.Redis)
+	_rdb := redisutil.New(c.RedisConf)
 
 	return &ServiceContext{
 		Config: c,

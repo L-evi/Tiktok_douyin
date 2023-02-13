@@ -31,7 +31,7 @@ func (l *CommentCountLogic) CommentCount(in *video.CommentCountReq) (*video.Comm
 	rdb := l.svcCtx.Rdb
 
 	// get comment count from redis
-	_redisKey := fmt.Sprintf("%s:comment_count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
+	_redisKey := fmt.Sprintf("%s:comment_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)
 	var result int64
 	var err error
 	if result, err = rdb.Get(l.ctx, _redisKey).Int64(); !errors.Is(err, redis.Nil) && err != nil {

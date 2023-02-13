@@ -30,9 +30,9 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 	rdb := l.svcCtx.Rdb
 
 	// 记录视频点赞数
-	_countKey := fmt.Sprintf("%s:favorite_count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
+	_countKey := fmt.Sprintf("%s:favorite_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)
 	// 记录用户是否点赞该视频
-	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.Redis.Prefix, in.UserId)
+	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.RedisConf.Prefix, in.UserId)
 
 	videoIdStr := strconv.FormatInt(in.VideoId, 10)
 
