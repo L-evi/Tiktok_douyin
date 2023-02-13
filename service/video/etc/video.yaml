@@ -12,7 +12,7 @@ Log:
   Encoding: plain
   ServiceName: service-video
 StorageBaseUrl:
-  Local: "http://10.10.2.102:8888" # do not end with stash
+  Local: "http://127.0.0.1:8888" # do not end with stash
   Cos: "-"
 RedisConf:
   Addr: 127.0.0.1:6379
