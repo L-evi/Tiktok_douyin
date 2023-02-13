@@ -2,6 +2,7 @@ package video
 
 import (
 	"context"
+	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/service/video/types/video"
 
@@ -45,20 +46,37 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	var videoList []types.Video
 	videoList = make([]types.Video, 0, len(rpcResp.VideoList))
 	for _, v := range rpcResp.VideoList {
-		// TODO 点赞
-		isFavo := false
+		// 点赞
+		var isFavor = false
+		var CommentCount int64
+		var FavoriteCount int64
+
 		if isLogin {
-			favo, err := isFavorite(l.svcCtx, userId, v.Id)
-			// if
+			if favorite, err := isFavorite(l.svcCtx, l.ctx, userId, v.Id); err != nil {
+				return &types.FeedResp{}, errorx.ErrSystemError
+			} else {
+				isFavor = favorite
+			}
 		}
+		if favorCount, err := getFavoriteCount(l.svcCtx, l.ctx, v.Id); err != nil {
+			return &types.FeedResp{}, errorx.ErrSystemError
+		} else {
+			FavoriteCount = favorCount
+		}
+		if _commentCount, err := getCommentCount(l.svcCtx, l.ctx, v.Id); err != nil {
+			return &types.FeedResp{}, errorx.ErrSystemError
+		} else {
+			CommentCount = _commentCount
+		}
+
 		videoList = append(videoList, types.Video{
 			Id:            v.Id,
 			Title:         v.Title,
 			PlayUrl:       v.PlayUrl,
 			CoverUrl:      v.CoverUrl,
-			FavoriteCount: 0,
-			CommentCount:  0,
-			IsFavorite:    false,
+			FavoriteCount: FavoriteCount,
+			CommentCount:  CommentCount,
+			IsFavorite:    isFavor,
 		})
 	}
 
@@ -68,7 +86,36 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	}, nil
 }
 
-func isFavorite(c *svc.ServiceContext, userId int64, videoId int64) (bool, error) {
-	// c.UserRpc
-	return false, nil
+func isFavorite(c *svc.ServiceContext, ctx context.Context, userId int64, videoId int64) (bool, error) {
+	var err error
+	var resp *video.IsFavoriteResp
+	if resp, err = c.VideoRpc.IsFavorite(ctx, &video.IsFavoriteReq{
+		UserId:  userId,
+		VideoId: videoId,
+	}); err != nil {
+		return false, err
+	}
+	return resp.IsFavorite, nil
+}
+
+func getFavoriteCount(c *svc.ServiceContext, ctx context.Context, videoId int64) (int64, error) {
+	var err error
+	var resp *video.FavoriteCountResp
+	if resp, err = c.VideoRpc.FavoriteCount(ctx, &video.FavoriteCountReq{
+		VideoId: videoId,
+	}); err != nil {
+		return 0, err
+	}
+	return resp.FavoriteCount, nil
+}
+
+func getCommentCount(c *svc.ServiceContext, ctx context.Context, videoId int64) (int64, error) {
+	var err error
+	var resp *video.CommentCountResp
+	if resp, err = c.VideoRpc.CommentCount(ctx, &video.CommentCountReq{
+		VideoId: videoId,
+	}); err != nil {
+		return 0, err
+	}
+	return resp.CommentCount, nil
 }

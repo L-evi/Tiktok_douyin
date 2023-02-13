@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"train-tiktok/common/errorx"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
@@ -28,19 +29,42 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 	// connect to redis
 	rdb := l.svcCtx.Rdb
 
-	_redisKey := fmt.Sprintf("%s:favorite:count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
+	// 记录视频点赞数
+	_countKey := fmt.Sprintf("%s:favorite_count:%d", l.svcCtx.Config.Redis.Prefix, in.VideoId)
+	// 记录用户是否点赞该视频
+	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.Redis.Prefix, in.UserId)
+
+	videoIdStr := strconv.FormatInt(in.VideoId, 10)
 
 	// favorite action
 	switch in.ActionType {
 	case 1:
-		if _, err := rdb.Incr(l.ctx, _redisKey).Result(); err != nil {
+		pipe := rdb.Pipeline()
+		if _, err := pipe.Incr(l.ctx, _countKey).Result(); err != nil {
 			logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
+			return &video.FavoriteActionResp{}, err
+		}
+		if _, err := pipe.HSet(l.ctx, _userKey, videoIdStr, 1).Result(); err != nil {
+			logx.WithContext(l.ctx).Errorf("redis HSet error: %v", err)
+			return &video.FavoriteActionResp{}, err
+		}
+		if _, err := pipe.Exec(l.ctx); err != nil {
+			logx.WithContext(l.ctx).Errorf("redis Exec error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
 		break
 	case 2:
-		if _, err := rdb.Decr(l.ctx, _redisKey).Result(); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis Decr error: %v", err)
+		pipe := rdb.Pipeline()
+		if _, err := pipe.Decr(l.ctx, _countKey).Result(); err != nil {
+			logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
+			return &video.FavoriteActionResp{}, err
+		}
+		if _, err := pipe.HDel(l.ctx, _userKey, videoIdStr).Result(); err != nil {
+			logx.WithContext(l.ctx).Errorf("redis HSet error: %v", err)
+			return &video.FavoriteActionResp{}, err
+		}
+		if _, err := pipe.Exec(l.ctx); err != nil {
+			logx.WithContext(l.ctx).Errorf("redis Exec error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
 		break
