@@ -8,17 +8,6 @@ message Resp {
   int32 status_code = 1;
   string status_msg = 2;
 }
-
-message publishReq {
-  int64 user_id = 1;
-  string file_path = 2; // 视频目录
-  string cover_path = 3; // 封面目录
-  string title = 5;
-}
-message publishResp {
-  bool success = 1;
-}
-
 message VideoX{
   int64 id = 1; // 视频唯一标识
   // User author = 2; // 视频作者信息
@@ -30,6 +19,26 @@ message VideoX{
   // bool is_favorite = 7; // true-已点赞，false-未点赞
   string title = 8; // 视频标题
 }
+
+
+
+message publishReq {
+  int64 user_id = 1;
+  string file_path = 2; // 视频目录
+  string cover_path = 3; // 封面目录
+  string title = 5;
+}
+message publishResp {
+  bool success = 1;
+}
+
+message publishListReq {
+  int64 user_id = 1;
+}
+message publishListResp {
+  repeated VideoX video_list = 1;
+}
+
 message feedReq {
   int64 latest_time = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
 }
@@ -112,6 +121,7 @@ message isFavoriteResp {
 
 service video {
   rpc publish(publishReq) returns (publishResp);
+  rpc publishList(publishListReq) returns (publishListResp);
   rpc feed(feedReq) returns (feedResp);
   rpc commentAction(commentActionReq) returns (commentActionResp);
   rpc commentList(commentListReq) returns (commentListResp);

@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VideoClient interface {
 	Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error)
+	PublishList(ctx context.Context, in *PublishListReq, opts ...grpc.CallOption) (*PublishListResp, error)
 	Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOption) (*FeedResp, error)
 	CommentAction(ctx context.Context, in *CommentActionReq, opts ...grpc.CallOption) (*CommentActionResp, error)
 	CommentList(ctx context.Context, in *CommentListReq, opts ...grpc.CallOption) (*CommentListResp, error)
@@ -44,6 +45,15 @@ func NewVideoClient(cc grpc.ClientConnInterface) VideoClient {
 func (c *videoClient) Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error) {
 	out := new(PublishResp)
 	err := c.cc.Invoke(ctx, "/video.video/publish", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *videoClient) PublishList(ctx context.Context, in *PublishListReq, opts ...grpc.CallOption) (*PublishListResp, error) {
+	out := new(PublishListResp)
+	err := c.cc.Invoke(ctx, "/video.video/publishList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -127,6 +137,7 @@ func (c *videoClient) IsFavorite(ctx context.Context, in *IsFavoriteReq, opts ..
 // for forward compatibility
 type VideoServer interface {
 	Publish(context.Context, *PublishReq) (*PublishResp, error)
+	PublishList(context.Context, *PublishListReq) (*PublishListResp, error)
 	Feed(context.Context, *FeedReq) (*FeedResp, error)
 	CommentAction(context.Context, *CommentActionReq) (*CommentActionResp, error)
 	CommentList(context.Context, *CommentListReq) (*CommentListResp, error)
@@ -144,6 +155,9 @@ type UnimplementedVideoServer struct {
 
 func (UnimplementedVideoServer) Publish(context.Context, *PublishReq) (*PublishResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Publish not implemented")
+}
+func (UnimplementedVideoServer) PublishList(context.Context, *PublishListReq) (*PublishListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublishList not implemented")
 }
 func (UnimplementedVideoServer) Feed(context.Context, *FeedReq) (*FeedResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Feed not implemented")
@@ -196,6 +210,24 @@ func _Video_Publish_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VideoServer).Publish(ctx, req.(*PublishReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Video_PublishList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublishListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServer).PublishList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.video/publishList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServer).PublishList(ctx, req.(*PublishListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -354,6 +386,10 @@ var Video_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "publish",
 			Handler:    _Video_Publish_Handler,
+		},
+		{
+			MethodName: "publishList",
+			Handler:    _Video_PublishList_Handler,
 		},
 		{
 			MethodName: "feed",

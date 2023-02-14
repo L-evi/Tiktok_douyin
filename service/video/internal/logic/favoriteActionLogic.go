@@ -51,7 +51,7 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 			Score:  float64(timeNow),
 			Member: videoIdStr,
 		}).Result(); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis HSet error: %v", err)
+			logx.WithContext(l.ctx).Errorf("redis ZADD error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
 		if _, err := pipe.Exec(l.ctx); err != nil {
@@ -62,11 +62,11 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 	case 2:
 		pipe := rdb.Pipeline()
 		if _, err := pipe.Decr(l.ctx, _countKey).Result(); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
+			logx.WithContext(l.ctx).Errorf("redis Decr error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
 		if _, err := pipe.ZRem(l.ctx, _userKey, videoIdStr).Result(); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis HSet error: %v", err)
+			logx.WithContext(l.ctx).Errorf("redis ZRem error: %v", err)
 			return &video.FavoriteActionResp{}, err
 		}
 		if _, err := pipe.Exec(l.ctx); err != nil {
