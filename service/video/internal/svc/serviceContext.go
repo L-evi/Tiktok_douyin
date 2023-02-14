@@ -3,11 +3,13 @@ package svc
 import (
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/zrpc"
 	"gorm.io/gorm"
 	"log"
 	"os"
 	"train-tiktok/common/dbutil"
 	"train-tiktok/common/redisutil"
+	"train-tiktok/service/identity/identityclient"
 	"train-tiktok/service/video/internal/config"
 	"train-tiktok/service/video/models"
 )
@@ -17,6 +19,7 @@ type ServiceContext struct {
 	Db             *gorm.DB
 	StorageBaseUrl config.StorageStruct
 	Rdb            *redis.Client
+	IdentityRpc    identityclient.Identity
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -69,6 +72,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Local: c.StorageBaseUrl.Local,
 			Cos:   c.StorageBaseUrl.Cos,
 		},
-		Rdb: _rdb,
-	}
+		Rdb:         _rdb,
+		IdentityRpc: identityclient.NewIdentity(zrpc.MustNewClient(c.IdentityRpcConf))}
 }

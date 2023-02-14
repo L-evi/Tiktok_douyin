@@ -6,6 +6,8 @@ import (
 	"gorm.io/gorm"
 	"time"
 	"train-tiktok/common/errorx"
+	"train-tiktok/service/video/common/errx"
+	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/models"
 	"train-tiktok/service/video/types/video"
@@ -33,6 +35,15 @@ func NewCommentActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Com
 // in.ActionType 1: add comment 2: delete comment
 func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.CommentActionResp, error) {
 	rdb := l.svcCtx.Rdb
+
+	// check video exists
+	if exists, err := tool.CheckVideoExists(l.svcCtx.Db, in.VideoId); err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query video, err: %v", err)
+
+		return nil, err
+	} else if !exists {
+		return nil, errx.ErrVideoNotFound
+	}
 
 	// get comment count from redis
 	_redisKey := fmt.Sprintf("%s:comment_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)

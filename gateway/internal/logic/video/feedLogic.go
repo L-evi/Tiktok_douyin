@@ -6,11 +6,10 @@ import (
 	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/gateway/common/tool/rpcutil"
-	videoErrx "train-tiktok/service/video/common/errx"
-	"train-tiktok/service/video/types/video"
-
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
+	videoErrx "train-tiktok/service/video/common/errx"
+	"train-tiktok/service/video/types/video"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -37,10 +36,9 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		LatestTime: req.LatestTime,
 	}); errorx.IsRpcError(err, videoErrx.ErrNoLatestVideo) {
 		// 没有更新的视频了
-
-		return &types.FeedResp{
-			NextTime: time.Now().Unix(),
-		}, nil
+		return NewFeedLogic(l.ctx, l.svcCtx).Feed(&types.FeedReq{
+			LatestTime: time.Now().Unix(),
+		})
 	} else if err != nil {
 		logx.WithContext(l.ctx).Errorf("Feed rpc error: %v", err)
 

@@ -3,6 +3,8 @@ package logic
 import (
 	"context"
 	"time"
+	"train-tiktok/service/video/common/errx"
+	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/models"
 
 	"train-tiktok/service/video/internal/svc"
@@ -27,6 +29,16 @@ func NewCommentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Comme
 }
 
 func (l *CommentListLogic) CommentList(in *video.CommentListReq) (*video.CommentListResp, error) {
+
+	// check video exists
+	if exists, err := tool.CheckVideoExists(l.svcCtx.Db, in.VideoId); err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query video, err: %v", err)
+
+		return nil, err
+	} else if !exists {
+		return nil, errx.ErrVideoNotFound
+	}
+
 	var commentList []models.Comment
 	res := l.svcCtx.Db.Model(&video.Comment{}).Where(&models.Comment{VideoID: in.VideoId}).
 		Order("create_at desc").Find(&commentList)

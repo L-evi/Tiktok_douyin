@@ -26,7 +26,7 @@ type (
 
 type (
     FavoriteListReq {
-        Token string `form:"token"`
+        Token string `form:"token,optional"`
         UserId int64 `form:"user_id"`
     }
     FovoriteListResp {
@@ -46,14 +46,13 @@ type (
     }
     CommentActionResp {
         Resp
-        Comment
+        Comment Comment `json:"comment"`
     }
-
 )
 
 type (
     CommentListReq {
-        Token string `form:"token"`
+        Token string `form:"token,optional"`
         VideoId int64 `form:"video_id"`
     }
     CommentListResp {
@@ -66,7 +65,7 @@ type (
 
 type (
     publishListReq {
-        Token string `form:"token"`
+        Token string `form:"token,optional"`
         UserId int64 `form:"user_id"`
     }
     publishListResp {
@@ -77,7 +76,7 @@ type (
 
 type (
     feedReq {
-        Token string `form:"token"`
+        Token string `form:"token,optional"`
         LatestTime int64 `form:"latest_time,optional"`
     }
     feedResp {
@@ -97,6 +96,12 @@ service gateway {
 
     @handler feed
     get /douyin/feed (feedReq) returns (feedResp)
+
+    @handler favoriteList
+    get /douyin/favorite/list (FavoriteListReq) returns (FovoriteListResp)
+
+    @handler commentList
+    get /douyin/comment/list (CommentListReq) returns (CommentListResp)
 }
 
 
@@ -111,12 +116,7 @@ service gateway {
     @handler favoriteAction
     post /douyin/favorite/action (FavoriteActionReq) returns (FavoriteActionResp)
 
-    @handler favoriteList
-    get /douyin/favorite/list (FavoriteListReq) returns (FovoriteListResp)
-
     @handler commentAction
     post /douyin/comment/action (CommentActionReq) returns (CommentActionResp)
 
-    @handler commentList
-    get /douyin/comment/list (CommentListReq) returns (CommentListResp)
 }

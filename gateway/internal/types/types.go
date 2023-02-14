@@ -75,7 +75,7 @@ type FavoriteActionResp struct {
 }
 
 type FavoriteListReq struct {
-	Token  string `form:"token"`
+	Token  string `form:"token,optional"`
 	UserId int64  `form:"user_id"`
 }
 
@@ -94,11 +94,11 @@ type CommentActionReq struct {
 
 type CommentActionResp struct {
 	Resp
-	Comment
+	Comment Comment `json:"comment"`
 }
 
 type CommentListReq struct {
-	Token   string `form:"token"`
+	Token   string `form:"token,optional"`
 	VideoId int64  `form:"video_id"`
 }
 
@@ -108,7 +108,7 @@ type CommentListResp struct {
 }
 
 type PublishListReq struct {
-	Token  string `form:"token"`
+	Token  string `form:"token,optional"`
 	UserId int64  `form:"user_id"`
 }
 
@@ -118,7 +118,7 @@ type PublishListResp struct {
 }
 
 type FeedReq struct {
-	Token      string `form:"token"`
+	Token      string `form:"token,optional"`
 	LatestTime int64  `form:"latest_time,optional"`
 }
 
@@ -130,14 +130,12 @@ type FeedResp struct {
 
 type UserReq struct {
 	UserId int64  `form:"user_id"`
-	Token  string `form:"token"`
+	Token  string `form:"token,optional"`
 }
 
 type UserResp struct {
 	Resp
-	FollowCount   int64 `json:"follow_count"`
-	FollowerCount int64 `json:"follower_count"`
-	IsFollow      bool  `json:"is_follow"`
+	User User `json:"user"`
 }
 
 type RelationActionReq struct {
@@ -151,7 +149,7 @@ type RelationActionResp struct {
 }
 
 type FollowerListReq struct {
-	Token  string `form:"token"`
+	Token  string `form:"token,optional"`
 	UserId int64  `form:"user_id"`
 }
 
@@ -161,7 +159,7 @@ type FollowerListResp struct {
 }
 
 type FansListReq struct {
-	Token  string `form:"token"`
+	Token  string `form:"token,optional"`
 	UserId int64  `form:"user_id"`
 }
 

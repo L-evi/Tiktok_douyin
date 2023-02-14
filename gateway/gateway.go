@@ -72,8 +72,8 @@ func main() {
 	})
 
 	// 注册视频对外路由
-	videoStaticHandler(server, c)
 	handler.RegisterHandlers(server, ctx)
+	videoStaticHandler(server, c)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/redis/go-redis/v9"
+	"train-tiktok/service/video/common/errx"
+	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
 
@@ -26,6 +28,16 @@ func NewFavoriteCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fav
 }
 
 func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.FavoriteCountResp, error) {
+
+	// check video exists
+	if exists, err := tool.CheckVideoExists(l.svcCtx.Db, in.VideoId); err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query video, err: %v", err)
+
+		return nil, err
+	} else if !exists {
+		return nil, errx.ErrVideoNotFound
+	}
+
 	// connect to redis
 	rdb := l.svcCtx.Rdb
 

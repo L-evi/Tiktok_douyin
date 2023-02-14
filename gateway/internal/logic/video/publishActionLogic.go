@@ -142,11 +142,12 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 
 		return &_fileTypNotSupport, nil
 	}
-	if !tool.IsVideoByHead(bufHead) {
-		closeAndRemove(f, _fileTmpPath)
-
-		return &_fileTypNotSupport, nil
-	}
+	// 部分视频 无判断 //不知道为什么
+	//if !tool.IsVideoByHead(bufHead) {
+	//	closeAndRemove(f, _fileTmpPath)
+	//
+	//	return &_fileTypNotSupport, nil
+	//}
 
 	// 1M 分割 写文件
 	buf := make([]byte, 1<<20)
