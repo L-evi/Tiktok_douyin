@@ -83,6 +83,7 @@ type (
     feedResp {
         Resp
         VideoList []Video `json:"video_list"`
+        NextTime int64 `json:"next_time,optional"`
     }
 )
 

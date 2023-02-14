@@ -21,6 +21,7 @@ var (
 	ErrSystemError              = status.Error(3003, "服务器开小差了, 过会儿再试吧")
 	ErrRequestTimeout           = status.Error(3004, "请求超时")
 	ErrFileTypeNotSupport       = status.Error(4001, "文件类型不支持")
+	ErrUserNotFound             = status.Error(5001, "用户不存在")
 )
 
 type ErrorResp struct {
@@ -44,8 +45,8 @@ func ParseRpcError(err error) error {
 	return info.Err()
 }
 
-func IsRpcError(err error, err2 error) bool {
-	if errors.Is(ParseRpcError(err), err2) {
+func IsRpcError(rpcErr error, err error) bool {
+	if errors.Is(ParseRpcError(rpcErr), err) {
 		return true
 	}
 	return false

@@ -51,6 +51,11 @@ func (l *FeedLogic) Feed(in *video.FeedReq) (*video.FeedResp, error) {
 		return &video.FeedResp{}, err
 	}
 
+	logx.WithContext(l.ctx).Infof("FeedLogic Feed videos: %v", videos)
+	if len(videos) == 0 {
+		return &video.FeedResp{}, errx.ErrNoLatestVideo
+	}
+
 	// 处理数据
 	// 获取 videos 内的最老 时间 并生成 videoList
 	var videoList []*video.VideoX

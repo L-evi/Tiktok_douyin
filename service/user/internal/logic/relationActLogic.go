@@ -31,8 +31,19 @@ func NewRelationActLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Relat
 // 需要登录
 func (l *RelationActLogic) RelationAct(in *user.RelationActReq) (*user.RelationActResp, error) {
 	// prevent self follow
-	if in.UserId == 0 || in.UserId == in.TargetId {
-		return &user.RelationActResp{}, errorx.ErrSystemError
+	if in.UserId == 0 {
+		return &user.RelationActResp{}, errx.ErrLoginRequired
+	} else if in.UserId == in.TargetId {
+		return &user.RelationActResp{}, errx.ErrSelfFollow
+	}
+
+	// check if targetId exists
+	if exists, err := tool.CheckUserExist(l.ctx, l.svcCtx.IdentityRpc, in.TargetId); err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query user: %v", err)
+
+		return nil, errorx.ErrDatabaseError
+	} else if !exists {
+		return &user.RelationActResp{}, errorx.ErrUserNotFound
 	}
 
 	// gorm
@@ -47,7 +58,9 @@ func (l *RelationActLogic) RelationAct(in *user.RelationActReq) (*user.RelationA
 			return &user.RelationActResp{}, errorx.ErrDatabaseError
 		} else if isFollowed {
 			// 防止重复关注
-			return &user.RelationActResp{}, errx.ErrRepeatFollow
+			return &user.RelationActResp{
+				Success: true,
+			}, nil
 		}
 
 		// 关注

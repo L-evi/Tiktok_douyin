@@ -29,10 +29,13 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 }
 
 func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
-	rpcResp, err := l.svcCtx.VideoRpc.Feed(l.ctx, &video.FeedReq{
+	var rpcResp *video.FeedResp
+
+	if rpcResp, err = l.svcCtx.VideoRpc.Feed(l.ctx, &video.FeedReq{
 		LatestTime: req.LatestTime,
-	})
-	if err != nil {
+	}); err != nil {
+		logx.WithContext(l.ctx).Errorf("Feed rpc error: %v", err)
+
 		return &types.FeedResp{}, err
 	}
 
@@ -84,9 +87,10 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 		})
 	}
 	logx.WithContext(l.ctx).Infof("videoList: %v", videoList)
-
+	logx.WithContext(l.ctx).Infof("nextTime: %v", *rpcResp.NextTime)
 	return &types.FeedResp{
 		Resp:      errx.SUCCESS_RESP,
 		VideoList: videoList,
+		NextTime:  *rpcResp.NextTime,
 	}, nil
 }
