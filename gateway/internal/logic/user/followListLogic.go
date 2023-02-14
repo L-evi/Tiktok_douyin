@@ -2,6 +2,10 @@ package user
 
 import (
 	"context"
+	"train-tiktok/common/errorx"
+	"train-tiktok/gateway/common/errx"
+	"train-tiktok/gateway/common/tool/rpcutil"
+	"train-tiktok/service/user/types/user"
 
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
@@ -24,7 +28,42 @@ func NewFollowListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Follow
 }
 
 func (l *FollowListLogic) FollowList(req *types.FollowerListReq) (resp *types.FollowerListResp, err error) {
-	// todo: add your logic here and delete this line
+	var userId int64
+	var isLogin bool
+	if isLogin = l.ctx.Value("is_login").(bool); isLogin {
+		userId = l.ctx.Value("user_id").(int64)
+	}
 
-	return
+	var rpcResp *user.FollowListResp
+	if rpcResp, err = l.svcCtx.UserRpc.FollowList(l.ctx, &user.FollowListReq{
+		UserId: req.UserId,
+	}); err != nil {
+		return &types.FollowerListResp{}, err
+	}
+
+	var users []types.User
+	users = make([]types.User, 0, len(rpcResp.UserIds))
+	for _, rpcUserId := range rpcResp.UserIds {
+		// getUserInfo
+		var userInfo types.User
+		if !isLogin {
+			userId = 0 // isFollow 将返回 false
+		}
+		if userInfo, err = rpcutil.GetUserInfo(l.svcCtx, l.ctx, userId, rpcUserId); err != nil {
+			return &types.FollowerListResp{}, errorx.ErrSystemError
+		}
+
+		users = append(users, types.User{
+			Id:            rpcUserId,
+			Name:          userInfo.Name,
+			FollowCount:   userInfo.FollowCount,
+			FollowerCount: userInfo.FollowerCount,
+			IsFollow:      userInfo.IsFollow,
+		})
+	}
+
+	return &types.FollowerListResp{
+		Resp:     errx.SUCCESS_RESP,
+		UserList: users,
+	}, nil
 }

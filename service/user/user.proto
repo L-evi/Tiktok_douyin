@@ -32,18 +32,16 @@ message relationActResp{
 
 message followListReq{
   int64 user_id = 1;
-  int64 target_id = 2;
 }
 message followListResp{
-  repeated int64 user_id = 1;
+  repeated int64 user_ids = 1;
 }
 
 message followerListReq{
   int64 user_id = 1;
-  int64 target_id = 2;
 }
 message followerListResp{
-  repeated int64 user_id = 1;
+  repeated int64 user_ids = 1;
 }
 
 service user {

@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"train-tiktok/common/errorx"
+	"train-tiktok/service/user/models"
 
 	"train-tiktok/service/user/internal/svc"
 	"train-tiktok/service/user/types/user"
@@ -24,7 +26,19 @@ func NewFollowListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Follow
 }
 
 func (l *FollowListLogic) FollowList(in *user.FollowListReq) (*user.FollowListResp, error) {
-	// todo: add your logic here and delete this line
+	if in.UserId == 0 {
+		return nil, errorx.ErrInvalidParameter
+	}
+	var users []int64
+	if err := l.svcCtx.Db.Model(&models.Follow{}).Where(models.Fans{
+		UserId: in.UserId,
+	}).Pluck("targetId", &users).Error; err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query follows: %v", err)
 
-	return &user.FollowListResp{}, nil
+		return nil, errorx.ErrDatabaseError
+	}
+
+	return &user.FollowListResp{
+		UserIds: users,
+	}, nil
 }
