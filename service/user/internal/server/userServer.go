@@ -26,3 +26,8 @@ func (s *UserServer) User(ctx context.Context, in *user.UserReq) (*user.UserResp
 	l := logic.NewUserLogic(ctx, s.svcCtx)
 	return l.User(in)
 }
+
+func (s *UserServer) RelationAct(ctx context.Context, in *user.RelationActReq) (*user.RelationActResp, error) {
+	l := logic.NewRelationActLogic(ctx, s.svcCtx)
+	return l.RelationAct(in)
+}

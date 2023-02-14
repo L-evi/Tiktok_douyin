@@ -138,3 +138,13 @@ type UserResp struct {
 	FollowerCount int64 `json:"follower_count"`
 	IsFollow      bool  `json:"is_follow"`
 }
+
+type RelationActionReq struct {
+	Token     string `form:"token"`
+	ToUserId  int64  `form:"to_user_id"`
+	ActionTyp int32  `form:"action_type,range=[1:2]"`
+}
+
+type RelationActionResp struct {
+	Resp
+}

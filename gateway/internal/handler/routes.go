@@ -99,6 +99,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/douyin/user",
 					Handler: user.UserHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/douyin/relation/action",
+					Handler: user.RelationActionHandler(serverCtx),
+				},
 			}...,
 		),
 	)

@@ -75,7 +75,7 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 		}
 		break
 	default:
-		return &video.FavoriteActionResp{}, errorx.ErrSystemError
+		return &video.FavoriteActionResp{}, errorx.ErrInvalidParameter
 	}
 
 	return &video.FavoriteActionResp{}, nil
