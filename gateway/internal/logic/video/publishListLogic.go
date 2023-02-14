@@ -32,7 +32,7 @@ func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.P
 
 	var rpcResp *video.PublishListResp
 	if rpcResp, err = l.svcCtx.VideoRpc.PublishList(l.ctx, &video.PublishListReq{
-		UserId: userId,
+		UserId: req.UserId, // 此处传入的是 query 中的 userId, 也就是被查看的用户的 id
 	}); err != nil {
 		return &types.PublishListResp{}, err
 	}

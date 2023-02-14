@@ -49,7 +49,7 @@ func (l *CommentActionLogic) CommentAction(req *types.CommentActionReq) (resp *t
 	if req.ActionType == 1 {
 		// add comment 时才需要返回 评论内容
 		userRpcResp, err := l.svcCtx.UserRpc.User(l.ctx, &user.UserReq{
-			UserId:   l.ctx.Value("user_id").(int64),
+			UserId:   _userId,
 			TargetId: _userId,
 		})
 
@@ -73,7 +73,7 @@ func (l *CommentActionLogic) CommentAction(req *types.CommentActionReq) (resp *t
 					IsFollow:      userRpcResp.IsFollow,
 				},
 				Content:    rpcResp.Comment.Content,
-				CreateDate: rpcResp.Comment.Content,
+				CreateDate: rpcResp.Comment.CreateDate,
 			},
 		}, nil
 	}
