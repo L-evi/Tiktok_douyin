@@ -30,6 +30,8 @@ type (
 	FeedResp           = video.FeedResp
 	IsFavoriteReq      = video.IsFavoriteReq
 	IsFavoriteResp     = video.IsFavoriteResp
+	PublishListReq     = video.PublishListReq
+	PublishListResp    = video.PublishListResp
 	PublishReq         = video.PublishReq
 	PublishResp        = video.PublishResp
 	Resp               = video.Resp
@@ -37,6 +39,7 @@ type (
 
 	Video interface {
 		Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error)
+		PublishList(ctx context.Context, in *PublishListReq, opts ...grpc.CallOption) (*PublishListResp, error)
 		Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOption) (*FeedResp, error)
 		CommentAction(ctx context.Context, in *CommentActionReq, opts ...grpc.CallOption) (*CommentActionResp, error)
 		CommentList(ctx context.Context, in *CommentListReq, opts ...grpc.CallOption) (*CommentListResp, error)
@@ -61,6 +64,11 @@ func NewVideo(cli zrpc.Client) Video {
 func (m *defaultVideo) Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error) {
 	client := video.NewVideoClient(m.cli.Conn())
 	return client.Publish(ctx, in, opts...)
+}
+
+func (m *defaultVideo) PublishList(ctx context.Context, in *PublishListReq, opts ...grpc.CallOption) (*PublishListResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.PublishList(ctx, in, opts...)
 }
 
 func (m *defaultVideo) Feed(ctx context.Context, in *FeedReq, opts ...grpc.CallOption) (*FeedResp, error) {

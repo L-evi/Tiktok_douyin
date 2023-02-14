@@ -29,3 +29,15 @@ func GetFullCoverUrl(svcCtx *svc.ServiceContext, position, coverUrl string) stri
 		return coverUrl
 	}
 }
+
+func HandleVideoUrl(svcCtx *svc.ServiceContext, position, playUrl, coverUrl string) (string, string) {
+	switch position {
+	case "local":
+		playUrl = fmt.Sprintf("%s/%s", svcCtx.StorageBaseUrl.Local, playUrl)
+		coverUrl = fmt.Sprintf("%s/%s", svcCtx.StorageBaseUrl.Local, coverUrl)
+		break
+	default:
+		break
+	}
+	return playUrl, coverUrl
+}

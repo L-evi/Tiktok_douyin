@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"fmt"
-	"log"
 	"strconv"
 	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/models"
@@ -61,17 +60,18 @@ func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.Favo
 			return &video.FavoriteListResp{}, result.Error
 		}
 
+		myVideo.PlayUrl, myVideo.CoverUrl = tool.HandleVideoUrl(l.svcCtx, myVideo.Position, myVideo.PlayUrl, myVideo.CoverUrl)
 		// TODO
 		favoriteList = append(favoriteList, &video.VideoX{
 			Id:       myVideo.ID,
 			UserId:   myVideo.UserID,
-			PlayUrl:  tool.GetFullPlayUrl(l.svcCtx, myVideo.Position, myVideo.PlayUrl),
-			CoverUrl: tool.GetFullCoverUrl(l.svcCtx, myVideo.Position, myVideo.CoverUrl),
+			PlayUrl:  myVideo.PlayUrl,
+			CoverUrl: myVideo.CoverUrl,
 			Title:    myVideo.Title,
 		})
 	}
 	// consult success
-	log.Println(favoriteList)
+	logx.WithContext(l.ctx).Info(favoriteList)
 	return &video.FavoriteListResp{
 		VideoList: favoriteList,
 	}, nil

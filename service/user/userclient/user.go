@@ -13,12 +13,15 @@ import (
 )
 
 type (
-	Resp     = user.Resp
-	UserReq  = user.UserReq
-	UserResp = user.UserResp
+	RelationActReq  = user.RelationActReq
+	RelationActResp = user.RelationActResp
+	Resp            = user.Resp
+	UserReq         = user.UserReq
+	UserResp        = user.UserResp
 
 	User interface {
 		User(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*UserResp, error)
+		RelationAct(ctx context.Context, in *RelationActReq, opts ...grpc.CallOption) (*RelationActResp, error)
 	}
 
 	defaultUser struct {
@@ -35,4 +38,9 @@ func NewUser(cli zrpc.Client) User {
 func (m *defaultUser) User(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*UserResp, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.User(ctx, in, opts...)
+}
+
+func (m *defaultUser) RelationAct(ctx context.Context, in *RelationActReq, opts ...grpc.CallOption) (*RelationActResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.RelationAct(ctx, in, opts...)
 }

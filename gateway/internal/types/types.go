@@ -67,7 +67,7 @@ type PublishActionReq struct {
 type FavoriteActionReq struct {
 	Token      string `form:"token"`
 	VideoId    int64  `form:"video_id"`
-	ActionType int32  `form:"action_type"` // 1: favorite, 2: unfavorite
+	ActionType int32  `form:"action_type,range=[1:2]"` // 1: favorite, 2: unfavorite
 }
 
 type FavoriteActionResp struct {
@@ -87,7 +87,7 @@ type FovoriteListResp struct {
 type CommentActionReq struct {
 	Token       string `form:"token"`
 	VideoId     int64  `form:"video_id"`
-	ActionType  int32  `form:"action_type"`
+	ActionType  int32  `form:"action_type,range=[1:2]"`
 	CommentText string `form:"comment_text"`
 	CommentId   int64  `form:"comment_id,optional"`
 }
@@ -137,4 +137,14 @@ type UserResp struct {
 	FollowCount   int64 `json:"follow_count"`
 	FollowerCount int64 `json:"follower_count"`
 	IsFollow      bool  `json:"is_follow"`
+}
+
+type RelationActionReq struct {
+	Token     string `form:"token"`
+	ToUserId  int64  `form:"to_user_id"`
+	ActionTyp int32  `form:"action_type,range=[1:2]"`
+}
+
+type RelationActionResp struct {
+	Resp
 }
