@@ -70,7 +70,7 @@ func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteListReq) (resp *type
 		// getUserInfo
 		var userInfo types.User
 		if !isLogin {
-			userId = v.UserId
+			userId = 0 // isFollow 将返回 false
 		}
 		if userInfo, err = rpcutil.GetUserInfo(l.svcCtx, l.ctx, userId, v.UserId); err != nil {
 			return &types.FovoriteListResp{}, errorx.ErrSystemError

@@ -65,4 +65,10 @@ service gateway {
 
 	@handler relationAction
 	post /douyin/relation/action (RelationActionReq) returns (RelationActionResp)
+
+	@handler followList // 关注列表
+	get /douyin/relation/follow/list (followerListReq) returns (followerListResp)
+
+	@handler followerList // 粉丝列表
+	get /douyin/relation/follower/list (fansListReq) returns (fansListResp)
 }

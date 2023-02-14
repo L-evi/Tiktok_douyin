@@ -148,3 +148,23 @@ type RelationActionReq struct {
 type RelationActionResp struct {
 	Resp
 }
+
+type FollowerListReq struct {
+	Token  string `form:"token"`
+	UserId int64  `form:"user_id"`
+}
+
+type FollowerListResp struct {
+	Resp
+	UserList []User `json:"user_list"`
+}
+
+type FansListReq struct {
+	Token  string `form:"token"`
+	UserId int64  `form:"user_id"`
+}
+
+type FansListResp struct {
+	Resp
+	UserList []User `json:"user_list"`
+}

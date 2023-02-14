@@ -319,6 +319,194 @@ func (x *RelationActResp) GetSuccess() bool {
 	return false
 }
 
+type FollowListReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId int64 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+}
+
+func (x *FollowListReq) Reset() {
+	*x = FollowListReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FollowListReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FollowListReq) ProtoMessage() {}
+
+func (x *FollowListReq) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FollowListReq.ProtoReflect.Descriptor instead.
+func (*FollowListReq) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *FollowListReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+type FollowListResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserIds []int64 `protobuf:"varint,1,rep,packed,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
+}
+
+func (x *FollowListResp) Reset() {
+	*x = FollowListResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FollowListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FollowListResp) ProtoMessage() {}
+
+func (x *FollowListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FollowListResp.ProtoReflect.Descriptor instead.
+func (*FollowListResp) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *FollowListResp) GetUserIds() []int64 {
+	if x != nil {
+		return x.UserIds
+	}
+	return nil
+}
+
+type FollowerListReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId int64 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+}
+
+func (x *FollowerListReq) Reset() {
+	*x = FollowerListReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FollowerListReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FollowerListReq) ProtoMessage() {}
+
+func (x *FollowerListReq) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FollowerListReq.ProtoReflect.Descriptor instead.
+func (*FollowerListReq) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *FollowerListReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+type FollowerListResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserIds []int64 `protobuf:"varint,1,rep,packed,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
+}
+
+func (x *FollowerListResp) Reset() {
+	*x = FollowerListResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FollowerListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FollowerListResp) ProtoMessage() {}
+
+func (x *FollowerListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FollowerListResp.ProtoReflect.Descriptor instead.
+func (*FollowerListResp) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *FollowerListResp) GetUserIds() []int64 {
+	if x != nil {
+		return x.UserIds
+	}
+	return nil
+}
+
 var File_user_proto protoreflect.FileDescriptor
 
 var file_user_proto_rawDesc = []byte{
@@ -353,15 +541,34 @@ var file_user_proto_rawDesc = []byte{
 	0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f,
 	0x6e, 0x22, 0x2b, 0x0a, 0x0f, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74,
 	0x52, 0x65, 0x73, 0x70, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x32, 0x69,
-	0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x25, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x0d,
-	0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x1a, 0x0e, 0x2e,
-	0x75, 0x73, 0x65, 0x72, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3a, 0x0a,
-	0x0b, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x12, 0x14, 0x2e, 0x75,
-	0x73, 0x65, 0x72, 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x52,
-	0x65, 0x71, 0x1a, 0x15, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x41, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x42, 0x08, 0x5a, 0x06, 0x2e, 0x2f, 0x75,
-	0x73, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x28,
+	0x0a, 0x0d, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12,
+	0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x2b, 0x0a, 0x0e, 0x66, 0x6f, 0x6c, 0x6c,
+	0x6f, 0x77, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x19, 0x0a, 0x08, 0x75, 0x73,
+	0x65, 0x72, 0x5f, 0x69, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x03, 0x52, 0x07, 0x75, 0x73,
+	0x65, 0x72, 0x49, 0x64, 0x73, 0x22, 0x2a, 0x0a, 0x0f, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65,
+	0x72, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72,
+	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49,
+	0x64, 0x22, 0x2d, 0x0a, 0x10, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x4c, 0x69, 0x73,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x19, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x03, 0x52, 0x07, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x73,
+	0x32, 0xe1, 0x01, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x25, 0x0a, 0x04, 0x75, 0x73, 0x65,
+	0x72, 0x12, 0x0d, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71,
+	0x1a, 0x0e, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x3a, 0x0a, 0x0b, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x12,
+	0x14, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41,
+	0x63, 0x74, 0x52, 0x65, 0x71, 0x1a, 0x15, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x72, 0x65, 0x6c,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x37, 0x0a, 0x0a,
+	0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x13, 0x2e, 0x75, 0x73, 0x65,
+	0x72, 0x2e, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x1a,
+	0x14, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x4c, 0x69, 0x73,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3d, 0x0a, 0x0c, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65,
+	0x72, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x15, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x66, 0x6f, 0x6c,
+	0x6c, 0x6f, 0x77, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x75,
+	0x73, 0x65, 0x72, 0x2e, 0x66, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74,
+	0x52, 0x65, 0x73, 0x70, 0x42, 0x08, 0x5a, 0x06, 0x2e, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -376,22 +583,30 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_user_proto_goTypes = []interface{}{
-	(*Resp)(nil),            // 0: user.Resp
-	(*UserReq)(nil),         // 1: user.userReq
-	(*UserResp)(nil),        // 2: user.userResp
-	(*RelationActReq)(nil),  // 3: user.relationActReq
-	(*RelationActResp)(nil), // 4: user.relationActResp
+	(*Resp)(nil),             // 0: user.Resp
+	(*UserReq)(nil),          // 1: user.userReq
+	(*UserResp)(nil),         // 2: user.userResp
+	(*RelationActReq)(nil),   // 3: user.relationActReq
+	(*RelationActResp)(nil),  // 4: user.relationActResp
+	(*FollowListReq)(nil),    // 5: user.followListReq
+	(*FollowListResp)(nil),   // 6: user.followListResp
+	(*FollowerListReq)(nil),  // 7: user.followerListReq
+	(*FollowerListResp)(nil), // 8: user.followerListResp
 }
 var file_user_proto_depIdxs = []int32{
 	0, // 0: user.userResp.resp:type_name -> user.Resp
 	1, // 1: user.user.user:input_type -> user.userReq
 	3, // 2: user.user.relationAct:input_type -> user.relationActReq
-	2, // 3: user.user.user:output_type -> user.userResp
-	4, // 4: user.user.relationAct:output_type -> user.relationActResp
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	5, // 3: user.user.followList:input_type -> user.followListReq
+	7, // 4: user.user.followerList:input_type -> user.followerListReq
+	2, // 5: user.user.user:output_type -> user.userResp
+	4, // 6: user.user.relationAct:output_type -> user.relationActResp
+	6, // 7: user.user.followList:output_type -> user.followListResp
+	8, // 8: user.user.followerList:output_type -> user.followerListResp
+	5, // [5:9] is the sub-list for method output_type
+	1, // [1:5] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -463,6 +678,54 @@ func file_user_proto_init() {
 				return nil
 			}
 		}
+		file_user_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowListReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowListResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowerListReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowerListResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_user_proto_msgTypes[2].OneofWrappers = []interface{}{}
 	type x struct{}
@@ -471,7 +734,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_user_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

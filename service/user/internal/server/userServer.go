@@ -31,3 +31,13 @@ func (s *UserServer) RelationAct(ctx context.Context, in *user.RelationActReq) (
 	l := logic.NewRelationActLogic(ctx, s.svcCtx)
 	return l.RelationAct(in)
 }
+
+func (s *UserServer) FollowList(ctx context.Context, in *user.FollowListReq) (*user.FollowListResp, error) {
+	l := logic.NewFollowListLogic(ctx, s.svcCtx)
+	return l.FollowList(in)
+}
+
+func (s *UserServer) FollowerList(ctx context.Context, in *user.FollowerListReq) (*user.FollowerListResp, error) {
+	l := logic.NewFollowerListLogic(ctx, s.svcCtx)
+	return l.FollowerList(in)
+}
