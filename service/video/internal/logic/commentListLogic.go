@@ -28,7 +28,8 @@ func NewCommentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Comme
 
 func (l *CommentListLogic) CommentList(in *video.CommentListReq) (*video.CommentListResp, error) {
 	var commentList []models.Comment
-	res := l.svcCtx.Db.Model(&video.Comment{}).Where(&models.Comment{VideoID: in.VideoId}).Find(&commentList)
+	res := l.svcCtx.Db.Model(&video.Comment{}).Where(&models.Comment{VideoID: in.VideoId}).
+		Order("create_at desc").Find(&commentList)
 	if res.Error != nil {
 		logx.Errorf("get comment list failed: %v", res.Error)
 

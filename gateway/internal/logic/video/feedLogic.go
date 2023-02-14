@@ -2,9 +2,11 @@ package video
 
 import (
 	"context"
+	"time"
 	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/gateway/common/tool/rpcutil"
+	videoErrx "train-tiktok/service/video/common/errx"
 	"train-tiktok/service/video/types/video"
 
 	"train-tiktok/gateway/internal/svc"
@@ -33,7 +35,13 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 
 	if rpcResp, err = l.svcCtx.VideoRpc.Feed(l.ctx, &video.FeedReq{
 		LatestTime: req.LatestTime,
-	}); err != nil {
+	}); errorx.IsRpcError(err, videoErrx.ErrNoLatestVideo) {
+		// 没有更新的视频了
+
+		return &types.FeedResp{
+			NextTime: time.Now().Unix(),
+		}, nil
+	} else if err != nil {
 		logx.WithContext(l.ctx).Errorf("Feed rpc error: %v", err)
 
 		return &types.FeedResp{}, err
