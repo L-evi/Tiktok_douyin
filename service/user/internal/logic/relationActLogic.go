@@ -4,6 +4,7 @@ import (
 	"context"
 	"gorm.io/gorm"
 	"train-tiktok/common/errorx"
+	tool2 "train-tiktok/common/tool"
 	"train-tiktok/service/user/common/errx"
 	"train-tiktok/service/user/common/tool"
 	"train-tiktok/service/user/internal/svc"
@@ -38,7 +39,7 @@ func (l *RelationActLogic) RelationAct(in *user.RelationActReq) (*user.RelationA
 	}
 
 	// check if targetId exists
-	if exists, err := tool.CheckUserExist(l.ctx, l.svcCtx.IdentityRpc, in.TargetId); err != nil {
+	if exists, err := tool2.CheckUserExist(l.ctx, l.svcCtx.IdentityRpc, in.TargetId); err != nil {
 		logx.WithContext(l.ctx).Errorf("failed to query user: %v", err)
 
 		return nil, errorx.ErrDatabaseError

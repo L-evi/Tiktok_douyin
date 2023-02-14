@@ -14,11 +14,11 @@ type AuthPassMiddleware struct {
 	identityRpc identityclient.Identity
 }
 
-func NewAuthPassMiddleware(IdentityRpcConf zrpc.RpcClientConf) *AuthMiddleware {
+func NewAuthPassMiddleware(IdentityRpcConf zrpc.RpcClientConf) *AuthPassMiddleware {
 	_identityService := identityclient.NewIdentity(zrpc.MustNewClient(IdentityRpcConf))
 	// logx.Info("identityRpc: ", _identityService)
 
-	return &AuthMiddleware{
+	return &AuthPassMiddleware{
 		identityRpc: _identityService,
 	}
 }
@@ -42,16 +42,23 @@ func (m *AuthPassMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		var err error
 		if resp, err = m.identityRpc.Status(r.Context(), &identityclient.StatusReq{
 			Token: token,
-		}); !errorx.IsRpcError(err, errorx.ErrTokenInvalid) && err != nil {
+		}); errorx.IsRpcError(err, errorx.ErrTokenInvalid) {
+			ctx := context.WithValue(r.Context(), "user_id", int64(0))
+			ctx = context.WithValue(ctx, "username", "")
+			ctx = context.WithValue(ctx, "is_login", false)
+			next(w, r.WithContext(ctx))
+			return
+		} else if err != nil {
 			logx.WithContext(r.Context()).Errorf("identityRpc.Status error: %v", err)
 			httpx.WriteJson(w, http.StatusInternalServerError, errorx.FromRpcStatus(err))
+
 			return
 		}
 
 		// 传递 User_id
 		ctx := context.WithValue(r.Context(), "user_id", resp.UserId)
 		ctx = context.WithValue(ctx, "username", resp.Username)
-		ctx = context.WithValue(ctx, "is_login", !errorx.IsRpcError(err, errorx.ErrTokenInvalid))
+		ctx = context.WithValue(ctx, "is_login", true)
 		next(w, r.WithContext(ctx))
 	}
 }

@@ -10,13 +10,11 @@ import "common.api"
 type (
 	UserReq {
 		UserId int64  `form:"user_id"`
-		Token   string `form:"token"`
+		Token   string `form:"token,optional"`
 	}
 	UserResp {
 		Resp
-		FollowCount   int64  `json:"follow_count"`
-		FollowerCount int64  `json:"follower_count"`
-		IsFollow      bool   `json:"is_follow"`
+		User User `json:"user"`
 	}
 
 )
@@ -34,7 +32,7 @@ type (
 
 type (
 	followerListReq {
-		Token   	string `form:"token"`
+		Token   	string `form:"token,optional"`
 		UserId	int64 `form:"user_id"`
 	}
 	followerListResp {
@@ -46,7 +44,7 @@ type (
 
 type (
 	fansListReq {
-		Token   	string `form:"token"`
+		Token   	string `form:"token,optional"`
 		UserId 		int64 `form:"user_id"`
 	}
 	fansListResp {
@@ -60,11 +58,17 @@ type (
 	middleware: Auth
 )
 service gateway {
-	@handler user
-	get /douyin/user (UserReq) returns (UserResp)
-
 	@handler relationAction
 	post /douyin/relation/action (RelationActionReq) returns (RelationActionResp)
+}
+
+@server(
+	group: user
+	middleware: AuthPass
+)
+service gateway {
+	@handler user
+	get /douyin/user (UserReq) returns (UserResp)
 
 	@handler followList // 关注列表
 	get /douyin/relation/follow/list (followerListReq) returns (followerListResp)

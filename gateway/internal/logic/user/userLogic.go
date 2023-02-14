@@ -25,8 +25,14 @@ func NewUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLogic {
 }
 
 func (l *UserLogic) User(req *types.UserReq) (resp *types.UserResp, err error) {
+	var userId int64
+	var isLogin bool
+	if isLogin = l.ctx.Value("is_login").(bool); isLogin {
+		userId = l.ctx.Value("user_id").(int64)
+	}
+
 	rpcResp, err := l.svcCtx.UserRpc.User(l.ctx, &user.UserReq{
-		UserId:   l.ctx.Value("user_id").(int64),
+		UserId:   userId,
 		TargetId: req.UserId,
 	})
 	if err != nil {
@@ -36,9 +42,13 @@ func (l *UserLogic) User(req *types.UserReq) (resp *types.UserResp, err error) {
 	}
 
 	return &types.UserResp{
-		Resp:          errx.SUCCESS_RESP,
-		FollowCount:   *rpcResp.FollowCount,
-		FollowerCount: *rpcResp.FollowerCount,
-		IsFollow:      rpcResp.IsFollow,
+		Resp: errx.SUCCESS_RESP,
+		User: types.User{
+			Id:            req.UserId,
+			Name:          rpcResp.Name,
+			FollowCount:   *rpcResp.FollowCount,
+			FollowerCount: *rpcResp.FollowerCount,
+			IsFollow:      rpcResp.IsFollow,
+		},
 	}, nil
 }

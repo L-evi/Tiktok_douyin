@@ -4,7 +4,8 @@ import (
 	"context"
 	"errors"
 	"gorm.io/gorm"
-	"train-tiktok/service/video/common/errx"
+	"train-tiktok/common/errorx"
+	tool2 "train-tiktok/common/tool"
 	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/models"
 
@@ -29,13 +30,21 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 }
 
 func (l *PublishListLogic) PublishList(in *video.PublishListReq) (*video.PublishListResp, error) {
+	if exists, err := tool2.CheckUserExist(l.ctx, l.svcCtx.IdentityRpc, in.UserId); err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query user: %v", err)
+
+		return nil, errorx.ErrSystemError
+	} else if !exists {
+		return nil, errorx.ErrUserNotFound
+	}
+
 	// query
 	var videos []models.Video
 	if err := l.svcCtx.Db.Model(&models.Video{}).Where(&models.Video{UserID: in.UserId}).
 		Order("create_at desc").Find(&videos).
 		Error; errors.Is(err, gorm.ErrRecordNotFound) {
 
-		return &video.PublishListResp{}, errx.ErrNoLatestVideo
+		return &video.PublishListResp{VideoList: []*video.VideoX{}}, nil
 	} else if err != nil {
 		logx.WithContext(l.ctx).Errorf("PublishList Feed sql err: %v", err)
 

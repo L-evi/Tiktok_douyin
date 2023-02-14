@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 	"train-tiktok/common/errorx"
+	"train-tiktok/service/video/common/errx"
+	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
 
@@ -28,6 +30,16 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 }
 
 func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*video.FavoriteActionResp, error) {
+
+	// check video exists
+	if exists, err := tool.CheckVideoExists(l.svcCtx.Db, in.VideoId); err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query video, err: %v", err)
+
+		return nil, err
+	} else if !exists {
+		return nil, errx.ErrVideoNotFound
+	}
+
 	// connect to redis
 	rdb := l.svcCtx.Rdb
 

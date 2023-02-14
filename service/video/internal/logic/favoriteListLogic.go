@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"train-tiktok/common/errorx"
+	tool2 "train-tiktok/common/tool"
 	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/models"
 
@@ -28,6 +30,15 @@ func NewFavoriteListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Favo
 }
 
 func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.FavoriteListResp, error) {
+	// check user exists
+	if exists, err := tool2.CheckUserExist(l.ctx, l.svcCtx.IdentityRpc, in.UserId); err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query user: %v", err)
+
+		return nil, errorx.ErrSystemError
+	} else if !exists {
+		return nil, errorx.ErrUserNotFound
+	}
+
 	rdb := l.svcCtx.Rdb
 
 	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.RedisConf.Prefix, in.UserId)

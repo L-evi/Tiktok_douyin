@@ -2,33 +2,10 @@ package tool
 
 import (
 	"fmt"
-	"strings"
+	"gorm.io/gorm"
 	"train-tiktok/service/video/internal/svc"
+	"train-tiktok/service/video/models"
 )
-
-func GetFullPlayUrl(svcCtx *svc.ServiceContext, position, playUrl string) string {
-	if strings.HasPrefix(playUrl, "http") {
-		return playUrl
-	}
-	switch position {
-	case "local":
-		return fmt.Sprintf("%s/%s", svcCtx.StorageBaseUrl.Local, playUrl)
-	default:
-		return playUrl
-	}
-}
-
-func GetFullCoverUrl(svcCtx *svc.ServiceContext, position, coverUrl string) string {
-	if strings.HasPrefix(coverUrl, "http") {
-		return coverUrl
-	}
-	switch position {
-	case "local":
-		return fmt.Sprintf("%s/%s", svcCtx.StorageBaseUrl.Local, coverUrl)
-	default:
-		return coverUrl
-	}
-}
 
 func HandleVideoUrl(svcCtx *svc.ServiceContext, position, playUrl, coverUrl string) (string, string) {
 	switch position {
@@ -40,4 +17,15 @@ func HandleVideoUrl(svcCtx *svc.ServiceContext, position, playUrl, coverUrl stri
 		break
 	}
 	return playUrl, coverUrl
+}
+
+func CheckVideoExists(db *gorm.DB, videoId int64) (bool, error) {
+	var count int64
+	if err := db.Model(&models.Video{}).
+		Where(&models.Video{ID: videoId}).Count(&count).
+		Error; err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
 }

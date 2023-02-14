@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"train-tiktok/common/errorx"
+	tool2 "train-tiktok/common/tool"
 	"train-tiktok/service/identity/types/identity"
 	"train-tiktok/service/user/common/tool"
 
@@ -36,13 +37,21 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 
 	var err error
 
+	// check if userExist
+	if exists, err := tool2.CheckUserExist(l.ctx, l.svcCtx.IdentityRpc, in.UserId); err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query user: %v", err)
+
+		return nil, errorx.ErrDatabaseError
+	} else if !exists {
+		return nil, errorx.ErrUserNotFound
+	}
+
 	// get followCount
 	if err = l.svcCtx.Db.Model(&models.Follow{}).
 		Where(&models.Follow{UserId: in.TargetId}).
 		Count(&followCount).Error; err != nil {
 		logx.WithContext(l.ctx).Errorf("failed to query followCount: %v", err)
 		return &user.UserResp{}, errorx.ErrDatabaseError
-
 	}
 
 	// get followerCount

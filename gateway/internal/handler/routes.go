@@ -53,6 +53,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/douyin/feed",
 					Handler: video.FeedHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/favorite/list",
+					Handler: video.FavoriteListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/comment/list",
+					Handler: video.CommentListHandler(serverCtx),
+				},
 			}...,
 		),
 	)
@@ -72,19 +82,9 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: video.FavoriteActionHandler(serverCtx),
 				},
 				{
-					Method:  http.MethodGet,
-					Path:    "/douyin/favorite/list",
-					Handler: video.FavoriteListHandler(serverCtx),
-				},
-				{
 					Method:  http.MethodPost,
 					Path:    "/douyin/comment/action",
 					Handler: video.CommentActionHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodGet,
-					Path:    "/douyin/comment/list",
-					Handler: video.CommentListHandler(serverCtx),
 				},
 			}...,
 		),
@@ -95,14 +95,22 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.Auth},
 			[]rest.Route{
 				{
-					Method:  http.MethodGet,
-					Path:    "/douyin/user",
-					Handler: user.UserHandler(serverCtx),
-				},
-				{
 					Method:  http.MethodPost,
 					Path:    "/douyin/relation/action",
 					Handler: user.RelationActionHandler(serverCtx),
+				},
+			}...,
+		),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthPass},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/user",
+					Handler: user.UserHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodGet,
