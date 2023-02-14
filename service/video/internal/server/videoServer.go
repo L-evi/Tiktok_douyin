@@ -27,6 +27,11 @@ func (s *VideoServer) Publish(ctx context.Context, in *video.PublishReq) (*video
 	return l.Publish(in)
 }
 
+func (s *VideoServer) PublishList(ctx context.Context, in *video.PublishListReq) (*video.PublishListResp, error) {
+	l := logic.NewPublishListLogic(ctx, s.svcCtx)
+	return l.PublishList(in)
+}
+
 func (s *VideoServer) Feed(ctx context.Context, in *video.FeedReq) (*video.FeedResp, error) {
 	l := logic.NewFeedLogic(ctx, s.svcCtx)
 	return l.Feed(in)

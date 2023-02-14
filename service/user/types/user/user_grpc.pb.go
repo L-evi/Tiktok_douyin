@@ -23,6 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
 	User(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*UserResp, error)
+	RelationAct(ctx context.Context, in *RelationActReq, opts ...grpc.CallOption) (*RelationActResp, error)
+	FollowList(ctx context.Context, in *FollowListReq, opts ...grpc.CallOption) (*FollowListResp, error)
+	FollowerList(ctx context.Context, in *FollowerListReq, opts ...grpc.CallOption) (*FollowerListResp, error)
 }
 
 type userClient struct {
@@ -42,11 +45,41 @@ func (c *userClient) User(ctx context.Context, in *UserReq, opts ...grpc.CallOpt
 	return out, nil
 }
 
+func (c *userClient) RelationAct(ctx context.Context, in *RelationActReq, opts ...grpc.CallOption) (*RelationActResp, error) {
+	out := new(RelationActResp)
+	err := c.cc.Invoke(ctx, "/user.user/relationAct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) FollowList(ctx context.Context, in *FollowListReq, opts ...grpc.CallOption) (*FollowListResp, error) {
+	out := new(FollowListResp)
+	err := c.cc.Invoke(ctx, "/user.user/followList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) FollowerList(ctx context.Context, in *FollowerListReq, opts ...grpc.CallOption) (*FollowerListResp, error) {
+	out := new(FollowerListResp)
+	err := c.cc.Invoke(ctx, "/user.user/followerList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
 	User(context.Context, *UserReq) (*UserResp, error)
+	RelationAct(context.Context, *RelationActReq) (*RelationActResp, error)
+	FollowList(context.Context, *FollowListReq) (*FollowListResp, error)
+	FollowerList(context.Context, *FollowerListReq) (*FollowerListResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -56,6 +89,15 @@ type UnimplementedUserServer struct {
 
 func (UnimplementedUserServer) User(context.Context, *UserReq) (*UserResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method User not implemented")
+}
+func (UnimplementedUserServer) RelationAct(context.Context, *RelationActReq) (*RelationActResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RelationAct not implemented")
+}
+func (UnimplementedUserServer) FollowList(context.Context, *FollowListReq) (*FollowListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FollowList not implemented")
+}
+func (UnimplementedUserServer) FollowerList(context.Context, *FollowerListReq) (*FollowerListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FollowerList not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -88,6 +130,60 @@ func _User_User_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_RelationAct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RelationActReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).RelationAct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.user/relationAct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).RelationAct(ctx, req.(*RelationActReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_FollowList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FollowListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).FollowList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.user/followList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).FollowList(ctx, req.(*FollowListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_FollowerList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FollowerListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).FollowerList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.user/followerList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).FollowerList(ctx, req.(*FollowerListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +194,18 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "user",
 			Handler:    _User_User_Handler,
+		},
+		{
+			MethodName: "relationAct",
+			Handler:    _User_RelationAct_Handler,
+		},
+		{
+			MethodName: "followList",
+			Handler:    _User_FollowList_Handler,
+		},
+		{
+			MethodName: "followerList",
+			Handler:    _User_FollowerList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -17,7 +17,7 @@ type (
     FavoriteActionReq {
         Token string `form:"token"`
         VideoId int64 `form:"video_id"`
-        ActionType int32 `form:"action_type"` // 1: favorite, 2: unfavorite
+        ActionType int32 `form:"action_type,range=[1:2]"` // 1: favorite, 2: unfavorite
     }
     FavoriteActionResp {
         Resp
@@ -40,7 +40,7 @@ type (
     CommentActionReq {
         Token string `form:"token"`
         VideoId int64 `form:"video_id"`
-        ActionType int32 `form:"action_type"`
+        ActionType int32 `form:"action_type,range=[1:2]"`
         CommentText string `form:"comment_text"`
         CommentId int64 `form:"comment_id,optional"`
     }
@@ -83,6 +83,7 @@ type (
     feedResp {
         Resp
         VideoList []Video `json:"video_list"`
+        NextTime int64 `json:"next_time,optional"`
     }
 )
 

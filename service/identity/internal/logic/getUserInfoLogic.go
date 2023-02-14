@@ -2,10 +2,11 @@ package logic
 
 import (
 	"context"
+	"errors"
+	"gorm.io/gorm"
 	"train-tiktok/common/errorx"
-	"train-tiktok/service/identity/models"
-
 	"train-tiktok/service/identity/internal/svc"
+	"train-tiktok/service/identity/models"
 	"train-tiktok/service/identity/types/identity"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -34,7 +35,10 @@ func (l *GetUserInfoLogic) GetUserInfo(in *identity.GetUserInfoReq) (*identity.G
 	err := l.svcCtx.Db.Model(&models.User{}).Select([]string{"username", "nickname"}).
 		Where(&models.User{ID: userId}).
 		First(&_user).Error
-	if err != nil {
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errorx.ErrUserNotFound
+	} else if err != nil {
 		logx.Errorf("failed to query user: %v", err)
 		return nil, errorx.ErrDatabaseError
 	}

@@ -2,10 +2,9 @@ package logic
 
 import (
 	"context"
-	"errors"
-	"gorm.io/gorm"
 	"train-tiktok/common/errorx"
 	"train-tiktok/service/identity/types/identity"
+	"train-tiktok/service/user/common/tool"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"train-tiktok/service/user/internal/svc"
@@ -41,7 +40,7 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 	if err = l.svcCtx.Db.Model(&models.Follow{}).
 		Where(&models.Follow{UserId: in.TargetId}).
 		Count(&followCount).Error; err != nil {
-		logx.Errorf("failed to query followCount: %v", err)
+		logx.WithContext(l.ctx).Errorf("failed to query followCount: %v", err)
 		return &user.UserResp{}, errorx.ErrDatabaseError
 
 	}
@@ -50,25 +49,15 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 	if err = l.svcCtx.Db.Model(&models.Fans{}).
 		Where(&models.Fans{UserId: in.TargetId}).
 		Count(&followerCount).Error; err != nil {
-		logx.Errorf("failed to query followerCount: %v", err)
+		logx.WithContext(l.ctx).Errorf("failed to query followerCount: %v", err)
+
 		return &user.UserResp{}, errorx.ErrDatabaseError
 	}
 
-	if in.TargetId != in.UserId && in.UserId != 0 {
-		// check isFollowed
-		if err = l.svcCtx.Db.Model(&models.Follow{}).Where(&models.Follow{
-			UserId:   in.UserId,
-			TargetId: in.TargetId,
-		}).First(&models.Follow{}).Error; err == nil {
-			isFollowed = true
-		} else if errors.Is(err, gorm.ErrRecordNotFound) {
-			isFollowed = false
-		} else {
-			logx.Errorf("failed to query isFollowed: %v", err)
-			return &user.UserResp{}, errorx.ErrDatabaseError
-		}
-	} else {
-		isFollowed = true
+	if isFollowed, err = tool.IsFollowing(l.ctx, l.svcCtx.Db, in.UserId, in.TargetId); err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query isFollowed: %v", err)
+
+		return &user.UserResp{}, errorx.ErrDatabaseError
 	}
 
 	// Get Username From Identity
@@ -76,7 +65,8 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 	if rpcResp, err = l.svcCtx.IdentityRpc.GetUserInfo(l.ctx, &identity.GetUserInfoReq{
 		UserId: in.TargetId,
 	}); err != nil {
-		logx.Errorf("failed to query username: %v", err)
+		logx.WithContext(l.ctx).Errorf("failed to query username: %v", err)
+
 		return &user.UserResp{}, errorx.ErrDatabaseError
 	}
 

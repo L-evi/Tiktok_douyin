@@ -57,26 +57,20 @@ func (l *FavoriteListLogic) FavoriteList(req *types.FavoriteListReq) (resp *type
 		var FavoriteCount int64
 
 		if isLogin {
-			if favorite, err := rpcutil.IsFavorite(l.svcCtx, l.ctx, userId, v.Id); err != nil {
+			if isFavor, err = rpcutil.IsFavorite(l.svcCtx, l.ctx, userId, v.Id); err != nil {
 				return &types.FovoriteListResp{}, errorx.ErrSystemError
-			} else {
-				isFavor = favorite
 			}
 		}
-		if favorCount, err := rpcutil.GetFavoriteCount(l.svcCtx, l.ctx, v.Id); err != nil {
+		if FavoriteCount, err = rpcutil.GetFavoriteCount(l.svcCtx, l.ctx, v.Id); err != nil {
 			return &types.FovoriteListResp{}, errorx.ErrSystemError
-		} else {
-			FavoriteCount = favorCount
 		}
-		if _commentCount, err := rpcutil.GetCommentCount(l.svcCtx, l.ctx, v.Id); err != nil {
+		if CommentCount, err = rpcutil.GetCommentCount(l.svcCtx, l.ctx, v.Id); err != nil {
 			return &types.FovoriteListResp{}, errorx.ErrSystemError
-		} else {
-			CommentCount = _commentCount
 		}
 		// getUserInfo
 		var userInfo types.User
 		if !isLogin {
-			userId = v.UserId
+			userId = 0 // isFollow 将返回 false
 		}
 		if userInfo, err = rpcutil.GetUserInfo(l.svcCtx, l.ctx, userId, v.UserId); err != nil {
 			return &types.FovoriteListResp{}, errorx.ErrSystemError

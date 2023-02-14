@@ -28,13 +28,17 @@ func NewCommentActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Com
 	}
 }
 
+// CommentAction
+// 用户评论操作
+// in.ActionType 1: add comment 2: delete comment
 func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.CommentActionResp, error) {
 	rdb := l.svcCtx.Rdb
 
 	// get comment count from redis
 	_redisKey := fmt.Sprintf("%s:comment_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)
 
-	if in.ActionType == 1 {
+	switch in.ActionType {
+	case 1:
 		// add comment
 		var Comment = &models.Comment{
 			VideoID: in.VideoId,
@@ -67,25 +71,27 @@ func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.C
 				UserId:     in.UserId,
 			},
 		}, nil
-	} else if in.ActionType == 2 {
-		// delete comment
-		if err := l.svcCtx.Db.Transaction(func(tx *gorm.DB) error {
-			if res := l.svcCtx.Db.Delete(&models.Comment{}, in.CommentId); res.Error != nil || res.RowsAffected == 0 {
-				logx.Errorf("failed to delete comment, err: %v", res.Error)
+	case 2:
+		{
+			// delete comment
+			if err := l.svcCtx.Db.Transaction(func(tx *gorm.DB) error {
+				if res := l.svcCtx.Db.Delete(&models.Comment{}, in.CommentId); res.Error != nil || res.RowsAffected == 0 {
+					logx.Errorf("failed to delete comment, err: %v", res.Error)
 
-				return errorx.ErrSystemError
+					return errorx.ErrSystemError
+				}
+				if _, err := rdb.Decr(l.ctx, _redisKey).Result(); err != nil {
+					logx.WithContext(l.ctx).Errorf("failed to decr comment count, err: %v", err)
+					return errorx.ErrSystemError
+				}
+				return nil
+			}); err != nil {
+				return &video.CommentActionResp{}, err
 			}
-			if _, err := rdb.Decr(l.ctx, _redisKey).Result(); err != nil {
-				logx.WithContext(l.ctx).Errorf("failed to decr comment count, err: %v", err)
-				return errorx.ErrSystemError
-			}
-			return nil
-		}); err != nil {
-			return &video.CommentActionResp{}, err
+
+			return &video.CommentActionResp{}, nil
 		}
-
-		return &video.CommentActionResp{}, nil
+	default:
+		return &video.CommentActionResp{}, errorx.ErrInvalidParameter
 	}
-
-	return &video.CommentActionResp{}, nil
 }

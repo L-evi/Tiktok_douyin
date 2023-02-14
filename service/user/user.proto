@@ -13,7 +13,6 @@ message userReq {
   int64 user_id = 1;
   int64 target_id = 2;
 }
-
 message userResp {
   Resp resp = 1;
   string name = 2;
@@ -22,6 +21,32 @@ message userResp {
   bool is_follow = 5;
 }
 
+message relationActReq{
+  int64 user_id = 1;
+  int64 target_id = 2;
+  int32 action = 3;
+}
+message relationActResp{
+  bool success = 1;
+}
+
+message followListReq{
+  int64 user_id = 1;
+}
+message followListResp{
+  repeated int64 user_ids = 1;
+}
+
+message followerListReq{
+  int64 user_id = 1;
+}
+message followerListResp{
+  repeated int64 user_ids = 1;
+}
+
 service user {
   rpc user(userReq) returns (userResp);
+  rpc relationAct(relationActReq) returns (relationActResp);
+  rpc followList(followListReq) returns (followListResp);
+  rpc followerList(followerListReq) returns (followerListResp);
 }

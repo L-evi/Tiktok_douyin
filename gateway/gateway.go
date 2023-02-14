@@ -68,7 +68,7 @@ func main() {
 		}
 
 		logx.WithContext(ctx).Errorf("error when handler err: %v", err)
-		return http.StatusOK, errorx.FromRpcStatus(errorx.ErrSystemError)
+		return http.StatusOK, errorx.FromRpcStatus(err)
 	})
 
 	// 注册视频对外路由
