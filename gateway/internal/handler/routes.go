@@ -104,6 +104,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/douyin/relation/action",
 					Handler: user.RelationActionHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/relation/follow/list",
+					Handler: user.FollowListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/relation/follower/list",
+					Handler: user.FollowerListHandler(serverCtx),
+				},
 			}...,
 		),
 	)
