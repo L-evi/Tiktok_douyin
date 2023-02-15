@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-func New(dsn string, debug string) (*gorm.DB, error) {
+func New(dsn string, debug bool) (*gorm.DB, error) {
 
 	var logMode = logger.Warn
-	if debug == "true" {
+	if debug {
 		logMode = logger.Info
 	}
 

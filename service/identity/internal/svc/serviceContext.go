@@ -17,7 +17,14 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-
+	// debug mode
+	var debug = false
+	if isDebug, ok := os.LookupEnv("DEBUG"); ok {
+		if isDebug == "true" {
+			debug = true
+			c.Log.Level = "debug"
+		}
+	}
 	logx.MustSetup(c.Log)
 
 	// Gorm
@@ -26,7 +33,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		dsn = c.Mysql.DataSource
 	}
 
-	_db, err := dbutil.New(dsn, os.Getenv("DEBUG"))
+	_db, err := dbutil.New(dsn, debug)
 	if err != nil {
 		log.Panicf("failed to connect to mysql: %v", err)
 	}
