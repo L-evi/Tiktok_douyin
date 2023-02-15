@@ -51,39 +51,62 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 	videoIdStr := strconv.FormatInt(in.VideoId, 10)
 
 	timeNow := time.Now().Unix()
+
 	// favorite action
 	switch in.ActionType {
 	case 1:
-		pipe := rdb.Pipeline()
-		if _, err := pipe.Incr(l.ctx, _countKey).Result(); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
-			return &video.FavoriteActionResp{}, err
-		}
-		if _, err := pipe.ZAdd(l.ctx, _userKey, redis.Z{
-			Score:  float64(timeNow),
-			Member: videoIdStr,
-		}).Result(); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis ZADD error: %v", err)
-			return &video.FavoriteActionResp{}, err
-		}
-		if _, err := pipe.Exec(l.ctx); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis Exec error: %v", err)
-			return &video.FavoriteActionResp{}, err
+		// check if already favorite
+		// 事物
+		tran := rdb.Watch(l.ctx, func(tx *redis.Tx) error {
+			// 检查用户是否已经点赞过该视频
+			if exists, err := tx.ZScore(l.ctx, _userKey, videoIdStr).Result(); err != nil {
+				logx.WithContext(l.ctx).Errorf("redis ZScore error: %v", err)
+				return err
+			} else if exists != 0 {
+				return errx.ErrAlreadyFavorite
+			}
+			// 事物
+			pipe := tx.Pipeline()
+			if _, err := pipe.Incr(l.ctx, _countKey).Result(); err != nil {
+				logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
+				return err
+			}
+			if _, err := pipe.ZAdd(l.ctx, _userKey, redis.Z{
+				Score:  float64(timeNow),
+				Member: videoIdStr,
+			}).Result(); err != nil {
+				logx.WithContext(l.ctx).Errorf("redis ZADD error: %v", err)
+				return err
+			}
+			if _, err := pipe.Exec(l.ctx); err != nil {
+				logx.WithContext(l.ctx).Errorf("redis Exec error: %v", err)
+				return err
+			}
+			return nil
+		}, _countKey, _userKey)
+		if tran != nil {
+			return &video.FavoriteActionResp{}, tran
 		}
 		break
 	case 2:
-		pipe := rdb.Pipeline()
-		if _, err := pipe.Decr(l.ctx, _countKey).Result(); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis Decr error: %v", err)
-			return &video.FavoriteActionResp{}, err
-		}
-		if _, err := pipe.ZRem(l.ctx, _userKey, videoIdStr).Result(); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis ZRem error: %v", err)
-			return &video.FavoriteActionResp{}, err
-		}
-		if _, err := pipe.Exec(l.ctx); err != nil {
-			logx.WithContext(l.ctx).Errorf("redis Exec error: %v", err)
-			return &video.FavoriteActionResp{}, err
+		tran := rdb.Watch(l.ctx, func(tx *redis.Tx) error {
+			pipe := tx.Pipeline()
+			if _, err := pipe.Decr(l.ctx, _countKey).Result(); err != nil {
+				logx.WithContext(l.ctx).Errorf("redis Decr error: %v", err)
+				return err
+			}
+			if _, err := pipe.ZRem(l.ctx, _userKey, videoIdStr).Result(); err != nil {
+				logx.WithContext(l.ctx).Errorf("redis ZRem error: %v", err)
+				return err
+			}
+			if _, err := pipe.Exec(l.ctx); err != nil {
+				logx.WithContext(l.ctx).Errorf("redis Exec error: %v", err)
+				return err
+			}
+			return nil
+		}, _countKey, _userKey)
+		if tran != nil {
+			return &video.FavoriteActionResp{}, tran
 		}
 		break
 	default:
