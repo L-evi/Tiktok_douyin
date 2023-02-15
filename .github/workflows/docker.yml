@@ -1,10 +1,10 @@
-name: Docker Build Test
+name: Docker Build Push
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "main" ]
 
 jobs:
   gateway-builder:
@@ -16,9 +16,9 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v1
         with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Build Context
         uses: docker/setup-buildx-action@v1
       - name: Build
@@ -29,68 +29,68 @@ jobs:
           push: true
           tags: ghcr.io/L-evi/tiktok-gateway:latest
 
-    service-user-builder:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-        - name: Login to Docker Hub
-          if: github.event_name != 'pull_request'
-          uses: docker/login-action@v1
-          with:
+  service-user-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        - name: Set up Docker Build Context
-          uses: docker/setup-buildx-action@v1
-        - name: Build
-          uses: docker/build-push-action@v2
-          with:
-            context: .
-            file: ./service/user/Dockerfile
-            push: true
-            tags: ghcr.io/L-evi/tiktok-service-user:latest
+      - name: Set up Docker Build Context
+        uses: docker/setup-buildx-action@v1
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./service/user/Dockerfile
+          push: true
+          tags: ghcr.io/L-evi/tiktok-service-user:latest
 
-    service-identity-builder:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-        - name: Login to Docker Hub
-          if: github.event_name != 'pull_request'
-          uses: docker/login-action@v1
-          with:
+  service-identity-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        - name: Set up Docker Build Context
-          uses: docker/setup-buildx-action@v1
-        - name: Build
-          uses: docker/build-push-action@v2
-          with:
-            context: .
-            file: ./service/identity/Dockerfile
-            push: true
-            tags: ghcr.io/L-evi/tiktok-service-identity:latest
+      - name: Set up Docker Build Context
+        uses: docker/setup-buildx-action@v1
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./service/identity/Dockerfile
+          push: true
+          tags: ghcr.io/L-evi/tiktok-service-identity:latest
 
-    service-video-builder:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-        - name: Login to Docker Hub
-          if: github.event_name != 'pull_request'
-          uses: docker/login-action@v1
-          with:
+  service-video-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        - name: Set up Docker Build Context
-          uses: docker/setup-buildx-action@v1
-        - name: Build
-          uses: docker/build-push-action@v2
-          with:
-            context: .
-            file: ./service/video/Dockerfile
-            push: true
-            tags: ghcr.io/L-evi/tiktok-service-video:latest
+      - name: Set up Docker Build Context
+        uses: docker/setup-buildx-action@v1
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./service/video/Dockerfile
+          push: true
+          tags: ghcr.io/L-evi/tiktok-service-video:latest
