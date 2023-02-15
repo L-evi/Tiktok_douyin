@@ -33,12 +33,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		_publicPath = c.PublicPath
 	}
 
-	// 视频临时存储前缀URL // http://localhost:8888 or Cos/Oss url
-	_publicBasePath := os.Getenv("PUBLIC_BASE_URL")
-	if _publicBasePath == "" {
-		_publicBasePath = c.PublicPath
-	}
-
 	// isdebug
 	if isDebug, ok := os.LookupEnv("DEBUG"); ok {
 		if isDebug == "true" {
