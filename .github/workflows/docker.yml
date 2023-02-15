@@ -2,9 +2,9 @@ name: Docker Build Push
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "main" ]
 
 jobs:
   gateway-builder:
@@ -18,3 +18,42 @@ jobs:
           image_name: l-evi/tiktok-gateway
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: ./gateway/Dockerfile
+
+  service-identity-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build-and-publish
+        uses: macbre/push-to-ghcr@master
+        with:
+          image_name: l-evi/tiktok-service-identity
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: ./service/identity/Dockerfile
+
+
+
+    service-user-builder:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - name: Build-and-publish
+          uses: macbre/push-to-ghcr@master
+          with:
+            image_name: l-evi/tiktok-service-user
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            dockerfile: ./service/user/Dockerfile
+
+
+    service-video-builder:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - name: Build-and-publish
+          uses: macbre/push-to-ghcr@master
+          with:
+            image_name: l-evi/tiktok-service-video
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            dockerfile: ./service/video/Dockerfile
