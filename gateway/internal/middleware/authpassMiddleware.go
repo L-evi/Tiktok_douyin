@@ -35,7 +35,7 @@ func (m *AuthPassMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			token = r.PostFormValue("token")
 		}
 
-		logx.Info("token: ", token)
+		logx.Debug("token: ", token)
 
 		// verify token in identity service
 		var resp *identityclient.StatusResp

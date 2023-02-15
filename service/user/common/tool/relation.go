@@ -22,7 +22,7 @@ func IsFollowing(ctx context.Context, db *gorm.DB, userId int64, targetId int64)
 		return true, nil
 	}
 
-	logx.Infof("query isFollowed: %s > %s", userId, targetId)
+	logx.Debugf("query isFollowed: %s > %s", userId, targetId)
 
 	if err = db.Model(&models.Follow{}).Where(&models.Follow{
 		UserId:   userId,

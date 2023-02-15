@@ -39,6 +39,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		_publicBasePath = c.PublicPath
 	}
 
+	// isdebug
+	if isDebug, ok := os.LookupEnv("DEBUG"); ok {
+		if isDebug == "true" {
+			c.Log.Level = "debug"
+		}
+	}
 	logx.MustSetup(c.Log)
 
 	return &ServiceContext{

@@ -93,7 +93,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 
 	// 通过文件 filename 判断是否为视频
 	if !tool.IsVideo(header.Filename) {
-		logx.Infof("不支持的文件类型: %s", header.Filename)
+		logx.Debugf("不支持的文件类型: %s", header.Filename)
 
 		return &types.Resp{
 			Code: 1,
@@ -104,7 +104,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 
 	// 判断文件名是否存在安全风险
 	if tool.IsFilenameDangerous(header.Filename) {
-		logx.Infof("文件名存在安全风险: %s", header.Filename)
+		logx.Debugf("文件名存在安全风险: %s", header.Filename)
 
 		return &_fileTypNotSupport, nil
 	}
@@ -113,7 +113,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	// TODO
 
 	// 生成文件路径
-	logx.Info(header.Filename, req.Title)
+	logx.Debug(header.Filename, req.Title)
 	_timeMd5 := strconv.Itoa(int(time.Now().UnixNano()))
 	_titleMd5 := tool.Md5(req.Title)
 	_filenameMd5 := tool.Md5(header.Filename)
