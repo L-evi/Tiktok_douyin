@@ -1,9 +1,11 @@
 Name: video.rpc
-ListenOn: 127.0.0.1:8081
+ListenOn: 127.0.0.1:8083
+Timeout: 10000
 Etcd:
   Hosts:
     - 127.0.0.1:2379
   Key: video.rpc
+  Timeout: 10000
 IdentityRpcConf:
   Etcd:
     Hosts:

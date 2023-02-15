@@ -1,0 +1,73 @@
+version: '3'
+
+services:
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "8888:8888"
+    env_file:
+      - ./gateway/.env
+    volumes:
+      - ./public:/app/public
+    networks:
+      - tiktok_net
+    restart: always
+    depends_on:
+      - service-identity
+      - service-user
+      - service-video
+
+  service-identity:
+    build:
+      context: ./service/identity
+      dockerfile: Dockerfile
+    container_name: service-identity
+    ports:
+      - "8081:8081"
+    env_file:
+      - ./service/identity/.env
+    volumes:
+      - ./public:/app/public
+    networks:
+      - tiktok_net
+    restart: always
+
+  service-user:
+    build:
+      context: ./service/user
+      dockerfile: Dockerfile
+    container_name: service-user
+    ports:
+      - "8082:8082"
+    env_file:
+      - ./service/user/.env
+    volumes:
+      - ./public:/app/public
+    networks:
+      - tiktok_net
+    restart: always
+
+  service-video:
+    build:
+      context: ./service/video
+      dockerfile: Dockerfile
+    container_name: service-video
+    ports:
+      - "8083:8083"
+    env_file:
+      - ./service/video/.env
+    volumes:
+      - ./public:/app/public
+    networks:
+      - tiktok_net
+    restart: always
+
+networks:
+  tiktok_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
