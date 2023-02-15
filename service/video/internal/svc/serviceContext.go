@@ -30,9 +30,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		if isDebug == "true" {
 			debug = true
 			c.Log.Level = "debug"
+		} else {
+			c.Log.Level = "info"
+			c.Log.Mode = "file"
+			c.Log.KeepDays = 60
+			c.Log.Rotation = "daily"
+			c.Log.Encoding = "json"
 		}
 	}
-
 	logx.MustSetup(c.Log)
 
 	// Gorm
