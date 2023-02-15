@@ -1,0 +1,64 @@
+name: Docker Build Test
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  gateway-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Build Context
+        uses: docker/setup-buildx-action@v1
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./gateway/Dockerfile
+          push: false
+
+  service-user-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Build Context
+        uses: docker/setup-buildx-action@v1
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./service/user/Dockerfile
+          push: false
+
+  service-identity-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Build Context
+        uses: docker/setup-buildx-action@v1
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./service/identity/Dockerfile
+          push: false
+
+  service-video-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Build Context
+        uses: docker/setup-buildx-action@v1
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./service/video/Dockerfile
+          push: false
