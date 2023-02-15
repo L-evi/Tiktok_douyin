@@ -33,27 +33,27 @@ jobs:
 
 
 
-    service-user-builder:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-        - name: Build-and-publish
-          uses: macbre/push-to-ghcr@master
-          with:
-            image_name: l-evi/tiktok-service-user
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            dockerfile: ./service/user/Dockerfile
+  service-user-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build-and-publish
+        uses: macbre/push-to-ghcr@master
+        with:
+          image_name: l-evi/tiktok-service-user
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: ./service/user/Dockerfile
 
 
-    service-video-builder:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-        - name: Build-and-publish
-          uses: macbre/push-to-ghcr@master
-          with:
-            image_name: l-evi/tiktok-service-video
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            dockerfile: ./service/video/Dockerfile
+  service-video-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build-and-publish
+        uses: macbre/push-to-ghcr@master
+        with:
+          image_name: l-evi/tiktok-service-video
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: ./service/video/Dockerfile
