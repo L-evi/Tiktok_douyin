@@ -27,7 +27,7 @@ jobs:
           context: .
           file: ./gateway/Dockerfile
           push: true
-          tags: ghcr.io/-l/tiktok-gateway:latest
+          tags: ghcr.io/l-evi/tiktok-gateway:latest
 
   service-user-builder:
     runs-on: ubuntu-latest
