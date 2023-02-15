@@ -55,10 +55,10 @@ func IsVideo(filename string) bool {
 func IsVideoByHead(buf []byte) bool {
 	filetype := http.DetectContentType(buf)
 	if strings.Contains(filetype, "video") {
-		logx.Infof("支持的文件类型: %s", filetype)
+		logx.Debugf("支持的文件类型: %s", filetype)
 		return true
 	} else {
-		logx.Infof("不支持的文件类型: %s", filetype)
+		logx.Debugf("不支持的文件类型: %s", filetype)
 		return false
 	}
 }

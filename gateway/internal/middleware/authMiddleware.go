@@ -38,7 +38,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			}
 		}
 
-		logx.Info("token: ", token)
+		logx.Debugf("token: ", token)
 
 		// verify token in identity service
 		var resp *identityclient.StatusResp
