@@ -37,12 +37,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	logx.MustSetup(c.Log)
 
 	// Gorm
-	dsn := os.Getenv("MYSQL_DSN")
-	if dsn == "" {
-		dsn = c.Mysql.DataSource
+	if dsn, ok := os.LookupEnv("MYSQL_DSN"); ok {
+		c.Mysql.DataSource = dsn
 	}
 
-	_db, err := dbutil.New(dsn, debug)
+	_db, err := dbutil.New(c.Mysql.DataSource, debug)
 	if err != nil {
 		log.Panicf("failed to connect to mysql: %v", err)
 	}
@@ -58,11 +57,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	//	log.Panicf("failed to autoMigrate: %v", err)
 	//}
 	// connect identityRpc
-	_identityRpc := identityclient.NewIdentity(zrpc.MustNewClient(c.IdentityRpcConf))
+	// set Etcd Host
+	if etcdEndpoint, ok := os.LookupEnv("ETCD_ENDPOINT"); ok {
+		c.Etcd.Hosts = []string{etcdEndpoint}
+		c.IdentityRpcConf.Etcd.Hosts = []string{etcdEndpoint}
+	}
 
 	return &ServiceContext{
 		Config:      c,
 		Db:          _db,
-		IdentityRpc: _identityRpc,
+		IdentityRpc: identityclient.NewIdentity(zrpc.MustNewClient(c.IdentityRpcConf)),
 	}
 }

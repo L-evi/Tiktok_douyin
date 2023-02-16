@@ -33,7 +33,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		_publicPath = c.PublicPath
 	}
 
-	// isdebug
+	// is debug
 	if isDebug, ok := os.LookupEnv("DEBUG"); ok {
 		if isDebug == "true" {
 			c.Log.Level = "debug"
@@ -47,6 +47,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 	}
 	logx.MustSetup(c.Log)
+
+	if etcdEndpoint, ok := os.LookupEnv("ETCD_ENDPOINT"); ok {
+		c.IdentityRpc.Etcd.Hosts = []string{etcdEndpoint}
+		c.VideoRpc.Etcd.Hosts = []string{etcdEndpoint}
+		c.UserRpc.Etcd.Hosts = []string{etcdEndpoint}
+	}
 
 	return &ServiceContext{
 		Config:      c,

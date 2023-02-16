@@ -79,6 +79,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	_rdb := redisutil.New(c.RedisConf)
 
+	// set Etcd Host
+	if etcdEndpoint, ok := os.LookupEnv("ETCD_ENDPOINT"); ok {
+		c.Etcd.Hosts = []string{etcdEndpoint}
+		c.IdentityRpcConf.Etcd.Hosts = []string{etcdEndpoint}
+	}
+
 	return &ServiceContext{
 		Config: c,
 		Db:     _db,

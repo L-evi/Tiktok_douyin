@@ -55,6 +55,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		_jwtSigningKey = c.Jwt.SigningKey
 	}
 
+	if etcdEndpoint := os.Getenv("ETCD_ENDPOINT"); etcdEndpoint != "" {
+		c.Etcd.Hosts = []string{etcdEndpoint}
+	}
+
 	return &ServiceContext{
 		Config:        c,
 		Db:            _db,
