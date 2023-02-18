@@ -41,3 +41,13 @@ func (s *UserServer) FollowerList(ctx context.Context, in *user.FollowerListReq)
 	l := logic.NewFollowerListLogic(ctx, s.svcCtx)
 	return l.FollowerList(in)
 }
+
+func (s *UserServer) FriendList(ctx context.Context, in *user.FriendListReq) (*user.FriendListResp, error) {
+	l := logic.NewFriendListLogic(ctx, s.svcCtx)
+	return l.FriendList(in)
+}
+
+func (s *UserServer) UserInfo(ctx context.Context, in *user.UserInfoReq) (*user.UserInfoResp, error) {
+	l := logic.NewUserInfoLogic(ctx, s.svcCtx)
+	return l.UserInfo(in)
+}
