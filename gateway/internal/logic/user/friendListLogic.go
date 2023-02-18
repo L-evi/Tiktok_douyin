@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"train-tiktok/gateway/common/tool/rpcutil"
+	"train-tiktok/service/chat/types/chat"
 	"train-tiktok/service/user/user"
 
 	"train-tiktok/gateway/internal/svc"
@@ -46,11 +47,23 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 
 			return &types.FriendListResp{}, nil
 		}
+		// get last chat message
+		chatLastMessageRpc, err := l.svcCtx.ChatRpc.ChatLastMessage(l.ctx, &chat.ChatLastMessageReq{
+			ToUserId:   req.UserId,
+			FromUserId: value,
+		})
+		if err != nil {
+			logx.Errorf("get last chat message failed: %v", err)
 
+			return &types.FriendListResp{}, err
+		}
+		msgType := int64(0)
+		if chatLastMessageRpc.Message.FromUserId == req.UserId {
+			msgType = int64(1)
+		}
 		friendUser := types.FriendUser{
-			// todo: 在聊天中添加一个查询最近的消息的请求
-			Message: "",
-			MsgType: 0,
+			Message: chatLastMessageRpc.Message.Content,
+			MsgType: msgType,
 			User:    userInfo,
 		}
 		userList = append(userList, friendUser)
