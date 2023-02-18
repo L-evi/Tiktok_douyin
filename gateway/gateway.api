@@ -9,6 +9,7 @@ import "common.api"
 import "identity.api"
 import "video.api"
 import "user.api"
+import "chat.api"
 
 type pingResp {
 	Resp

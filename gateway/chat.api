@@ -1,0 +1,40 @@
+syntax = "v1"
+
+info(
+    title: "chat"
+    desc: "chat file"
+)
+
+import "common.api"
+
+type (
+    ChatActionReq {
+        Token string `json:"token"`
+        ToUserId int64 `json:"to_user_id"`
+        ActionType int32 `json:"action_type"`
+        Content string `json:"content"`
+    }
+    ChatActionResp {
+        Resp
+    }
+    ChatMessageReq {
+        Token string `json:"token"`
+        ToUserId int64 `json:"to_user_id"`
+    }
+    ChatMessageResp {
+        Resp
+        MessageList []Message `json:"message_list"`
+    }
+)
+
+@server(
+    group: chat
+    middleware: Auth
+)
+
+service gateway {
+    @handler chatAction
+    post /douyin/message/action (ChatActionReq) returns (ChatActionResp)
+    @handler chatMessage
+    get /douyin/message/chat (ChatMessageReq) returns (ChatMessageResp)
+}

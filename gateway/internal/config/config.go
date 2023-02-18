@@ -11,4 +11,5 @@ type Config struct {
 	VideoRpc    zrpc.RpcClientConf
 	UserRpc     zrpc.RpcClientConf
 	PublicPath  string
+	ChatRpc     zrpc.RpcClientConf
 }

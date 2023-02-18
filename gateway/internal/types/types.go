@@ -49,6 +49,14 @@ type FriendUser struct {
 	User    User   `json:"user"`
 }
 
+type Message struct {
+	Id         int64  `json:"id"`
+	FromUserId int64  `json:"from_user_id"`
+	Content    string `json:"content"`
+	CreateTime string `json:"create_time"`
+	ToUserId   int64  `json:"to_user_id"`
+}
+
 type LoginReq struct {
 	Username string `form:"username"`
 	Password string `form:"password"`
@@ -79,7 +87,7 @@ type PublishActionReq struct {
 type FavoriteActionReq struct {
 	Token      string `form:"token"`
 	VideoId    int64  `form:"video_id"`
-	ActionType int32  `form:"action_type,range=[1:2]"` // 1: favorite, 2: unfavorite
+	ActionType int32  `form:"action_type"` // 1: favorite, 2: unfavorite
 }
 
 type FavoriteActionResp struct {
@@ -188,4 +196,25 @@ type FriendListReq struct {
 type FriendListResp struct {
 	Resp
 	UserList []FriendUser `json:"user_list"`
+}
+
+type ChatActionReq struct {
+	Token      string `json:"token"`
+	ToUserId   int64  `json:"to_user_id"`
+	ActionType int32  `json:"action_type"`
+	Content    string `json:"content"`
+}
+
+type ChatActionResp struct {
+	Resp
+}
+
+type ChatMessageReq struct {
+	Token    string `json:"token"`
+	ToUserId int64  `json:"to_user_id"`
+}
+
+type ChatMessageResp struct {
+	Resp
+	MessageList []Message `json:"message_list"`
 }
