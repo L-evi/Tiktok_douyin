@@ -13,16 +13,19 @@ import (
 )
 
 type (
-	CharActionResp  = chat.CharActionResp
-	ChatActionReq   = chat.ChatActionReq
-	ChatMessageReq  = chat.ChatMessageReq
-	ChatMessageResp = chat.ChatMessageResp
-	Message         = chat.Message
-	Resp            = chat.Resp
+	CharActionResp      = chat.CharActionResp
+	ChatActionReq       = chat.ChatActionReq
+	ChatLastMessageReq  = chat.ChatLastMessageReq
+	ChatLastMessageResp = chat.ChatLastMessageResp
+	ChatMessageReq      = chat.ChatMessageReq
+	ChatMessageResp     = chat.ChatMessageResp
+	Message             = chat.Message
+	Resp                = chat.Resp
 
 	Chat interface {
 		ChatAction(ctx context.Context, in *ChatActionReq, opts ...grpc.CallOption) (*CharActionResp, error)
 		ChatMessage(ctx context.Context, in *ChatMessageReq, opts ...grpc.CallOption) (*ChatMessageResp, error)
+		ChatLastMessage(ctx context.Context, in *ChatLastMessageReq, opts ...grpc.CallOption) (*ChatLastMessageResp, error)
 	}
 
 	defaultChat struct {
@@ -44,4 +47,9 @@ func (m *defaultChat) ChatAction(ctx context.Context, in *ChatActionReq, opts ..
 func (m *defaultChat) ChatMessage(ctx context.Context, in *ChatMessageReq, opts ...grpc.CallOption) (*ChatMessageResp, error) {
 	client := chat.NewChatClient(m.cli.Conn())
 	return client.ChatMessage(ctx, in, opts...)
+}
+
+func (m *defaultChat) ChatLastMessage(ctx context.Context, in *ChatLastMessageReq, opts ...grpc.CallOption) (*ChatLastMessageResp, error) {
+	client := chat.NewChatClient(m.cli.Conn())
+	return client.ChatLastMessage(ctx, in, opts...)
 }

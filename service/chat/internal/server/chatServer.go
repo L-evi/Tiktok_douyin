@@ -31,3 +31,8 @@ func (s *ChatServer) ChatMessage(ctx context.Context, in *chat.ChatMessageReq) (
 	l := logic.NewChatMessageLogic(ctx, s.svcCtx)
 	return l.ChatMessage(in)
 }
+
+func (s *ChatServer) ChatLastMessage(ctx context.Context, in *chat.ChatLastMessageReq) (*chat.ChatLastMessageResp, error) {
+	l := logic.NewChatLastMessageLogic(ctx, s.svcCtx)
+	return l.ChatLastMessage(in)
+}
