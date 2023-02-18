@@ -1,78 +1,91 @@
 syntax = "v1"
 
-info (
-	title: "user"
-	desc: "user file"
+info(
+    title: "user"
+    desc: "user file"
 )
 
 import "common.api"
 
 type (
-	UserReq {
-		UserId int64  `form:"user_id"`
-		Token   string `form:"token,optional"`
-	}
-	UserResp {
-		Resp
-		User User `json:"user"`
-	}
-
+    UserReq {
+        UserId int64 `form:"user_id"`
+        Token string `form:"token,optional"`
+    }
+    UserResp {
+        Resp
+        User User `json:"user"`
+    }
 )
 
 type (
-	RelationActionReq {
-		Token   	string `form:"token"`
-		ToUserId 	int64 `form:"to_user_id"`
-		ActionTyp 	int32 `form:"action_type,range=[1:2]"`
-	}
-	RelationActionResp {
-		Resp
-	}
+    RelationActionReq {
+        Token string `form:"token"`
+        ToUserId int64 `form:"to_user_id"`
+        ActionTyp int32 `form:"action_type,range=[1:2]"`
+    }
+    RelationActionResp {
+        Resp
+    }
 )
 
 type (
-	followerListReq {
-		Token   	string `form:"token,optional"`
-		UserId	int64 `form:"user_id"`
-	}
-	followerListResp {
-		Resp
-		UserList []User `json:"user_list"`
-	}
+    followerListReq {
+        Token string `form:"token,optional"`
+        UserId int64 `form:"user_id"`
+    }
+    followerListResp {
+        Resp
+        UserList []User `json:"user_list"`
+    }
 )
 
 
 type (
-	fansListReq {
-		Token   	string `form:"token,optional"`
-		UserId 		int64 `form:"user_id"`
-	}
-	fansListResp {
-		Resp
-		UserList []User `json:"user_list"`
-	}
+    fansListReq {
+        Token string `form:"token,optional"`
+        UserId int64 `form:"user_id"`
+    }
+    fansListResp {
+        Resp
+        UserList []User `json:"user_list"`
+    }
+)
+
+type (
+    friendListReq {
+        Token string `form:",optional"`
+        UserId int64 `form:"user_id""`
+    }
+    friendListResp {
+        Resp
+        UserList []FriendUser `json:"user_list"`
+    }
 )
 
 @server(
-	group: user
-	middleware: Auth
+    group: user
+    middleware: Auth
 )
 service gateway {
-	@handler relationAction
-	post /douyin/relation/action (RelationActionReq) returns (RelationActionResp)
+    @handler relationAction
+    post /douyin/relation/action (RelationActionReq) returns (RelationActionResp)
 }
 
 @server(
-	group: user
-	middleware: AuthPass
+    group: user
+    middleware: AuthPass
 )
 service gateway {
-	@handler user
-	get /douyin/user (UserReq) returns (UserResp)
+    @handler user
+    get /douyin/user (UserReq) returns (UserResp)
 
-	@handler followList // 关注列表
-	get /douyin/relation/follow/list (followerListReq) returns (followerListResp)
+    @handler followList // 关注列表
+    get /douyin/relation/follow/list (followerListReq) returns (followerListResp)
 
-	@handler followerList // 粉丝列表
-	get /douyin/relation/follower/list (fansListReq) returns (fansListResp)
+    @handler followerList // 粉丝列表
+    get /douyin/relation/follower/list (fansListReq) returns (fansListResp)
+
+    @handler friendList // 好友列表
+    get /douyin/relation/friend/list (friendListReq) returns (friendListResp)
 }

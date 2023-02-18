@@ -12,7 +12,14 @@ type (
         FollowCount int64 `json:"follow_count"`
         FollowerCount int64 `json:"follower_count"`
         IsFollow bool `json:"is_follow"`
+        Avatar string `json:"avatar"`
+        BackgroundImage string `json:"background_image"`
+        Signature string `json:"signature"`
+        Total_favorited int64 `json:"total_favorited"`
+        WorkCount int64 `json:"work_count"`
+        FavoriteCount int64 `json:"favorite_count"`
     }
+
 
     Video {
         Id int64 `json:"id"`
@@ -31,4 +38,11 @@ type (
         Content string `json:"content"`
         CreateDate string `json:"create_date"`
     }
+
+    FriendUser {
+        message string `json:"message"`
+        msgType int64 `json:"msgType"`
+        user User `json:"user"`
+    }
+
 )

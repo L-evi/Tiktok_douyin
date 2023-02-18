@@ -12,11 +12,17 @@ type Resp struct {
 }
 
 type User struct {
-	Id            int64  `json:"id"`
-	Name          string `json:"name"`
-	FollowCount   int64  `json:"follow_count"`
-	FollowerCount int64  `json:"follower_count"`
-	IsFollow      bool   `json:"is_follow"`
+	Id              int64  `json:"id"`
+	Name            string `json:"name"`
+	FollowCount     int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	Total_favorited int64  `json:"total_favorited"`
+	WorkCount       int64  `json:"work_count"`
+	FavoriteCount   int64  `json:"favorite_count"`
 }
 
 type Video struct {
@@ -35,6 +41,12 @@ type Comment struct {
 	User       User   `json:"user"`
 	Content    string `json:"content"`
 	CreateDate string `json:"create_date"`
+}
+
+type FriendUser struct {
+	Message string `json:"message"`
+	MsgType int64  `json:"msgType"`
+	User    User   `json:"user"`
 }
 
 type LoginReq struct {
@@ -166,4 +178,14 @@ type FansListReq struct {
 type FansListResp struct {
 	Resp
 	UserList []User `json:"user_list"`
+}
+
+type FriendListReq struct {
+	Token  string `form:",optional"`
+	UserId int64  `form:"user_id""`
+}
+
+type FriendListResp struct {
+	Resp
+	UserList []FriendUser `json:"user_list"`
 }
