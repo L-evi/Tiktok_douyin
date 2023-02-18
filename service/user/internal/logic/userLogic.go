@@ -79,10 +79,18 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 		return &user.UserResp{}, errorx.ErrDatabaseError
 	}
 
+	// todo: 补充UserResp的其他字段：avatar、background_image等参数
 	return &user.UserResp{
-		Name:          rpcResp.Nickname,
-		FollowCount:   &followCount,
-		FollowerCount: &followerCount,
-		IsFollow:      isFollowed,
+		Name:            rpcResp.Nickname,
+		FollowCount:     &followCount,
+		FollowerCount:   &followerCount,
+		IsFollow:        isFollowed,
+		UserId:          0,
+		Avatar:          nil,
+		BackgroundImage: nil,
+		Signature:       nil,
+		TotalFavorite:   nil,
+		WorkCount:       nil,
+		FavoriteCount:   nil,
 	}, nil
 }

@@ -22,9 +22,6 @@ type (
 	RelationActReq   = user.RelationActReq
 	RelationActResp  = user.RelationActResp
 	Resp             = user.Resp
-	UserInfo         = user.UserInfo
-	UserInfoReq      = user.UserInfoReq
-	UserInfoResp     = user.UserInfoResp
 	UserReq          = user.UserReq
 	UserResp         = user.UserResp
 
@@ -34,7 +31,6 @@ type (
 		FollowList(ctx context.Context, in *FollowListReq, opts ...grpc.CallOption) (*FollowListResp, error)
 		FollowerList(ctx context.Context, in *FollowerListReq, opts ...grpc.CallOption) (*FollowerListResp, error)
 		FriendList(ctx context.Context, in *FriendListReq, opts ...grpc.CallOption) (*FriendListResp, error)
-		UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 	}
 
 	defaultUser struct {
@@ -71,9 +67,4 @@ func (m *defaultUser) FollowerList(ctx context.Context, in *FollowerListReq, opt
 func (m *defaultUser) FriendList(ctx context.Context, in *FriendListReq, opts ...grpc.CallOption) (*FriendListResp, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.FriendList(ctx, in, opts...)
-}
-
-func (m *defaultUser) UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error) {
-	client := user.NewUserClient(m.cli.Conn())
-	return client.UserInfo(ctx, in, opts...)
 }

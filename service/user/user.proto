@@ -20,25 +20,13 @@ message userResp {
   optional int64 follow_count = 3;
   optional int64 follower_count = 4;
   bool is_follow = 5;
-}
-
-message userInfoReq {
-  int64 user_id = 1;
-}
-
-message userInfoResp {
-  Resp resp = 1;
-  UserInfo user_info = 2;
-}
-
-message UserInfo {
-  int64 user_id = 1;
-  string avatar = 2;
-  string background_image = 3;
-  string signature = 4;
-  int64 total_favorite = 5;
-  int64 work_count = 6;
-  int64 favorite_count = 7;
+  int64 user_id = 6;
+  optional string avatar = 7;
+  optional string background_image = 8;
+  optional string signature = 9;
+  optional  int64 total_favorite = 10;
+  optional int64 work_count = 11;
+  optional int64 favorite_count = 12;
 }
 
 message relationActReq{
@@ -79,5 +67,4 @@ service user {
   rpc followList(followListReq) returns (followListResp);
   rpc followerList(followerListReq) returns (followerListResp);
   rpc friendList(friendListReq) returns (friendListResp);
-  rpc userInfo(userInfoReq) returns (userInfoResp);
 }

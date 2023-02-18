@@ -46,8 +46,3 @@ func (s *UserServer) FriendList(ctx context.Context, in *user.FriendListReq) (*u
 	l := logic.NewFriendListLogic(ctx, s.svcCtx)
 	return l.FriendList(in)
 }
-
-func (s *UserServer) UserInfo(ctx context.Context, in *user.UserInfoReq) (*user.UserInfoResp, error) {
-	l := logic.NewUserInfoLogic(ctx, s.svcCtx)
-	return l.UserInfo(in)
-}

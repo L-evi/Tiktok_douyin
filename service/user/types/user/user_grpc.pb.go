@@ -27,7 +27,6 @@ type UserClient interface {
 	FollowList(ctx context.Context, in *FollowListReq, opts ...grpc.CallOption) (*FollowListResp, error)
 	FollowerList(ctx context.Context, in *FollowerListReq, opts ...grpc.CallOption) (*FollowerListResp, error)
 	FriendList(ctx context.Context, in *FriendListReq, opts ...grpc.CallOption) (*FriendListResp, error)
-	UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 }
 
 type userClient struct {
@@ -83,15 +82,6 @@ func (c *userClient) FriendList(ctx context.Context, in *FriendListReq, opts ...
 	return out, nil
 }
 
-func (c *userClient) UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error) {
-	out := new(UserInfoResp)
-	err := c.cc.Invoke(ctx, "/user.user/userInfo", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -101,7 +91,6 @@ type UserServer interface {
 	FollowList(context.Context, *FollowListReq) (*FollowListResp, error)
 	FollowerList(context.Context, *FollowerListReq) (*FollowerListResp, error)
 	FriendList(context.Context, *FriendListReq) (*FriendListResp, error)
-	UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -123,9 +112,6 @@ func (UnimplementedUserServer) FollowerList(context.Context, *FollowerListReq) (
 }
 func (UnimplementedUserServer) FriendList(context.Context, *FriendListReq) (*FriendListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FriendList not implemented")
-}
-func (UnimplementedUserServer) UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserInfo not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -230,24 +216,6 @@ func _User_FriendList_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserInfoReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).UserInfo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.user/userInfo",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserInfo(ctx, req.(*UserInfoReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -274,10 +242,6 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "friendList",
 			Handler:    _User_FriendList_Handler,
-		},
-		{
-			MethodName: "userInfo",
-			Handler:    _User_UserInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
