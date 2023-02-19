@@ -9,7 +9,7 @@ networks:
 
 services:
   service-identity:
-    image: soxft/tiktok-service-identity:latest
+    image: ghcr.io/soxft/tiktok-service-identity:latest
     container_name: service-identity
     # ports:
     #   - "8081:8081"
@@ -20,7 +20,7 @@ services:
     restart: always
 
   service-user:
-    image: soxft/tiktok-service-user:latest
+    image: ghcr.io/soxft/tiktok-service-user:latest
     container_name: service-user
     # ports:
     #   - "8082:8082"
@@ -33,7 +33,7 @@ services:
     restart: always
 
   service-video:
-    image: soxft/tiktok-service-video:latest
+    image: ghcr.io/soxft/tiktok-service-video:latest
     container_name: service-video
     # ports:
     #   - "8083:8083"
@@ -44,7 +44,7 @@ services:
     restart: always
 
   service-chat:
-    image: soxft/tiktok-service-chat:latest
+    image: ghcr.io/soxft/tiktok-service-chat:latest
     container_name: service-chat
     # ports:
     #   - "8083:8083"
@@ -56,7 +56,7 @@ services:
 
 
   gateway:
-    image: soxft/tiktok-gateway:latest
+    image: ghcr.io/soxft/tiktok-gateway:latest
     container_name: gateway
     ports:
       - "8888:8888"
