@@ -9,7 +9,9 @@ networks:
 
 services:
   service-identity:
-    image: l-evi/tiktok-service-identity:latest
+    build:
+      context: .
+      dockerfile: service/identity/Dockerfile
     container_name: service-identity
     # ports:
     #   - "8081:8081"
@@ -20,7 +22,9 @@ services:
     restart: always
 
   service-user:
-    image: l-evi/tiktok-service-user:latest
+    build:
+      context: .
+      dockerfile: service/user/Dockerfile
     container_name: service-user
     # ports:
     #   - "8082:8082"
@@ -33,7 +37,9 @@ services:
     restart: always
 
   service-video:
-    image: l-evi/tiktok-service-video:latest
+    build:
+      context: .
+      dockerfile: service/video/Dockerfile
     container_name: service-video
     # ports:
     #   - "8083:8083"
@@ -44,7 +50,9 @@ services:
     restart: always
 
   service-chat:
-    image: l-evi/tiktok-service-chat:latest
+    build:
+      context: .
+      dockerfile: service/chat/Dockerfile
     container_name: service-chat
     # ports:
     #   - "8083:8083"
@@ -56,7 +64,9 @@ services:
 
 
   gateway:
-    image: l-evi/tiktok-gateway:latest
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
     container_name: gateway
     ports:
       - "8888:8888"
