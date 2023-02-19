@@ -25,7 +25,8 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
 
-	s := zrpc.MustNewServer(ctx.Config.RpcServerConf, func(grpcServer *grpc.Server) {
+	c = ctx.Config
+	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		identity.RegisterIdentityServer(grpcServer, server.NewIdentityServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {

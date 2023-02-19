@@ -1,5 +1,5 @@
 Name: identity.rpc
-ListenOn: 127.0.0.1:8081
+ListenOn: 0.0.0.0:8081
 Timeout: 10000
 Etcd:
   Hosts:

@@ -1,5 +1,5 @@
 Name: video.rpc
-ListenOn: 127.0.0.1:8083
+ListenOn: 0.0.0.0:8083
 Timeout: 10000
 Etcd:
   Hosts:

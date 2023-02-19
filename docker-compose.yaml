@@ -3,9 +3,9 @@ version: '3'
 networks:
   tiktok_net:
     driver: bridge
-    #  ipam:
-    #    config:
-    #      - subnet: 172.30.0.0/16
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16
 
 services:
   service-identity:
