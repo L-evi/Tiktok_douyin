@@ -3,7 +3,7 @@ ListenOn: 127.0.0.1:8082
 Timeout: 10000
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+    - 127.0.0.1:2379
   Key: user.rpc
   Timeout: 10000
 IdentityRpcConf:
@@ -11,6 +11,7 @@ IdentityRpcConf:
     Hosts:
       - 127.0.0.1:2379
     Key: identity.rpc
+  Timeout: 10000
 Mysql:
   DataSource: tiktok:tiktok@tcp(127.0.0.1)/tiktok?charset=utf8mb4
 Log:
@@ -18,3 +19,11 @@ Log:
   Mode: console
   Encoding: plain
   ServiceName: service-user
+RedisConf:
+  Addr: 127.0.0.1:6379
+  Passwd:
+  Db: 1
+  MinIdle: 5
+  PoolSize: 100
+  MaxLifeTime: 180
+  Prefix: tiktok
