@@ -1,6 +1,9 @@
 package config
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"github.com/zeromicro/go-zero/zrpc"
+	"train-tiktok/common/redisutil"
+)
 
 type Config struct {
 	zrpc.RpcServerConf
@@ -8,4 +11,5 @@ type Config struct {
 		DataSource string
 	}
 	IdentityRpcConf zrpc.RpcClientConf
+	RedisConf       redisutil.RedisConf
 }

@@ -6,6 +6,7 @@ import (
 	tool2 "train-tiktok/common/tool"
 	"train-tiktok/service/identity/types/identity"
 	"train-tiktok/service/user/common/tool"
+	videoModels "train-tiktok/service/video/models"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"train-tiktok/service/user/internal/svc"
@@ -79,18 +80,39 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 		return &user.UserResp{}, errorx.ErrDatabaseError
 	}
 
-	// todo: 补充UserResp的其他字段：avatar、background_image等参数
+	// get user information from database
+	var userInformation models.UserInformation
+	if err := l.svcCtx.Db.Model(&models.UserInformation{}).Where(&models.UserInformation{UserId: in.UserId}).Find(&userInformation).Error; err != nil {
+		logx.Errorf("get user information failed: %v", err)
+
+		return &user.UserResp{}, errorx.ErrDatabaseError
+	}
+
+	// TODO: get total favorite count
+	var totalFavoriteCount int64
+	// get work count
+	var workCount int64
+	if err := l.svcCtx.Db.Model(&videoModels.Video{}).
+		Where(&videoModels.Video{UserID: in.UserId}).
+		Count(&workCount).Error; err != nil {
+		logx.WithContext(l.ctx).Errorf("failed to query work count: %v", err)
+
+		return &user.UserResp{}, errorx.ErrDatabaseError
+	}
+
+	// TODO: get favorite count
+	var favoriteCount int64
 	return &user.UserResp{
 		Name:            rpcResp.Nickname,
 		FollowCount:     &followCount,
 		FollowerCount:   &followerCount,
 		IsFollow:        isFollowed,
-		UserId:          0,
-		Avatar:          nil,
-		BackgroundImage: nil,
-		Signature:       nil,
-		TotalFavorite:   nil,
-		WorkCount:       nil,
-		FavoriteCount:   nil,
+		UserId:          in.UserId,
+		Avatar:          &userInformation.Avatar,
+		BackgroundImage: &userInformation.BackgroundImage,
+		Signature:       &userInformation.Signature,
+		TotalFavorite:   &totalFavoriteCount,
+		WorkCount:       &workCount,
+		FavoriteCount:   &favoriteCount,
 	}, nil
 }
