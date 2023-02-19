@@ -25,7 +25,7 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
 
-	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+	s := zrpc.MustNewServer(ctx.Config.RpcServerConf, func(grpcServer *grpc.Server) {
 		chat.RegisterChatServer(grpcServer, server.NewChatServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {

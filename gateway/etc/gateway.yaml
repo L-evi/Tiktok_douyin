@@ -27,3 +27,9 @@ UserRpc:
       - 127.0.0.1:2379
     Key: user.rpc
     Timeout: 10000
+ChatRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: chat.rpc
+    Timeout: 10000

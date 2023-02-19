@@ -7,6 +7,7 @@ import (
 	"os"
 	"train-tiktok/gateway/internal/config"
 	"train-tiktok/gateway/internal/middleware"
+	"train-tiktok/service/chat/chatclient"
 	"train-tiktok/service/chat/types/chat"
 	"train-tiktok/service/identity/identityclient"
 	"train-tiktok/service/identity/types/identity"
@@ -54,6 +55,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		c.IdentityRpc.Etcd.Hosts = []string{etcdEndpoint}
 		c.VideoRpc.Etcd.Hosts = []string{etcdEndpoint}
 		c.UserRpc.Etcd.Hosts = []string{etcdEndpoint}
+		c.ChatRpc.Etcd.Hosts = []string{etcdEndpoint}
 	}
 
 	return &ServiceContext{
@@ -61,6 +63,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		IdentityRpc: identityclient.NewIdentity(zrpc.MustNewClient(c.IdentityRpc)),
 		VideoRpc:    videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpc)),
 		UserRpc:     userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
+		ChatRpc:     chatclient.NewChat(zrpc.MustNewClient(c.ChatRpc)),
 		Auth:        middleware.NewAuthMiddleware(c.IdentityRpc).Handle,
 		AuthPass:    middleware.NewAuthPassMiddleware(c.IdentityRpc).Handle,
 		PublicPath:  _publicPath,
