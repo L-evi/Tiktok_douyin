@@ -23,6 +23,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		if isDebug == "true" {
 			debug = true
 			c.Log.Level = "debug"
+			c.Log.Mode = "console"
+		} else {
+			c.Log.Level = "info"
+			c.Log.Mode = "file"
+			c.Log.KeepDays = 60
+			c.Log.Rotation = "daily"
+			c.Log.Encoding = "json"
 		}
 	}
 	logx.MustSetup(c.Log)
@@ -46,6 +53,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	_jwtSigningKey := os.Getenv("JWT_SIGNING_KEY")
 	if _jwtSigningKey == "" {
 		_jwtSigningKey = c.Jwt.SigningKey
+	}
+
+	if etcdEndpoint := os.Getenv("ETCD_ENDPOINT"); etcdEndpoint != "" {
+		c.RpcServerConf.Etcd.Hosts = []string{etcdEndpoint}
 	}
 
 	return &ServiceContext{

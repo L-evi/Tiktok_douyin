@@ -45,6 +45,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		log.Panicf("failed to autoMigrate: %v", err)
 	}
 
+	if etcdEndpoint, ok := os.LookupEnv("ETCD_ENDPOINT"); ok {
+		c.RpcServerConf.Etcd.Hosts = []string{etcdEndpoint}
+	}
+
 	// return init
 	return &ServiceContext{
 		Config: c,

@@ -1,9 +1,11 @@
 Name: user.rpc
-ListenOn: 127.0.0.1:8083
+ListenOn: 127.0.0.1:8082
+Timeout: 10000
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: user.rpc
+  Timeout: 10000
 IdentityRpcConf:
   Etcd:
     Hosts:

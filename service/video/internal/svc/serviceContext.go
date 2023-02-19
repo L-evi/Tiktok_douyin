@@ -30,9 +30,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		if isDebug == "true" {
 			debug = true
 			c.Log.Level = "debug"
+		} else {
+			c.Log.Level = "info"
+			c.Log.Mode = "file"
+			c.Log.KeepDays = 60
+			c.Log.Rotation = "daily"
+			c.Log.Encoding = "json"
 		}
 	}
-
 	logx.MustSetup(c.Log)
 
 	// Gorm
@@ -73,6 +78,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	_rdb := redisutil.New(c.RedisConf)
+
+	// set Etcd Host
+	if etcdEndpoint, ok := os.LookupEnv("ETCD_ENDPOINT"); ok {
+		c.RpcServerConf.Etcd.Hosts = []string{etcdEndpoint}
+		c.IdentityRpcConf.Etcd.Hosts = []string{etcdEndpoint}
+	}
 
 	return &ServiceContext{
 		Config: c,

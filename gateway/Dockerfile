@@ -17,6 +17,8 @@ COPY . .
 COPY gateway/etc /app/etc
 RUN go build -ldflags="-s -w" -o /app/gateway gateway/gateway.go
 
+FROM jrottenberg/ffmpeg:4.2-alpine AS ffmpeg
+
 
 FROM scratch
 
@@ -27,5 +29,6 @@ ENV TZ Asia/Shanghai
 WORKDIR /app
 COPY --from=builder /app/gateway /app/gateway
 COPY --from=builder /app/etc /app/etc
+COPY --from=ffmpeg / /
 
 CMD ["./gateway", "-f", "etc/gateway.yaml"]

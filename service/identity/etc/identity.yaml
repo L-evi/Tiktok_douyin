@@ -1,9 +1,11 @@
 Name: identity.rpc
-ListenOn: 127.0.0.1:8080
+ListenOn: 127.0.0.1:8081
+Timeout: 10000
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+    - 127.0.0.1:2379
   Key: identity.rpc
+  Timeout: 10000
 Mysql:
     DataSource: tiktok:tiktok@tcp(127.0.0.1)/tiktok?charset=utf8mb4
 Jwt:

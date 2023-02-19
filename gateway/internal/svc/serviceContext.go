@@ -35,19 +35,26 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		_publicPath = c.PublicPath
 	}
 
-	// 视频临时存储前缀URL // http://localhost:8888 or Cos/Oss url
-	_publicBasePath := os.Getenv("PUBLIC_BASE_URL")
-	if _publicBasePath == "" {
-		_publicBasePath = c.PublicPath
-	}
-
-	// isdebug
+	// is debug
 	if isDebug, ok := os.LookupEnv("DEBUG"); ok {
 		if isDebug == "true" {
 			c.Log.Level = "debug"
+			c.Log.Mode = "console"
+		} else {
+			c.Log.Level = "info"
+			c.Log.Mode = "file"
+			c.Log.KeepDays = 60
+			c.Log.Rotation = "daily"
+			c.Log.Encoding = "json"
 		}
 	}
 	logx.MustSetup(c.Log)
+
+	if etcdEndpoint, ok := os.LookupEnv("ETCD_ENDPOINT"); ok {
+		c.IdentityRpc.Etcd.Hosts = []string{etcdEndpoint}
+		c.VideoRpc.Etcd.Hosts = []string{etcdEndpoint}
+		c.UserRpc.Etcd.Hosts = []string{etcdEndpoint}
+	}
 
 	return &ServiceContext{
 		Config:      c,
