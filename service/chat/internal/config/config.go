@@ -2,7 +2,6 @@ package config
 
 import (
 	"github.com/zeromicro/go-zero/zrpc"
-	"train-tiktok/common/redisutil"
 )
 
 type Config struct {
@@ -10,11 +9,4 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
-	Redis          redisutil.RedisConf
-	StorageBaseUrl StorageStruct
-}
-
-type StorageStruct struct {
-	Local string
-	Cos   string
 }
