@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"os"
+	"strconv"
 	"train-tiktok/common/dbutil"
 	"train-tiktok/common/redisutil"
 	"train-tiktok/service/identity/identityclient"
@@ -71,7 +72,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		c.RedisConf.Passwd = rdbPwd
 	}
 	if rdbDb, ok := os.LookupEnv("REDIS_DB"); ok {
-		c.RedisConf.Addr = rdbDb
+		if rdbDbInt, err := strconv.Atoi(rdbDb); err == nil {
+			c.RedisConf.Db = rdbDbInt
+		}
 	}
 	if rdbPrefix, ok := os.LookupEnv("REDIS_PREFIX"); ok {
 		c.RedisConf.Prefix = rdbPrefix

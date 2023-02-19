@@ -77,7 +77,3 @@ services:
     networks:
       - tiktok_net
     restart: always
-    depends_on:
-      - service-identity
-      - service-user
-      - service-video
