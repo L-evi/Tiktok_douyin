@@ -7,7 +7,7 @@ on:
     branches: [ "dev" ]
 
 jobs:
-  gateway-builder:
+  gateway-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,7 +21,7 @@ jobs:
           file: ./gateway/Dockerfile
           push: false
 
-  service-user-builder:
+  service-user-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,7 +35,7 @@ jobs:
           file: ./service/user/Dockerfile
           push: false
 
-  service-identity-builder:
+  service-identity-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -49,7 +49,7 @@ jobs:
           file: ./service/identity/Dockerfile
           push: false
 
-  service-video-builder:
+  service-video-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -63,7 +63,7 @@ jobs:
           file: ./service/video/Dockerfile
           push: false
 
-  service-chat-builder:
+  service-chat-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
