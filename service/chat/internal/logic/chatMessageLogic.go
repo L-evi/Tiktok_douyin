@@ -26,7 +26,7 @@ func NewChatMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatM
 
 func (l *ChatMessageLogic) ChatMessage(in *chat.ChatMessageReq) (*chat.ChatMessageResp, error) {
 	var Messages []models.Chat
-	if res := l.svcCtx.Db.Model(&models.Chat{}).Where(&models.Chat{FromUserId: in.FromUserId, ToUserId: in.ToUserId}).Find(&Messages); res.Error != nil {
+	if res := l.svcCtx.Db.Model(&models.Chat{}).Where(&models.Chat{FromUserId: in.FromUserId, ToUserId: in.ToUserId}).Or(&models.Chat{FromUserId: in.ToUserId, ToUserId: in.FromUserId}).Find(&Messages); res.Error != nil {
 		logx.Errorf("get chat message failed: %v", res.Error)
 		// todo: bug：只是查询了单方的信息，应该查询双方信息
 		return &chat.ChatMessageResp{}, res.Error
