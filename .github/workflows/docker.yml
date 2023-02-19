@@ -15,7 +15,7 @@ jobs:
       - name: Build-and-publish
         uses: macbre/push-to-ghcr@master
         with:
-          image_name: l-evi/tiktok-gateway
+          image_name: soxft/tiktok-gateway
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: ./gateway/Dockerfile
 
@@ -27,7 +27,7 @@ jobs:
       - name: Build-and-publish
         uses: macbre/push-to-ghcr@master
         with:
-          image_name: l-evi/tiktok-service-identity
+          image_name: soxft/tiktok-service-identity
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: ./service/identity/Dockerfile
 
@@ -41,7 +41,7 @@ jobs:
       - name: Build-and-publish
         uses: macbre/push-to-ghcr@master
         with:
-          image_name: l-evi/tiktok-service-user
+          image_name: soxft/tiktok-service-user
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: ./service/user/Dockerfile
 
@@ -54,7 +54,7 @@ jobs:
       - name: Build-and-publish
         uses: macbre/push-to-ghcr@master
         with:
-          image_name: l-evi/tiktok-service-video
+          image_name: soxft/tiktok-service-video
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: ./service/video/Dockerfile
 
@@ -66,6 +66,6 @@ jobs:
       - name: Build-and-publish
         uses: macbre/push-to-ghcr@master
         with:
-          image_name: l-evi/tiktok-service-chat
+          image_name: soxft/tiktok-service-chat
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: ./service/chat/Dockerfile
