@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"strconv"
@@ -59,8 +60,9 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 		// 事物
 		tran := rdb.Watch(l.ctx, func(tx *redis.Tx) error {
 			// 检查用户是否已经点赞过该视频
-			if exists, err := tx.ZScore(l.ctx, _userKey, videoIdStr).Result(); err != nil {
+			if exists, err := tx.ZScore(l.ctx, _userKey, videoIdStr).Result(); !errors.Is(err, redis.Nil) && err != nil {
 				logx.WithContext(l.ctx).Errorf("redis ZScore error: %v", err)
+
 				return err
 			} else if exists != 0 {
 				return errx.ErrAlreadyFavorite

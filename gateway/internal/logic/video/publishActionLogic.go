@@ -55,14 +55,6 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 
 	var SystemErrResp = errx.HandleRpcErr(errorx.ErrSystemError)
 
-	// 限制文件大小 150M
-	err = l.r.ParseMultipartForm(150 << 20)
-	if err != nil {
-		logx.Errorf("parse form failed: %v", err)
-
-		return &SystemErrResp, nil
-	}
-
 	// 从请求中获取文件句柄
 	var file multipart.File
 	var header *multipart.FileHeader

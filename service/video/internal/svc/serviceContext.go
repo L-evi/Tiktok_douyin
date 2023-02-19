@@ -81,7 +81,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	// set Etcd Host
 	if etcdEndpoint, ok := os.LookupEnv("ETCD_ENDPOINT"); ok {
-		c.Etcd.Hosts = []string{etcdEndpoint}
+		c.RpcServerConf.Etcd.Hosts = []string{etcdEndpoint}
 		c.IdentityRpcConf.Etcd.Hosts = []string{etcdEndpoint}
 	}
 

@@ -1,13 +1,90 @@
 version: '3'
 
+networks:
+  tiktok_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16
+
 services:
-  gateway:
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
-    container_name: gateway
+  etcd:
+    image: bitnami/etcd:3.5.0
+    container_name: tk-etcd
+    environment:
+      - TZ=Asia/Shanghai
+      - ALLOW_NONE_AUTHENTICATION=yes
+    env_file:
+      - .env
+    # ports:
+    #   - "2379:2379"
+    networks:
+      - tiktok_net
+    restart: always
+
+  mysql:
+    image: mysql/mysql-server:8.0.28
+    container_name: tk-mysql
+    environment:
+      TZ: Asia/Shanghai
+    env_file:
+      - .env
     ports:
-      - "8888:8888"
+      - "127.0.0.1:33066:3306"
+    volumes:
+      - ./tiktok/mysql/data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    privileged: true
+    restart: always
+    networks:
+      - tiktok_net
+
+  redis:
+    image: redis:7.0.0-alpine
+    container_name: tk-redis
+    ports:
+      - "127.0.0.1:63379:6379"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    volumes:
+      - ./tiktok/redis/data:/data:rw
+      - ./tiktok/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: "redis-server --appendonly yes"
+    privileged: true
+    restart: always
+    networks:
+      - tiktok_net
+
+  service-identity:
+    build:
+      context: .
+      dockerfile: service/identity/Dockerfile
+    container_name: service-identity
+    # ports:
+    #   - "8081:8081"
+    env_file:
+      - .env
+    networks:
+      - tiktok_net
+    restart: always
+    depends_on:
+      - etcd
+      - mysql
+
+  service-user:
+    build:
+      context: .
+      dockerfile: service/user/Dockerfile
+    container_name: service-user
+    # ports:
+    #   - "8082:8082"
     env_file:
       - .env
     volumes:
@@ -16,58 +93,43 @@ services:
       - tiktok_net
     restart: always
     depends_on:
-      - service-identity
-      - service-user
-      - service-video
-
-  service-identity:
-    build:
-      context: ./service/identity
-      dockerfile: Dockerfile
-    container_name: service-identity
-    ports:
-      - "8081:8081"
-    env_file:
-      - .env
-    volumes:
-      - ./public:/app/public
-    networks:
-      - tiktok_net
-    restart: always
-
-  service-user:
-    build:
-      context: ./service/user
-      dockerfile: Dockerfile
-    container_name: service-user
-    ports:
-      - "8082:8082"
-    env_file:
-      - .env
-    volumes:
-      - ./public:/app/public
-    networks:
-      - tiktok_net
-    restart: always
+      - etcd
+      - mysql
 
   service-video:
     build:
-      context: ./service/video
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: service/video/Dockerfile
     container_name: service-video
-    ports:
-      - "8083:8083"
+    # ports:
+    #   - "8083:8083"
     env_file:
       - .env
-    volumes:
-      - ./public:/app/public
     networks:
       - tiktok_net
     restart: always
+    depends_on:
+      - etcd
+      - mysql
+      - redis
 
-networks:
-  tiktok_net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    container_name: gateway
+    ports:
+      - "8888:8888"
+    env_file:
+      - .env
+    volumes:
+      - ./tiktok/public:/app/public
+    networks:
+      - tiktok_net
+    restart: always
+    depends_on:
+      - service-identity
+      - service-user
+      - service-video
+      - etcd
