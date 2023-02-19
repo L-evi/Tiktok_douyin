@@ -9,7 +9,7 @@ networks:
 
 services:
   service-identity:
-    image: l-evi/tiktok-service-identity:latest
+    image: soxft/tiktok-service-identity:latest
     container_name: service-identity
     # ports:
     #   - "8081:8081"
@@ -20,20 +20,20 @@ services:
     restart: always
 
   service-user:
-    image: l-evi/tiktok-service-user:latest
+    image: soxft/tiktok-service-user:latest
     container_name: service-user
     # ports:
     #   - "8082:8082"
     env_file:
       - .env
     volumes:
-      - ./public:/app/public
+      - ./tiktok/public:/app/public
     networks:
       - tiktok_net
     restart: always
 
   service-video:
-    image: l-evi/tiktok-service-video:latest
+    image: soxft/tiktok-service-video:latest
     container_name: service-video
     # ports:
     #   - "8083:8083"
@@ -44,7 +44,7 @@ services:
     restart: always
 
   service-chat:
-    image: l-evi/tiktok-service-chat:latest
+    image: soxft/tiktok-service-chat:latest
     container_name: service-chat
     # ports:
     #   - "8083:8083"
@@ -56,7 +56,7 @@ services:
 
 
   gateway:
-    image: l-evi/tiktok-gateway:latest
+    image: soxft/tiktok-gateway:latest
     container_name: gateway
     ports:
       - "8888:8888"

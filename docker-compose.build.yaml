@@ -31,7 +31,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./public:/app/public
+      - ./tiktok/public:/app/public
     networks:
       - tiktok_net
     restart: always
