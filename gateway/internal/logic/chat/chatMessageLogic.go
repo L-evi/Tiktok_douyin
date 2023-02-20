@@ -41,7 +41,7 @@ func (l *ChatMessageLogic) ChatMessage(req *types.ChatMessageReq) (resp *types.C
 
 	var Messages []types.Message
 	for _, v := range rpcResp.MessageList {
-		CreateDate := time.Unix(v.CreateTime, 0).Format("yyyy-MM-dd HH:MM:ss")
+		CreateDate := time.UnixMilli(v.CreateTime).Format("2006-01-02 15:04:05")
 
 		Messages = append(Messages, types.Message{
 			Id:         v.Id,

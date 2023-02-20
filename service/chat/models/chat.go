@@ -5,5 +5,5 @@ type Chat struct {
 	FromUserId int64  `gorm:"index;"`
 	ToUserId   int64  `gorm:"index;"`
 	Content    string `gorm:"type:text"`
-	CreateAt   int64  `gorm:"index;autoCreateTime"`
+	CreateAt   int64  `gorm:"index;autoCreateTime:milli"`
 }
