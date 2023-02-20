@@ -16,5 +16,5 @@ Log:
   Encoding: plain
   ServiceName: service-identity
 Conf:
-  GravatarBaseURL: https://www.gravatar.com/avatar/
+  GravatarBaseURL: https://www.gravatar.com/avatar/ # end with /
   DefaultBackground: http://localhost:8888/images/default_background.jpg

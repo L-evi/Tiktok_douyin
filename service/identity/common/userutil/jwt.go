@@ -24,14 +24,14 @@ func GenerateJwt(l *svc.ServiceContext, userid int64, username string) (string, 
 		Issuer:   "train-tiktok",
 		Username: uInfo.Username,
 		UserId:   uInfo.ID,
-	}).SignedString(l.JwtSigningKey)
+	}).SignedString(l.Config.Jwt.SigningKey)
 }
 
 // CheckPermission
 // @description check user permission
 func CheckPermission(l *svc.ServiceContext, _jwt string) (models.User, error) {
 	token, err := jwt.ParseWithClaims(_jwt, &JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return l.JwtSigningKey, nil
+		return l.Config.Jwt.SigningKey, nil
 	})
 	if err != nil {
 		return models.User{}, errorx.ErrTokenInvalid

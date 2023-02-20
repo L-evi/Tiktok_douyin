@@ -11,9 +11,8 @@ import (
 )
 
 type ServiceContext struct {
-	Config        config.Config
-	Db            *gorm.DB
-	JwtSigningKey []byte
+	Config config.Config
+	Db     *gorm.DB
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -53,7 +52,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	// Get Jwt SigningKey
-
 	if _jwtSigningKey, ok := os.LookupEnv("JWT_SIGNING_KEY"); ok {
 		c.Jwt.SigningKey = _jwtSigningKey
 	}
@@ -66,13 +64,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		c.Conf.DefaultBackground = _defaultBackground
 	}
 
+	// etcd Endpoints
 	if etcdEndpoint := os.Getenv("ETCD_ENDPOINT"); etcdEndpoint != "" {
 		c.RpcServerConf.Etcd.Hosts = []string{etcdEndpoint}
 	}
 
 	return &ServiceContext{
-		Config:        c,
-		Db:            _db,
-		JwtSigningKey: []byte(c.Jwt.SigningKey),
+		Config: c,
+		Db:     _db,
 	}
 }
