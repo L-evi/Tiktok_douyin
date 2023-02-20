@@ -54,6 +54,8 @@ func (l *IsFriendLogic) IsFriend(in *user.IsFriendReq) (*user.IsFriendResp, erro
 		}, nil
 	}
 
+	logx.WithContext(l.ctx).Debugf("get is friend: %v <=> %v --> count: %v", in.UserId, in.TargetId, count)
+
 	return &user.IsFriendResp{
 		IsFriend: false,
 	}, nil
