@@ -26,8 +26,7 @@ func NewUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLogic {
 
 func (l *UserLogic) User(req *types.UserReq) (resp *types.UserResp, err error) {
 	var userId int64
-	var isLogin bool
-	if isLogin = l.ctx.Value("is_login").(bool); isLogin {
+	if l.ctx.Value("is_login").(bool) {
 		userId = l.ctx.Value("user_id").(int64)
 	}
 
