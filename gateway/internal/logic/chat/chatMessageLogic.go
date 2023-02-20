@@ -2,7 +2,6 @@ package chat
 
 import (
 	"context"
-	"time"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/service/chat/types/chat"
 
@@ -42,14 +41,12 @@ func (l *ChatMessageLogic) ChatMessage(req *types.ChatMessageReq) (resp *types.C
 
 	var Messages []types.Message
 	for _, v := range rpcResp.MessageList {
-		CreateDate := time.Unix(v.CreateTime/1000, 0).Format("2006-01-02 15:04:05")
-
 		Messages = append(Messages, types.Message{
 			Id:         v.Id,
 			FromUserId: v.FromUserId,
 			ToUserId:   v.ToUserId,
 			Content:    v.Content,
-			CreateTime: CreateDate,
+			CreateTime: v.CreateTime / 1000,
 		})
 	}
 

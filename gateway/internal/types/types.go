@@ -53,7 +53,7 @@ type Message struct {
 	Id         int64  `json:"id"`
 	FromUserId int64  `json:"from_user_id"`
 	Content    string `json:"content"`
-	CreateTime string `json:"create_time"`
+	CreateTime int64  `json:"create_time"`
 	ToUserId   int64  `json:"to_user_id"`
 }
 
