@@ -17,4 +17,4 @@ Log:
   ServiceName: service-identity
 Conf:
   GravatarBaseURL: https://www.gravatar.com/avatar/
-  DefaultBackground: https://img.iirose.cn/tiktok/background.jpg
+  DefaultBackground: http://localhost:8888/images/default_background.jpg

@@ -53,9 +53,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	// Get Jwt SigningKey
-	_jwtSigningKey := os.Getenv("JWT_SIGNING_KEY")
-	if _jwtSigningKey == "" {
-		_jwtSigningKey = c.Jwt.SigningKey
+
+	if _jwtSigningKey, ok := os.LookupEnv("JWT_SIGNING_KEY"); ok {
+		c.Jwt.SigningKey = _jwtSigningKey
+	}
+
+	// Get Conf
+	if gravatarBaseUrl, ok := os.LookupEnv("GRAVATAR_BASE_URL"); ok {
+		c.Conf.GravatarBaseURL = gravatarBaseUrl
+	}
+	if _defaultBackground, ok := os.LookupEnv("DEFAULT_BACKGROUND_IMAGE"); ok {
+		c.Conf.DefaultBackground = _defaultBackground
 	}
 
 	if etcdEndpoint := os.Getenv("ETCD_ENDPOINT"); etcdEndpoint != "" {
@@ -65,6 +73,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:        c,
 		Db:            _db,
-		JwtSigningKey: []byte(_jwtSigningKey),
+		JwtSigningKey: []byte(c.Jwt.SigningKey),
 	}
 }
