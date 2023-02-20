@@ -40,7 +40,7 @@ func (l *ChatActionLogic) ChatAction(in *chat.ChatActionReq) (*chat.CharActionRe
 		}
 		// create chat into database
 		if err := l.svcCtx.Db.Create(&chatMessage); err != nil {
-			logx.WithContext(l.ctx).Errorf("failed to create chat: %s", err)
+			logx.WithContext(l.ctx).Errorf("failed to create chat: %v", err)
 
 			return &chat.CharActionResp{}, errorx.ErrDatabaseError
 		}

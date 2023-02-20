@@ -35,7 +35,7 @@ func (l *ChatLastMessageLogic) ChatLastMessage(in *chat.ChatLastMessageReq) (*ch
 
 		return &chat.ChatLastMessageResp{}, nil
 	} else if err != nil {
-		logx.WithContext(l.ctx).Errorf("get last chat message failed: %s", err)
+		logx.WithContext(l.ctx).Errorf("get last chat message failed: %v", err)
 
 		return &chat.ChatLastMessageResp{}, errorx.ErrDatabaseError
 	}
