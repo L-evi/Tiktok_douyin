@@ -44,9 +44,9 @@ type Comment struct {
 }
 
 type FriendUser struct {
+	User
 	Message string `json:"message"`
 	MsgType int64  `json:"msgType"`
-	User    User   `json:"user"`
 }
 
 type Message struct {
@@ -202,7 +202,7 @@ type ChatActionReq struct {
 	Token      string `form:"token"`
 	ToUserId   int64  `form:"to_user_id"`
 	ActionType int32  `form:"action_type"`
-	Content    string `form:"content"`
+	Content    string `form:"content,optional"`
 }
 
 type ChatActionResp struct {
@@ -212,7 +212,7 @@ type ChatActionResp struct {
 type ChatMessageReq struct {
 	Token      string `form:"token"`
 	ToUserId   int64  `form:"to_user_id"`
-	PreMsgTime int64  `form:"pre_msg_time"`
+	PreMsgTime int64  `form:"pre_msg_time,optional"`
 }
 
 type ChatMessageResp struct {

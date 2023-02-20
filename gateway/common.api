@@ -38,10 +38,10 @@ type (
         CreateDate string `json:"create_date"`
     }
 
-    FriendUser {
+    FriendUser  {
+        User
         message string `json:"message"`
         msgType int64 `json:"msgType"`
-        user User `json:"user"`
     }
 
 
