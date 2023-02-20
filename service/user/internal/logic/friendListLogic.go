@@ -26,11 +26,11 @@ func NewFriendListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Friend
 
 func (l *FriendListLogic) FriendList(in *user.FriendListReq) (*user.FriendListResp, error) {
 	// get friends from fans join follow
-	var users_id []int64
+	var userId []int64
 	result := l.svcCtx.Db.Joins("follow").
 		Where(&models.Follow{UserId: in.UserId}).
 		Where(&models.Fans{UserId: in.UserId}).
-		Pluck("target_id", users_id)
+		Pluck("target_id", &userId)
 	if result.Error != nil {
 		logx.Error("get friend list failed: %v", result.Error)
 
@@ -38,6 +38,6 @@ func (l *FriendListLogic) FriendList(in *user.FriendListReq) (*user.FriendListRe
 	}
 
 	return &user.FriendListResp{
-		UserIdList: users_id,
+		UserIdList: userId,
 	}, nil
 }

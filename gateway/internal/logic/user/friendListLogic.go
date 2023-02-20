@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"train-tiktok/gateway/common/errx"
 	"train-tiktok/gateway/common/tool/rpcutil"
 	"train-tiktok/service/chat/types/chat"
 	"train-tiktok/service/user/user"
@@ -78,7 +79,7 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 	}
 
 	return &types.FriendListResp{
-		Resp:     types.Resp{},
+		Resp:     errx.SUCCESS_RESP,
 		UserList: userList,
 	}, nil
 }
