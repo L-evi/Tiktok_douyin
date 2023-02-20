@@ -61,13 +61,15 @@ func GetUserInfo(c *svc.ServiceContext, ctx context.Context, userId int64, targe
 		return types.User{}, err
 	}
 
-	var favoriteRpc *video.FavoriteCountResp
-	if favoriteRpc, err = c.VideoRpc.FavoriteCount(ctx, &video.FavoriteCountReq{
-		VideoId: 0,
+	// 总点赞量
+	var favoriteRpc *video.UserFavoriteCountResp
+	if favoriteRpc, err = c.VideoRpc.UserFavoriteCount(ctx, &video.UserFavoriteCountReq{
+		UserId: targetId,
 	}); err != nil {
 		return types.User{}, err
 	}
 
+	// 获赞
 	var favoritedCount *video.FavoritedCountResp
 	if favoritedCount, err = c.VideoRpc.FavoritedCount(ctx, &video.FavoritedCountReq{
 		UserId: targetId,
