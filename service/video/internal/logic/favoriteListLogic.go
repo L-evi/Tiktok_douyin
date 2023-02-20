@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"gorm.io/gorm"
 	"strconv"
 	"train-tiktok/common/errorx"
 	tool2 "train-tiktok/common/tool"
@@ -64,15 +66,19 @@ func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.Favo
 			return &video.FavoriteListResp{}, err
 		}
 		var myVideo models.Video
-		result := l.svcCtx.Db.Where(&models.Video{ID: videoId}).First(&myVideo)
-		if result.Error != nil {
-			logx.Errorf("failed to get video, err: %v", result.Error)
 
-			return &video.FavoriteListResp{}, result.Error
+		if err := l.svcCtx.Db.Where(&models.Video{ID: videoId}).First(&myVideo).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			return &video.FavoriteListResp{
+				VideoList: []*video.VideoX{},
+			}, nil
+		} else if err != nil {
+			logx.Errorf("failed to get video, err: %v", err)
+
+			return &video.FavoriteListResp{}, errorx.ErrDatabaseError
 		}
 
 		myVideo.PlayUrl, myVideo.CoverUrl = tool.HandleVideoUrl(l.svcCtx, myVideo.Position, myVideo.PlayUrl, myVideo.CoverUrl)
-		// TODO
+		// TO/DO
 		favoriteList = append(favoriteList, &video.VideoX{
 			Id:       myVideo.ID,
 			UserId:   myVideo.UserID,

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"time"
-	"train-tiktok/service/video/common/errx"
 	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/models"
 
@@ -52,9 +51,10 @@ func (l *FeedLogic) Feed(in *video.FeedReq) (*video.FeedResp, error) {
 		return &video.FeedResp{}, err
 	}
 
-	logx.WithContext(l.ctx).Infof("FeedLogic Feed videos: %v", videos)
+	logx.WithContext(l.ctx).Debugf("FeedLogic Feed videos: %v", videos)
 	if len(videos) == 0 {
-		return &video.FeedResp{}, errx.ErrNoLatestVideo
+		// 没有更新的数据 //  errx.ErrNoLatestVideo
+		return &video.FeedResp{}, nil
 	}
 
 	// 处理数据
