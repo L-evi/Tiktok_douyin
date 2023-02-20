@@ -5,5 +5,10 @@ Etcd:
   Hosts:
     - 127.0.0.1:2379
   Key: chat.rpc
+Log:
+  level: info
+  Mode: console
+  Encoding: plain
+  ServiceName: service-chat
 Mysql:
   DataSource: tiktok:tiktok@tcp(127.0.0.1)/tiktok?charset=utf8mb4
