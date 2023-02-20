@@ -31,6 +31,7 @@ func (l *ChatLastMessageLogic) ChatLastMessage(in *chat.ChatLastMessageReq) (*ch
 	if err := l.svcCtx.Db.Model(&models.Chat{}).
 		Where(&models.Chat{FromUserId: in.FromUserId, ToUserId: in.ToUserId}).
 		Or(&models.Chat{FromUserId: in.ToUserId, ToUserId: in.FromUserId}).
+		Order("create_at desc").
 		First(&message).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 
 		return &chat.ChatLastMessageResp{}, nil
