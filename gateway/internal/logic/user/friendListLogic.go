@@ -43,9 +43,9 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 
 	var userList []types.FriendUser
 	// get user detail information
-	for _, value := range friendRpc.UserIdList {
+	for _, targetUserId := range friendRpc.UserIdList {
 		// get user information
-		userInfo, err := rpcutil.GetUserInfo(l.svcCtx, l.ctx, req.UserId, value)
+		userInfo, err := rpcutil.GetUserInfo(l.svcCtx, l.ctx, req.UserId, targetUserId)
 		if err != nil {
 			logx.Errorf("get user information failed: %v", err)
 
@@ -55,7 +55,7 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 		// get last chat message
 		chatLastMessageRpc, err := l.svcCtx.ChatRpc.ChatLastMessage(l.ctx, &chat.ChatLastMessageReq{
 			ToUserId:   req.UserId,
-			FromUserId: value,
+			FromUserId: targetUserId,
 		})
 		if err != nil {
 			logx.Errorf("get last chat message failed: %v", err)
@@ -66,7 +66,7 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 		if chatLastMessageRpc.Message == nil {
 			userList = append(userList, types.FriendUser{
 				Message: "来打个招呼吧",
-				MsgType: int64(0),
+				MsgType: int64(1),
 				User:    userInfo,
 			})
 			continue

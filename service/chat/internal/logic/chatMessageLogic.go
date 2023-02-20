@@ -35,7 +35,7 @@ func (l *ChatMessageLogic) ChatMessage(in *chat.ChatMessageReq) (*chat.ChatMessa
 	}
 
 	var Messages []models.Chat
-	if err := l.svcCtx.Db.Model(&models.Chat{}).
+	if err := l.svcCtx.Db.Model(&models.Chat{}).Select([]string{"id", "from_user_id", "to_user_id", "content", "create_at"}).
 		Where("from_user_id = ? AND to_user_id = ?", in.FromUserId, in.ToUserId).
 		Where("create_at < ?", preMsgTime).
 		Find(&Messages).Error; errors.Is(err, gorm.ErrRecordNotFound) {

@@ -2,6 +2,8 @@ package chat
 
 import (
 	"context"
+	"train-tiktok/common/errorx"
+	"train-tiktok/common/tool"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/service/chat/types/chat"
 
@@ -27,6 +29,11 @@ func NewChatActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatAc
 
 func (l *ChatActionLogic) ChatAction(req *types.ChatActionReq) (resp *types.ChatActionResp, err error) {
 	fromUserId := l.ctx.Value("user_id").(int64)
+	if exists, err := tool.CheckUserExist(l.ctx, l.svcCtx.IdentityRpc, fromUserId); err != nil {
+		return &types.ChatActionResp{}, errorx.ErrSystemError
+	} else if !exists {
+		return &types.ChatActionResp{}, errorx.ErrUserNotFound
+	}
 
 	if _, err = l.svcCtx.ChatRpc.ChatAction(l.ctx, &chat.ChatActionReq{
 		FromUserId: fromUserId,
