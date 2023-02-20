@@ -2,6 +2,7 @@ package chat
 
 import (
 	"context"
+	"time"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/service/chat/types/chat"
 
@@ -26,6 +27,11 @@ func NewChatMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatM
 }
 
 func (l *ChatMessageLogic) ChatMessage(req *types.ChatMessageReq) (resp *types.ChatMessageResp, err error) {
+
+	// 秒级时间戳转毫秒级
+	if time.Unix(req.PreMsgTime, 0).Year() < 2000 {
+		req.PreMsgTime = req.PreMsgTime * 1000
+	}
 
 	var rpcResp *chat.ChatMessageResp
 	if rpcResp, err = l.svcCtx.ChatRpc.ChatMessage(l.ctx, &chat.ChatMessageReq{
