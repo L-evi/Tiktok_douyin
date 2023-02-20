@@ -36,11 +36,20 @@ func (l *IsFriendLogic) IsFriend(in *user.IsFriendReq) (*user.IsFriendResp, erro
 			IsFriend: false,
 		}, nil
 	}
-	var count int64
+	var countFans int64
+	var countFollow int64
 	if err := l.svcCtx.Db.Model(&models.Fans{}).
 		Where(&models.Fans{UserId: in.UserId, TargetId: in.TargetId}).
-		Where(&models.Fans{UserId: in.TargetId, TargetId: in.UserId}).
-		Count(&count).Error; err != nil {
+		Count(&countFans).Error; err != nil {
+
+		logx.WithContext(l.ctx).Errorf("get is friend failed: %v", err)
+		return &user.IsFriendResp{
+			IsFriend: false,
+		}, errorx.ErrDatabaseError
+	}
+	if err := l.svcCtx.Db.Model(&models.Follow{}).
+		Where(&models.Follow{UserId: in.UserId, TargetId: in.TargetId}).
+		Count(&countFollow).Error; err != nil {
 
 		logx.WithContext(l.ctx).Errorf("get is friend failed: %v", err)
 		return &user.IsFriendResp{
@@ -48,13 +57,13 @@ func (l *IsFriendLogic) IsFriend(in *user.IsFriendReq) (*user.IsFriendResp, erro
 		}, errorx.ErrDatabaseError
 	}
 
-	if count > 0 {
+	if countFans > 0 && countFollow > 0 {
 		return &user.IsFriendResp{
 			IsFriend: true,
 		}, nil
 	}
 
-	logx.WithContext(l.ctx).Debugf("get is friend: %v <=> %v --> count: %v", in.UserId, in.TargetId, count)
+	logx.WithContext(l.ctx).Debugf("get is friend: %v <=> %v --> count: %v %v", in.UserId, in.TargetId, countFans, countFollow)
 
 	return &user.IsFriendResp{
 		IsFriend: false,
