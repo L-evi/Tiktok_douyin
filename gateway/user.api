@@ -54,8 +54,8 @@ type (
 
 type (
     friendListReq {
-        Token string `form:",optional"`
-        UserId int64 `form:"user_id""`
+        Token string `form:"token,optional"`
+        UserId int64 `form:"user_id""` // ! can only be self
     }
     friendListResp {
         Resp

@@ -48,6 +48,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err := _db.AutoMigrate(models.User{}); err != nil {
 		log.Panicf("failed to autoMigrate: %v", err)
 	}
+	if err := _db.AutoMigrate(models.UserInformation{}); err != nil {
+		log.Panicf("failed to autoMigrate: %v", err)
+	}
 
 	// Get Jwt SigningKey
 	_jwtSigningKey := os.Getenv("JWT_SIGNING_KEY")

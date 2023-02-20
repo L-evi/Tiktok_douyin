@@ -31,20 +31,33 @@ func NewGetUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 func (l *GetUserInfoLogic) GetUserInfo(in *identity.GetUserInfoReq) (*identity.GetUserInfoResp, error) {
 	var userId = in.UserId
 	var _user models.User
+	var _userInfo models.UserInformation
 
-	err := l.svcCtx.Db.Model(&models.User{}).Select([]string{"username", "nickname"}).
+	if err := l.svcCtx.Db.Model(&models.User{}).Select([]string{"username"}).
 		Where(&models.User{ID: userId}).
-		First(&_user).Error
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+		First(&_user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errorx.ErrUserNotFound
 	} else if err != nil {
+
+		logx.Errorf("failed to query user: %v", err)
+		return nil, errorx.ErrDatabaseError
+	}
+
+	if err := l.svcCtx.Db.Model(&models.UserInformation{}).Select([]string{"nickname", "background_image", "avatar", "signature"}).
+		Where(&models.User{ID: userId}).
+		First(&_user).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errorx.ErrUserNotFound
+	} else if err != nil {
+
 		logx.Errorf("failed to query user: %v", err)
 		return nil, errorx.ErrDatabaseError
 	}
 
 	return &identity.GetUserInfoResp{
-		Username: _user.Username,
-		Nickname: _user.Nickname,
+		Username:        _user.Username,
+		Nickname:        _userInfo.Nickname,
+		Avatar:          _userInfo.Avatar,
+		BackgroundImage: _userInfo.BackgroundImage,
+		Signature:       _userInfo.Signature,
 	}, nil
 }

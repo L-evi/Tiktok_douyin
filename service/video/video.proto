@@ -119,6 +119,28 @@ message isFavoriteResp {
   bool is_favorite = 1; // true-已点赞，false-未点赞
 }
 
+
+message UserFavoriteCountReq {
+  int64 user_id = 1;
+}
+message UserFavoriteCountResp {
+  int64 favorite_count = 2;
+}
+
+message favoritedCountReq {
+  int64 user_id = 1;
+}
+message favoritedCountResp {
+  int64 favorite_count = 2;
+}
+
+message workCountReq {
+  int64 user_id = 1;
+}
+message workCountResp {
+  int64 work_count = 2;
+}
+
 service video {
   rpc publish(publishReq) returns (publishResp);
   rpc publishList(publishListReq) returns (publishListResp);
@@ -127,7 +149,11 @@ service video {
   rpc commentList(commentListReq) returns (commentListResp);
   rpc favoriteAction(favoriteActionReq) returns (favoriteActionResp);
   rpc favoriteList(favoriteListReq) returns (favoriteListResp);
-  rpc favoriteCount(favoriteCountReq) returns (favoriteCountResp);
+  rpc favoriteCount(favoriteCountReq) returns (favoriteCountResp); // 获取某视频的总点赞数
   rpc commentCount(commentCountReq) returns (commentCountResp);
   rpc isFavorite(isFavoriteReq) returns (isFavoriteResp);
+
+  rpc workCount(workCountReq) returns (workCountResp);      // 获赞数
+  rpc favoritedCount(favoritedCountReq) returns (favoritedCountResp); // 用户获赞数
+  rpc userFavoriteCount(UserFavoriteCountReq) returns (UserFavoriteCountResp); // 用户点赞数量
 }

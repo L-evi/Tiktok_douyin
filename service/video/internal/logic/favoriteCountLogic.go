@@ -3,9 +3,9 @@ package logic
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/redis/go-redis/v9"
 	"train-tiktok/service/video/common/errx"
+	"train-tiktok/service/video/common/rediskeyutil"
 	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
@@ -27,6 +27,7 @@ func NewFavoriteCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fav
 	}
 }
 
+// FavoriteCount 获取某视频点赞数
 func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.FavoriteCountResp, error) {
 
 	// check video exists
@@ -42,7 +43,7 @@ func (l *FavoriteCountLogic) FavoriteCount(in *video.FavoriteCountReq) (*video.F
 	rdb := l.svcCtx.Rdb
 
 	// get favorite count
-	_redisKey := fmt.Sprintf("%s:favorite_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)
+	_redisKey := rediskeyutil.NewKeys(l.svcCtx.Config.RedisConf.Prefix).GetVideoFavoriteKey(in.VideoId)
 
 	var err error
 	var result int64

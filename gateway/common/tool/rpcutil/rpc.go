@@ -45,18 +45,46 @@ func GetCommentCount(c *svc.ServiceContext, ctx context.Context, videoId int64) 
 func GetUserInfo(c *svc.ServiceContext, ctx context.Context, userId int64, targetId int64) (types.User, error) {
 	var err error
 	var resp *user.UserResp
+	// 请求 userRpc 获取用户基本信息
 	if resp, err = c.UserRpc.User(ctx, &user.UserReq{
 		UserId:   userId,
 		TargetId: targetId,
 	}); err != nil {
 		return types.User{}, err
 	}
+	// 请求 videoRpc 获取用户作品/点赞信息
+	var workRpc *video.WorkCountResp
+	if workRpc, err = c.VideoRpc.WorkCount(ctx, &video.WorkCountReq{
+		UserId: targetId,
+	}); err != nil {
+		return types.User{}, err
+	}
+
+	var favoriteRpc *video.FavoriteCountResp
+	if favoriteRpc, err = c.VideoRpc.FavoriteCount(ctx, &video.FavoriteCountReq{
+		VideoId: 0,
+	}); err != nil {
+		return types.User{}, err
+	}
+
+	var favoritedCount *video.FavoritedCountResp
+	if favoritedCount, err = c.VideoRpc.FavoritedCount(ctx, &video.FavoritedCountReq{
+		UserId: targetId,
+	}); err != nil {
+		return types.User{}, err
+	}
 
 	return types.User{
-		Id:            targetId,
-		Name:          resp.Name,
-		FollowCount:   *resp.FollowCount,
-		FollowerCount: *resp.FollowerCount,
-		IsFollow:      resp.IsFollow,
+		Id:              targetId,
+		Name:            resp.Name,
+		FollowCount:     *resp.FollowCount,
+		FollowerCount:   *resp.FollowerCount,
+		IsFollow:        resp.IsFollow,
+		Avatar:          *resp.Avatar,
+		Signature:       *resp.Signature,
+		BackgroundImage: *resp.BackgroundImage,
+		WorkCount:       workRpc.WorkCount,
+		TotalFavorited:  favoritedCount.FavoriteCount,
+		FavoriteCount:   favoriteRpc.FavoriteCount,
 	}, nil
 }

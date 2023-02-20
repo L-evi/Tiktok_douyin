@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"errors"
+	"gorm.io/gorm"
 	"train-tiktok/service/chat/models"
 
 	"train-tiktok/service/chat/internal/svc"
@@ -25,12 +27,23 @@ func NewChatMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatM
 }
 
 func (l *ChatMessageLogic) ChatMessage(in *chat.ChatMessageReq) (*chat.ChatMessageResp, error) {
+	PreMsgTime := in.PreMsgTime
+
 	var Messages []models.Chat
-	if res := l.svcCtx.Db.Model(&models.Chat{}).Where(&models.Chat{FromUserId: in.FromUserId, ToUserId: in.ToUserId}).Or(&models.Chat{FromUserId: in.ToUserId, ToUserId: in.FromUserId}).Find(&Messages); res.Error != nil {
+	if res := l.svcCtx.Db.Model(&models.Chat{}).
+		Where("from_user_id = ? AND to_user_id = ?", in.FromUserId, in.ToUserId).
+		Where("create_at < ?", PreMsgTime).
+		Find(&Messages); errors.Is(res.Error, gorm.ErrRecordNotFound) {
+
+		return &chat.ChatMessageResp{}, nil
+	} else if res.Error != nil {
 		logx.Errorf("get chat message failed: %v", res.Error)
-		// todo: bug：只是查询了单方的信息，应该查询双方信息
+
+		// to/do bug：只是查询了单方的信息，应该查询双方信息
 		return &chat.ChatMessageResp{}, res.Error
 	}
+	// fix
+
 	var list []*chat.Message
 	for _, v := range Messages {
 		list = append(list, &chat.Message{

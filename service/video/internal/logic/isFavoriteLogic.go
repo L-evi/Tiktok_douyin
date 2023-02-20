@@ -3,9 +3,9 @@ package logic
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/redis/go-redis/v9"
 	"strconv"
+	"train-tiktok/service/video/common/rediskeyutil"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
 
@@ -34,7 +34,8 @@ func (l *IsFavoriteLogic) IsFavorite(in *video.IsFavoriteReq) (*video.IsFavorite
 		}, nil
 	}
 
-	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.RedisConf.Prefix, in.UserId)
+	_userKey := rediskeyutil.NewKeys(l.svcCtx.Config.RedisConf.Prefix).GetUserKey(in.UserId)
+	
 	videoIdStr := strconv.FormatInt(in.VideoId, 10)
 
 	var err error

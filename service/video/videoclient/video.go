@@ -13,29 +13,35 @@ import (
 )
 
 type (
-	Comment            = video.Comment
-	CommentActionReq   = video.CommentActionReq
-	CommentActionResp  = video.CommentActionResp
-	CommentCountReq    = video.CommentCountReq
-	CommentCountResp   = video.CommentCountResp
-	CommentListReq     = video.CommentListReq
-	CommentListResp    = video.CommentListResp
-	FavoriteActionReq  = video.FavoriteActionReq
-	FavoriteActionResp = video.FavoriteActionResp
-	FavoriteCountReq   = video.FavoriteCountReq
-	FavoriteCountResp  = video.FavoriteCountResp
-	FavoriteListReq    = video.FavoriteListReq
-	FavoriteListResp   = video.FavoriteListResp
-	FeedReq            = video.FeedReq
-	FeedResp           = video.FeedResp
-	IsFavoriteReq      = video.IsFavoriteReq
-	IsFavoriteResp     = video.IsFavoriteResp
-	PublishListReq     = video.PublishListReq
-	PublishListResp    = video.PublishListResp
-	PublishReq         = video.PublishReq
-	PublishResp        = video.PublishResp
-	Resp               = video.Resp
-	VideoX             = video.VideoX
+	Comment               = video.Comment
+	CommentActionReq      = video.CommentActionReq
+	CommentActionResp     = video.CommentActionResp
+	CommentCountReq       = video.CommentCountReq
+	CommentCountResp      = video.CommentCountResp
+	CommentListReq        = video.CommentListReq
+	CommentListResp       = video.CommentListResp
+	FavoriteActionReq     = video.FavoriteActionReq
+	FavoriteActionResp    = video.FavoriteActionResp
+	FavoriteCountReq      = video.FavoriteCountReq
+	FavoriteCountResp     = video.FavoriteCountResp
+	FavoriteListReq       = video.FavoriteListReq
+	FavoriteListResp      = video.FavoriteListResp
+	FavoritedCountReq     = video.FavoritedCountReq
+	FavoritedCountResp    = video.FavoritedCountResp
+	FeedReq               = video.FeedReq
+	FeedResp              = video.FeedResp
+	IsFavoriteReq         = video.IsFavoriteReq
+	IsFavoriteResp        = video.IsFavoriteResp
+	PublishListReq        = video.PublishListReq
+	PublishListResp       = video.PublishListResp
+	PublishReq            = video.PublishReq
+	PublishResp           = video.PublishResp
+	Resp                  = video.Resp
+	UserFavoriteCountReq  = video.UserFavoriteCountReq
+	UserFavoriteCountResp = video.UserFavoriteCountResp
+	VideoX                = video.VideoX
+	WorkCountReq          = video.WorkCountReq
+	WorkCountResp         = video.WorkCountResp
 
 	Video interface {
 		Publish(ctx context.Context, in *PublishReq, opts ...grpc.CallOption) (*PublishResp, error)
@@ -48,6 +54,9 @@ type (
 		FavoriteCount(ctx context.Context, in *FavoriteCountReq, opts ...grpc.CallOption) (*FavoriteCountResp, error)
 		CommentCount(ctx context.Context, in *CommentCountReq, opts ...grpc.CallOption) (*CommentCountResp, error)
 		IsFavorite(ctx context.Context, in *IsFavoriteReq, opts ...grpc.CallOption) (*IsFavoriteResp, error)
+		WorkCount(ctx context.Context, in *WorkCountReq, opts ...grpc.CallOption) (*WorkCountResp, error)
+		FavoritedCount(ctx context.Context, in *FavoritedCountReq, opts ...grpc.CallOption) (*FavoritedCountResp, error)
+		UserFavoriteCount(ctx context.Context, in *UserFavoriteCountReq, opts ...grpc.CallOption) (*UserFavoriteCountResp, error)
 	}
 
 	defaultVideo struct {
@@ -109,4 +118,19 @@ func (m *defaultVideo) CommentCount(ctx context.Context, in *CommentCountReq, op
 func (m *defaultVideo) IsFavorite(ctx context.Context, in *IsFavoriteReq, opts ...grpc.CallOption) (*IsFavoriteResp, error) {
 	client := video.NewVideoClient(m.cli.Conn())
 	return client.IsFavorite(ctx, in, opts...)
+}
+
+func (m *defaultVideo) WorkCount(ctx context.Context, in *WorkCountReq, opts ...grpc.CallOption) (*WorkCountResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.WorkCount(ctx, in, opts...)
+}
+
+func (m *defaultVideo) FavoritedCount(ctx context.Context, in *FavoritedCountReq, opts ...grpc.CallOption) (*FavoritedCountResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.FavoritedCount(ctx, in, opts...)
+}
+
+func (m *defaultVideo) UserFavoriteCount(ctx context.Context, in *UserFavoriteCountReq, opts ...grpc.CallOption) (*UserFavoriteCountResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.UserFavoriteCount(ctx, in, opts...)
 }

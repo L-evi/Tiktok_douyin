@@ -20,7 +20,7 @@ type User struct {
 	Avatar          string `json:"avatar"`
 	BackgroundImage string `json:"background_image"`
 	Signature       string `json:"signature"`
-	Total_favorited int64  `json:"total_favorited"`
+	TotalFavorited  int64  `json:"total_favorited"`
 	WorkCount       int64  `json:"work_count"`
 	FavoriteCount   int64  `json:"favorite_count"`
 }
@@ -87,7 +87,7 @@ type PublishActionReq struct {
 type FavoriteActionReq struct {
 	Token      string `form:"token"`
 	VideoId    int64  `form:"video_id"`
-	ActionType int32  `form:"action_type"` // 1: favorite, 2: unfavorite
+	ActionType int32  `form:"action_type,range=[1:2]"` // 1: favorite, 2: unfavorite
 }
 
 type FavoriteActionResp struct {
@@ -189,8 +189,8 @@ type FansListResp struct {
 }
 
 type FriendListReq struct {
-	Token  string `form:",optional"`
-	UserId int64  `form:"user_id""`
+	Token  string `form:"token,optional"`
+	UserId int64  `form:"user_id""` // ! can only be self
 }
 
 type FriendListResp struct {
@@ -199,10 +199,10 @@ type FriendListResp struct {
 }
 
 type ChatActionReq struct {
-	Token      string `json:"token"`
-	ToUserId   int64  `json:"to_user_id"`
-	ActionType int32  `json:"action_type"`
-	Content    string `json:"content"`
+	Token      string `form:"token"`
+	ToUserId   int64  `form:"to_user_id"`
+	ActionType int32  `form:"action_type"`
+	Content    string `form:"content"`
 }
 
 type ChatActionResp struct {
@@ -210,8 +210,9 @@ type ChatActionResp struct {
 }
 
 type ChatMessageReq struct {
-	Token    string `json:"token"`
-	ToUserId int64  `json:"to_user_id"`
+	Token      string `form:"token"`
+	ToUserId   int64  `form:"to_user_id"`
+	PreMsgTime int64  `form:"pre_msg_time"`
 }
 
 type ChatMessageResp struct {

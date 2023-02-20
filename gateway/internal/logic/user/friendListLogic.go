@@ -27,11 +27,16 @@ func NewFriendListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Friend
 }
 
 func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.FriendListResp, err error) {
+
+	if req.UserId != l.ctx.Value("user_id").(int64) {
+		return &types.FriendListResp{}, nil
+	}
+
 	// get friendIdList from friend rpc
-	friendRpc, err := l.svcCtx.UserRpc.FriendList(l.ctx, &user.FriendListReq{
+	var friendRpc *user.FriendListResp
+	if friendRpc, err = l.svcCtx.UserRpc.FriendList(l.ctx, &user.FriendListReq{
 		UserId: req.UserId,
-	})
-	if err != nil {
+	}); err != nil {
 
 		return &types.FriendListResp{}, nil
 	}
@@ -47,6 +52,7 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 
 			return &types.FriendListResp{}, nil
 		}
+
 		// get last chat message
 		chatLastMessageRpc, err := l.svcCtx.ChatRpc.ChatLastMessage(l.ctx, &chat.ChatLastMessageReq{
 			ToUserId:   req.UserId,
@@ -57,16 +63,18 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 
 			return &types.FriendListResp{}, err
 		}
+
+		// 判断信息类型 0: send message, 1: receive message
 		msgType := int64(0)
 		if chatLastMessageRpc.Message.FromUserId == req.UserId {
 			msgType = int64(1)
 		}
-		friendUser := types.FriendUser{
+
+		userList = append(userList, types.FriendUser{
 			Message: chatLastMessageRpc.Message.Content,
 			MsgType: msgType,
 			User:    userInfo,
-		}
-		userList = append(userList, friendUser)
+		})
 	}
 
 	return &types.FriendListResp{

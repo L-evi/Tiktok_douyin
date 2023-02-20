@@ -16,16 +16,16 @@ message chatActionReq {
 }
 
 message charActionResp {
-  Resp resp = 1;
+  bool success = 1;
 }
 
 message chatMessageReq {
   int64 to_user_id = 1;
   int64 from_user_id = 2;
+  int64 pre_msg_time = 3;
 }
 
 message chatMessageResp {
-  Resp resp = 1;
   repeated Message message_list = 2;
 }
 
@@ -36,14 +36,12 @@ message Message {
   string content = 4;
   int64 create_time = 5;
 }
-
 message chatLastMessageReq {
   int64 to_user_id = 1;
   int64 from_user_id = 2;
 }
 
 message chatLastMessageResp {
-  Resp resp = 1;
   Message message = 2;
 }
 

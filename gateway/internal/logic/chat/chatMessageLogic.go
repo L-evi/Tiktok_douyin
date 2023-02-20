@@ -27,19 +27,22 @@ func NewChatMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatM
 }
 
 func (l *ChatMessageLogic) ChatMessage(req *types.ChatMessageReq) (resp *types.ChatMessageResp, err error) {
-	rpcResp, err := l.svcCtx.ChatRpc.ChatMessage(l.ctx, &chat.ChatMessageReq{
+	var rpcResp *chat.ChatMessageResp
+	if rpcResp, err = l.svcCtx.ChatRpc.ChatMessage(l.ctx, &chat.ChatMessageReq{
 		FromUserId: l.ctx.Value("user_id").(int64),
 		ToUserId:   req.ToUserId,
-	})
-	if err != nil {
+		PreMsgTime: req.PreMsgTime,
+	}); err != nil {
 
 		return &types.ChatMessageResp{
 			Resp: errx.HandleRpcErr(err),
 		}, nil
 	}
+
 	var Messages []types.Message
 	for _, v := range rpcResp.MessageList {
 		CreateDate := time.Unix(v.CreateTime, 0).Format("yyyy-MM-dd HH:MM:ss")
+
 		Messages = append(Messages, types.Message{
 			Id:         v.Id,
 			FromUserId: v.FromUserId,

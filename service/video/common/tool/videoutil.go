@@ -29,3 +29,15 @@ func CheckVideoExists(db *gorm.DB, videoId int64) (bool, error) {
 
 	return count > 0, nil
 }
+
+func GetVideoUserId(db *gorm.DB, videoId int64) (int64, error) {
+	var video models.Video
+	if err := db.Model(&models.Video{}).
+		Where(&models.Video{ID: videoId}).First(&video).
+		Error; err != nil {
+
+		return 0, err
+	}
+
+	return video.UserID, nil
+}

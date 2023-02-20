@@ -10,4 +10,8 @@ type Config struct {
 	Jwt struct {
 		SigningKey string
 	}
+	Conf struct {
+		GravatarBaseURL   string
+		DefaultBackground string
+	}
 }

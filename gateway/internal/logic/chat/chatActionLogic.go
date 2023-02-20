@@ -26,17 +26,16 @@ func NewChatActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatAc
 }
 
 func (l *ChatActionLogic) ChatAction(req *types.ChatActionReq) (resp *types.ChatActionResp, err error) {
-	_, err = l.svcCtx.ChatRpc.ChatAction(l.ctx, &chat.ChatActionReq{
-		FromUserId: l.ctx.Value("user_id").(int64),
+	fromUserId := l.ctx.Value("user_id").(int64)
+
+	if _, err = l.svcCtx.ChatRpc.ChatAction(l.ctx, &chat.ChatActionReq{
+		FromUserId: fromUserId,
 		ToUserId:   req.ToUserId,
 		Content:    req.Content,
 		ActionType: req.ActionType,
-	})
-	if err != nil {
+	}); err != nil {
 
-		return &types.ChatActionResp{
-			Resp: errx.HandleRpcErr(err),
-		}, nil
+		return &types.ChatActionResp{}, err
 	}
 
 	return &types.ChatActionResp{

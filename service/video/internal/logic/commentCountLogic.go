@@ -3,9 +3,9 @@ package logic
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/redis/go-redis/v9"
 	"train-tiktok/service/video/common/errx"
+	"train-tiktok/service/video/common/rediskeyutil"
 	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
@@ -43,7 +43,8 @@ func (l *CommentCountLogic) CommentCount(in *video.CommentCountReq) (*video.Comm
 	rdb := l.svcCtx.Rdb
 
 	// get comment count from redis
-	_redisKey := fmt.Sprintf("%s:comment_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)
+	_redisKey := rediskeyutil.NewKeys(l.svcCtx.Config.RedisConf.Prefix).GetCommentCount(in.VideoId)
+	
 	var result int64
 	var err error
 	if result, err = rdb.Get(l.ctx, _redisKey).Int64(); !errors.Is(err, redis.Nil) && err != nil {

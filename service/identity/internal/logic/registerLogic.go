@@ -53,11 +53,23 @@ func (l *RegisterLogic) Register(in *identity.RegisterReq) (*identity.RegisterRe
 	var User = models.User{
 		Username: in.Username,
 		Password: pwdEncrypted,
-		Nickname: userutil.GenerateNickname(),
 	}
 
 	if res := l.svcCtx.Db.Create(&User); res.Error != nil || res.RowsAffected == 0 {
 		logx.Errorf("failed to create user: %v", res.Error)
+		return &identity.RegisterResp{}, errorx.ErrSystemError
+	}
+	var UserInfo = models.UserInformation{
+		UserId:          User.ID,
+		Nickname:        in.Username,
+		Avatar:          l.svcCtx.Config.Conf.GravatarBaseURL + tool.Md5(User.Username) + "?size=128", // gavatar
+		BackgroundImage: l.svcCtx.Config.Conf.DefaultBackground,
+		Signature:       "欢迎来到我的主页",
+	}
+	if res := l.svcCtx.Db.Create(&UserInfo); res.Error != nil || res.RowsAffected == 0 {
+		logx.Errorf("failed to create user_info: %v", res.Error)
+		_ = l.svcCtx.Db.Delete(&User)
+
 		return &identity.RegisterResp{}, errorx.ErrSystemError
 	}
 

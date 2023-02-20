@@ -22,7 +22,7 @@ func RandStr(length int) string {
 // RandInt generates a random int with the specified range.
 func RandInt(length int) int {
 	var code int
-	for i := 0; i < 5; i++ {
+	for i := 0; i < length; i++ {
 		code += rand.Intn(10)
 	}
 	return code

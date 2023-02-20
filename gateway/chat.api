@@ -9,17 +9,18 @@ import "common.api"
 
 type (
     ChatActionReq {
-        Token string `json:"token"`
-        ToUserId int64 `json:"to_user_id"`
-        ActionType int32 `json:"action_type"`
-        Content string `json:"content"`
+        Token string `form:"token"`
+        ToUserId int64 `form:"to_user_id"`
+        ActionType int32 `form:"action_type"`
+        Content string `form:"content"`
     }
     ChatActionResp {
         Resp
     }
     ChatMessageReq {
-        Token string `json:"token"`
-        ToUserId int64 `json:"to_user_id"`
+        Token string `form:"token"`
+        ToUserId int64 `form:"to_user_id"`
+        PreMsgTime int64 `form:"pre_msg_time"`
     }
     ChatMessageResp {
         Resp

@@ -34,8 +34,9 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 
 	if rpcResp, err = l.svcCtx.VideoRpc.Feed(l.ctx, &video.FeedReq{
 		LatestTime: req.LatestTime,
-	}); errorx.IsRpcError(err, videoErrx.ErrNoLatestVideo) {
+	}); errorx.IsRpcError(err, videoErrx.ErrNoLatestVideo) || len(rpcResp.VideoList) == 0 {
 		// 没有更新的视频了
+		// loop
 		return NewFeedLogic(l.ctx, l.svcCtx).Feed(&types.FeedReq{
 			LatestTime: time.Now().Unix(),
 		})

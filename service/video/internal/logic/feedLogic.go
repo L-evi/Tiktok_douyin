@@ -44,7 +44,8 @@ func (l *FeedLogic) Feed(in *video.FeedReq) (*video.FeedResp, error) {
 		Limit(10).Order("create_at desc").
 		Find(&videos).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 
-		return &video.FeedResp{}, errx.ErrNoLatestVideo
+		// 没有更新的数据 //  errx.ErrNoLatestVideo
+		return &video.FeedResp{}, nil
 	} else if err != nil {
 		logx.WithContext(l.ctx).Errorf("FeedLogic Feed sql err: %v", err)
 

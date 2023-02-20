@@ -2,11 +2,11 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"gorm.io/gorm"
 	"time"
 	"train-tiktok/common/errorx"
 	"train-tiktok/service/video/common/errx"
+	"train-tiktok/service/video/common/rediskeyutil"
 	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/models"
@@ -46,7 +46,7 @@ func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.C
 	}
 
 	// get comment count from redis
-	_redisKey := fmt.Sprintf("%s:comment_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)
+	_redisKey := rediskeyutil.NewKeys(l.svcCtx.Config.RedisConf.Prefix).GetCommentCount(in.VideoId)
 
 	switch in.ActionType {
 	case 1:

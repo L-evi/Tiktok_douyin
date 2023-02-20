@@ -3,12 +3,13 @@ package logic
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
 	"strconv"
 	"time"
 	"train-tiktok/common/errorx"
 	"train-tiktok/service/video/common/errx"
+	"train-tiktok/service/video/common/rediskeyutil"
 	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/internal/svc"
 	"train-tiktok/service/video/types/video"
@@ -33,21 +34,27 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*video.FavoriteActionResp, error) {
 
 	// check video exists
-	if exists, err := tool.CheckVideoExists(l.svcCtx.Db, in.VideoId); err != nil {
+	var err error
+	var videoPublisherId int64 // 视频发布者的 userId
+
+	if videoPublisherId, err = tool.GetVideoUserId(l.svcCtx.Db, in.VideoId); errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errx.ErrVideoNotFound
+	} else if err != nil {
 		logx.WithContext(l.ctx).Errorf("failed to query video, err: %v", err)
 
 		return nil, err
-	} else if !exists {
-		return nil, errx.ErrVideoNotFound
 	}
 
 	// connect to redis
 	rdb := l.svcCtx.Rdb
 
+	keys := rediskeyutil.NewKeys(l.svcCtx.Config.RedisConf.Prefix)
 	// 记录视频点赞数
-	_countKey := fmt.Sprintf("%s:favorite_count:%d", l.svcCtx.Config.RedisConf.Prefix, in.VideoId)
+	_videoCountKey := keys.GetVideoFavoriteKey(in.VideoId)
 	// 记录用户是否点赞该视频
-	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.RedisConf.Prefix, in.UserId)
+	_userKey := keys.GetUserKey(in.UserId)
+	// 记录视频发布用户的 获赞数
+	_favoritedKey := keys.GetPublisherFavoriteKey(videoPublisherId)
 
 	videoIdStr := strconv.FormatInt(in.VideoId, 10)
 
@@ -67,25 +74,33 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 			} else if exists != 0 {
 				return errx.ErrAlreadyFavorite
 			}
+
 			// 事物
 			pipe := tx.Pipeline()
-			if _, err := pipe.Incr(l.ctx, _countKey).Result(); err != nil {
-				logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
-				return err
-			}
-			if _, err := pipe.ZAdd(l.ctx, _userKey, redis.Z{
-				Score:  float64(timeNow),
-				Member: videoIdStr,
-			}).Result(); err != nil {
-				logx.WithContext(l.ctx).Errorf("redis ZADD error: %v", err)
-				return err
+			{
+				if err := pipe.Incr(l.ctx, _videoCountKey).Err(); err != nil {
+					logx.WithContext(l.ctx).Errorf("redis Incr error: %v", err)
+					return err
+				}
+				if err := pipe.ZAdd(l.ctx, _userKey, redis.Z{
+					Score:  float64(timeNow),
+					Member: videoIdStr,
+				}).Err(); err != nil {
+					logx.WithContext(l.ctx).Errorf("redis ZADD error: %v", err)
+					return err
+				}
+				if err := pipe.Incr(l.ctx, _favoritedKey).Err(); err != nil {
+					logx.WithContext(l.ctx).Errorf("redis incr error: %v", err)
+
+					return err
+				}
 			}
 			if _, err := pipe.Exec(l.ctx); err != nil {
 				logx.WithContext(l.ctx).Errorf("redis Exec error: %v", err)
 				return err
 			}
 			return nil
-		}, _countKey, _userKey)
+		}, _videoCountKey, _favoritedKey, _userKey)
 		if tran != nil {
 			return &video.FavoriteActionResp{}, tran
 		}
@@ -93,20 +108,28 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 	case 2:
 		tran := rdb.Watch(l.ctx, func(tx *redis.Tx) error {
 			pipe := tx.Pipeline()
-			if _, err := pipe.Decr(l.ctx, _countKey).Result(); err != nil {
-				logx.WithContext(l.ctx).Errorf("redis Decr error: %v", err)
-				return err
+			{
+				if err := pipe.Decr(l.ctx, _videoCountKey).Err(); err != nil {
+					logx.WithContext(l.ctx).Errorf("redis Decr error: %v", err)
+					return err
+				}
+				if err := pipe.ZRem(l.ctx, _userKey, videoIdStr).Err(); err != nil {
+					logx.WithContext(l.ctx).Errorf("redis ZRem error: %v", err)
+					return err
+				}
+				if err := pipe.Decr(l.ctx, _favoritedKey).Err(); err != nil {
+					logx.WithContext(l.ctx).Errorf("redis incr error: %v", err)
+
+					return err
+				}
 			}
-			if _, err := pipe.ZRem(l.ctx, _userKey, videoIdStr).Result(); err != nil {
-				logx.WithContext(l.ctx).Errorf("redis ZRem error: %v", err)
-				return err
-			}
+
 			if _, err := pipe.Exec(l.ctx); err != nil {
 				logx.WithContext(l.ctx).Errorf("redis Exec error: %v", err)
 				return err
 			}
 			return nil
-		}, _countKey, _userKey)
+		}, _videoCountKey, _favoritedKey, _userKey)
 		if tran != nil {
 			return &video.FavoriteActionResp{}, tran
 		}

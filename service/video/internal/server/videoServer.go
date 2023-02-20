@@ -71,3 +71,18 @@ func (s *VideoServer) IsFavorite(ctx context.Context, in *video.IsFavoriteReq) (
 	l := logic.NewIsFavoriteLogic(ctx, s.svcCtx)
 	return l.IsFavorite(in)
 }
+
+func (s *VideoServer) WorkCount(ctx context.Context, in *video.WorkCountReq) (*video.WorkCountResp, error) {
+	l := logic.NewWorkCountLogic(ctx, s.svcCtx)
+	return l.WorkCount(in)
+}
+
+func (s *VideoServer) FavoritedCount(ctx context.Context, in *video.FavoritedCountReq) (*video.FavoritedCountResp, error) {
+	l := logic.NewFavoritedCountLogic(ctx, s.svcCtx)
+	return l.FavoritedCount(in)
+}
+
+func (s *VideoServer) UserFavoriteCount(ctx context.Context, in *video.UserFavoriteCountReq) (*video.UserFavoriteCountResp, error) {
+	l := logic.NewUserFavoriteCountLogic(ctx, s.svcCtx)
+	return l.UserFavoriteCount(in)
+}

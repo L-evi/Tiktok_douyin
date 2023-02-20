@@ -37,6 +37,13 @@ func RespErrFormat(Code int32, Msg string) ErrorResp {
 	}
 }
 
+func NewError(code int32, msg string) ErrorResp {
+	return ErrorResp{
+		Code: code,
+		Msg:  msg,
+	}
+}
+
 func ParseRpcError(err error) error {
 	info, ok := status.FromError(err)
 	if !ok {

@@ -32,6 +32,9 @@ type VideoClient interface {
 	FavoriteCount(ctx context.Context, in *FavoriteCountReq, opts ...grpc.CallOption) (*FavoriteCountResp, error)
 	CommentCount(ctx context.Context, in *CommentCountReq, opts ...grpc.CallOption) (*CommentCountResp, error)
 	IsFavorite(ctx context.Context, in *IsFavoriteReq, opts ...grpc.CallOption) (*IsFavoriteResp, error)
+	WorkCount(ctx context.Context, in *WorkCountReq, opts ...grpc.CallOption) (*WorkCountResp, error)
+	FavoritedCount(ctx context.Context, in *FavoritedCountReq, opts ...grpc.CallOption) (*FavoritedCountResp, error)
+	UserFavoriteCount(ctx context.Context, in *UserFavoriteCountReq, opts ...grpc.CallOption) (*UserFavoriteCountResp, error)
 }
 
 type videoClient struct {
@@ -132,6 +135,33 @@ func (c *videoClient) IsFavorite(ctx context.Context, in *IsFavoriteReq, opts ..
 	return out, nil
 }
 
+func (c *videoClient) WorkCount(ctx context.Context, in *WorkCountReq, opts ...grpc.CallOption) (*WorkCountResp, error) {
+	out := new(WorkCountResp)
+	err := c.cc.Invoke(ctx, "/video.video/workCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *videoClient) FavoritedCount(ctx context.Context, in *FavoritedCountReq, opts ...grpc.CallOption) (*FavoritedCountResp, error) {
+	out := new(FavoritedCountResp)
+	err := c.cc.Invoke(ctx, "/video.video/favoritedCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *videoClient) UserFavoriteCount(ctx context.Context, in *UserFavoriteCountReq, opts ...grpc.CallOption) (*UserFavoriteCountResp, error) {
+	out := new(UserFavoriteCountResp)
+	err := c.cc.Invoke(ctx, "/video.video/userFavoriteCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VideoServer is the server API for Video service.
 // All implementations must embed UnimplementedVideoServer
 // for forward compatibility
@@ -146,6 +176,9 @@ type VideoServer interface {
 	FavoriteCount(context.Context, *FavoriteCountReq) (*FavoriteCountResp, error)
 	CommentCount(context.Context, *CommentCountReq) (*CommentCountResp, error)
 	IsFavorite(context.Context, *IsFavoriteReq) (*IsFavoriteResp, error)
+	WorkCount(context.Context, *WorkCountReq) (*WorkCountResp, error)
+	FavoritedCount(context.Context, *FavoritedCountReq) (*FavoritedCountResp, error)
+	UserFavoriteCount(context.Context, *UserFavoriteCountReq) (*UserFavoriteCountResp, error)
 	mustEmbedUnimplementedVideoServer()
 }
 
@@ -182,6 +215,15 @@ func (UnimplementedVideoServer) CommentCount(context.Context, *CommentCountReq) 
 }
 func (UnimplementedVideoServer) IsFavorite(context.Context, *IsFavoriteReq) (*IsFavoriteResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsFavorite not implemented")
+}
+func (UnimplementedVideoServer) WorkCount(context.Context, *WorkCountReq) (*WorkCountResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WorkCount not implemented")
+}
+func (UnimplementedVideoServer) FavoritedCount(context.Context, *FavoritedCountReq) (*FavoritedCountResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FavoritedCount not implemented")
+}
+func (UnimplementedVideoServer) UserFavoriteCount(context.Context, *UserFavoriteCountReq) (*UserFavoriteCountResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserFavoriteCount not implemented")
 }
 func (UnimplementedVideoServer) mustEmbedUnimplementedVideoServer() {}
 
@@ -376,6 +418,60 @@ func _Video_IsFavorite_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Video_WorkCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WorkCountReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServer).WorkCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.video/workCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServer).WorkCount(ctx, req.(*WorkCountReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Video_FavoritedCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FavoritedCountReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServer).FavoritedCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.video/favoritedCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServer).FavoritedCount(ctx, req.(*FavoritedCountReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Video_UserFavoriteCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserFavoriteCountReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServer).UserFavoriteCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.video/userFavoriteCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServer).UserFavoriteCount(ctx, req.(*UserFavoriteCountReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Video_ServiceDesc is the grpc.ServiceDesc for Video service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +518,18 @@ var Video_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "isFavorite",
 			Handler:    _Video_IsFavorite_Handler,
+		},
+		{
+			MethodName: "workCount",
+			Handler:    _Video_WorkCount_Handler,
+		},
+		{
+			MethodName: "favoritedCount",
+			Handler:    _Video_FavoritedCount_Handler,
+		},
+		{
+			MethodName: "userFavoriteCount",
+			Handler:    _Video_UserFavoriteCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
