@@ -63,6 +63,15 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 			return &types.FriendListResp{}, err
 		}
 
+		if chatLastMessageRpc.Message == nil {
+			userList = append(userList, types.FriendUser{
+				Message: "",
+				MsgType: int64(0),
+				User:    userInfo,
+			})
+			continue
+		}
+
 		// 判断信息类型 0: send message, 1: receive message
 		msgType := int64(0)
 		if chatLastMessageRpc.Message.FromUserId == req.UserId {
