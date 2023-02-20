@@ -27,12 +27,11 @@ func NewChatLastMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *C
 }
 
 func (l *ChatLastMessageLogic) ChatLastMessage(in *chat.ChatLastMessageReq) (*chat.ChatLastMessageResp, error) {
-	var message *chat.Message
+	var message models.Chat
 	if err := l.svcCtx.Db.Model(&models.Chat{}).
 		Where(&models.Chat{FromUserId: in.FromUserId, ToUserId: in.ToUserId}).
 		Or(&models.Chat{FromUserId: in.ToUserId, ToUserId: in.FromUserId}).
-		Order("create_at desc").Limit(1).
-		Find(&message).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+		First(&message).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 
 		return &chat.ChatLastMessageResp{}, nil
 	} else if err != nil {
@@ -42,6 +41,12 @@ func (l *ChatLastMessageLogic) ChatLastMessage(in *chat.ChatLastMessageReq) (*ch
 	}
 
 	return &chat.ChatLastMessageResp{
-		Message: message,
+		Message: &chat.Message{
+			Id:         message.ID,
+			ToUserId:   message.ToUserId,
+			FromUserId: message.FromUserId,
+			Content:    message.Content,
+			CreateTime: message.CreateAt,
+		},
 	}, nil
 }
