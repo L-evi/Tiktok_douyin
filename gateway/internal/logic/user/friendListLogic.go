@@ -38,14 +38,12 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 	if friendRpc, err = l.svcCtx.UserRpc.FriendList(l.ctx, &user.FriendListReq{
 		UserId: req.UserId,
 	}); err != nil {
-
-		return &types.FriendListResp{}, nil
+		return &types.FriendListResp{}, err
 	}
-	friendIdList := friendRpc.UserIdList
 
 	var userList []types.FriendUser
 	// get user detail information
-	for _, value := range friendIdList {
+	for _, value := range friendRpc.UserIdList {
 		// get user information
 		userInfo, err := rpcutil.GetUserInfo(l.svcCtx, l.ctx, req.UserId, value)
 		if err != nil {
