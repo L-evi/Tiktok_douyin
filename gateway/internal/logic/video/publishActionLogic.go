@@ -58,7 +58,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	// 从请求中获取文件句柄
 	var file multipart.File
 	var header *multipart.FileHeader
-	logx.WithContext(l.ctx).Infof("Title: %s", req.Title)
+	logx.WithContext(l.ctx).Debugf("Title: %s", req.Title)
 
 	if file, header, err = l.r.FormFile("data"); err != nil {
 		logx.Errorf("get form data failed: %v", err)
@@ -69,7 +69,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 		_ = file.Close()
 	}(file)
 
-	logx.WithContext(l.ctx).Infof("收到上传请求: %s %s %s", req.Title, header.Filename, UserId)
+	logx.WithContext(l.ctx).Debugf("收到上传请求: %s %s %s", req.Title, header.Filename, UserId)
 
 	// 判断 文件目录是否存在
 	if tool.CheckPathOrCreate(_videoBaseDir) != nil {
@@ -92,7 +92,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 			Msg:  "不支持的文件类型",
 		}, nil
 	}
-	logx.WithContext(l.ctx).Infof("文件类型: %s", header.Filename)
+	logx.WithContext(l.ctx).Debugf("文件类型: %s", header.Filename)
 
 	// 判断文件名是否存在安全风险
 	if tool.IsFilenameDangerous(header.Filename) {

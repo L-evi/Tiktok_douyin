@@ -67,7 +67,7 @@ func main() {
 			return http.StatusOK, errorx.ErrorResp{Code: 3004, Msg: err.Error()}
 		}
 
-		logx.WithContext(ctx).Errorf("error when handler err: %v", err)
+		// logx.WithContext(ctx).Errorf("error when handler err: %v", err)
 		return http.StatusOK, errorx.FromRpcStatus(err)
 	})
 

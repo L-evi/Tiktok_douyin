@@ -36,7 +36,7 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 	var err error
 
 	// check if userExist
-	if exists, err := tool2.CheckUserExist(l.ctx, l.svcCtx.IdentityRpc, in.UserId); err != nil {
+	if exists, err := tool2.CheckUserExist(l.ctx, l.svcCtx.IdentityRpc, in.TargetId); err != nil {
 		logx.WithContext(l.ctx).Errorf("failed to query user: %v", err)
 
 		return nil, errorx.ErrDatabaseError

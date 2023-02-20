@@ -46,6 +46,7 @@ func (l *GetUserInfoLogic) GetUserInfo(in *identity.GetUserInfoReq) (*identity.G
 	if err := l.svcCtx.Db.Model(&models.UserInformation{}).Select([]string{"nickname", "background_image", "avatar", "signature"}).
 		Where(&models.UserInformation{UserId: userId}).
 		First(&_userInfo).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+
 		return nil, errorx.ErrUserNotFound
 	} else if err != nil {
 
