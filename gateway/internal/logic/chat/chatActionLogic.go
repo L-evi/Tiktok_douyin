@@ -6,6 +6,7 @@ import (
 	"train-tiktok/common/tool"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/service/chat/types/chat"
+	"train-tiktok/service/user/types/user"
 
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
@@ -33,6 +34,16 @@ func (l *ChatActionLogic) ChatAction(req *types.ChatActionReq) (resp *types.Chat
 		return &types.ChatActionResp{}, errorx.ErrSystemError
 	} else if !exists {
 		return &types.ChatActionResp{}, errorx.ErrUserNotFound
+	}
+
+	// check is friend
+	if rpcResp, err := l.svcCtx.UserRpc.IsFriend(l.ctx, &user.IsFriendReq{
+		UserId:   fromUserId,
+		TargetId: req.ToUserId,
+	}); err != nil {
+		return &types.ChatActionResp{}, err
+	} else if !rpcResp.IsFriend {
+		return &types.ChatActionResp{}, errorx.ErrNotFriend
 	}
 
 	if _, err = l.svcCtx.ChatRpc.ChatAction(l.ctx, &chat.ChatActionReq{

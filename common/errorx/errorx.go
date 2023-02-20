@@ -22,6 +22,7 @@ var (
 	ErrRequestTimeout           = status.Error(3004, "请求超时")
 	ErrFileTypeNotSupport       = status.Error(4001, "文件类型不支持")
 	ErrUserNotFound             = status.Error(5001, "用户不存在")
+	ErrNotFriend                = status.Error(5002, "不是好友关系")
 )
 
 type ErrorResp struct {
