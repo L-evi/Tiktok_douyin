@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"gorm.io/gorm"
+	"train-tiktok/common/errorx"
 	"train-tiktok/service/chat/models"
 
 	"train-tiktok/service/chat/internal/svc"
@@ -27,20 +28,18 @@ func NewChatMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatM
 }
 
 func (l *ChatMessageLogic) ChatMessage(in *chat.ChatMessageReq) (*chat.ChatMessageResp, error) {
-	PreMsgTime := in.PreMsgTime
-
 	var Messages []models.Chat
-	if res := l.svcCtx.Db.Model(&models.Chat{}).
+	if err := l.svcCtx.Db.Model(&models.Chat{}).
 		Where("from_user_id = ? AND to_user_id = ?", in.FromUserId, in.ToUserId).
-		Where("create_at < ?", PreMsgTime).
-		Find(&Messages); errors.Is(res.Error, gorm.ErrRecordNotFound) {
+		Where("create_at < ?", in.PreMsgTime).
+		Find(&Messages).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 
 		return &chat.ChatMessageResp{}, nil
-	} else if res.Error != nil {
-		logx.Errorf("get chat message failed: %v", res.Error)
+	} else if err != nil {
+		logx.Errorf("get chat message failed: %s", err)
 
 		// to/do bug：只是查询了单方的信息，应该查询双方信息
-		return &chat.ChatMessageResp{}, res.Error
+		return &chat.ChatMessageResp{}, errorx.ErrDatabaseError
 	}
 	// fix
 

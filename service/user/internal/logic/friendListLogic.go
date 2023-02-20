@@ -32,10 +32,12 @@ func (l *FriendListLogic) FriendList(in *user.FriendListReq) (*user.FriendListRe
 		Where("fans.user_id = ? AND follows.target_id = ?", in.UserId, in.UserId).
 		Find(&userId)
 	if result.Error != nil {
-		logx.Error("get friend list failed: %v", result.Error)
+		logx.WithContext(l.ctx).Error("get friend list failed: %v", result.Error)
 
 		return &user.FriendListResp{}, nil
 	}
+
+	logx.WithContext(l.ctx).Debugf("get friend list success: %v", userId)
 
 	return &user.FriendListResp{
 		UserIdList: userId,
