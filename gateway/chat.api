@@ -12,7 +12,7 @@ type (
         Token string `form:"token"`
         ToUserId int64 `form:"to_user_id"`
         ActionType int32 `form:"action_type"`
-        Content string `form:"content"`
+        Content string `form:"content,optional"`
     }
     ChatActionResp {
         Resp
@@ -20,7 +20,7 @@ type (
     ChatMessageReq {
         Token string `form:"token"`
         ToUserId int64 `form:"to_user_id"`
-        PreMsgTime int64 `form:"pre_msg_time"`
+        PreMsgTime int64 `form:"pre_msg_time,optional"`
     }
     ChatMessageResp {
         Resp

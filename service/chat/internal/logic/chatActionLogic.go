@@ -31,6 +31,9 @@ func (l *ChatActionLogic) ChatAction(in *chat.ChatActionReq) (*chat.CharActionRe
 	if in.FromUserId == in.ToUserId {
 		return &chat.CharActionResp{}, errx.ErrCantSendToSelf
 	}
+	if in.Content == "" {
+		return &chat.CharActionResp{}, errx.ErrContentEmpty
+	}
 	if in.ActionType == 1 {
 		var chatMessage = models.Chat{
 			FromUserId: in.FromUserId,
