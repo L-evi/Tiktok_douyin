@@ -65,7 +65,7 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 
 		if chatLastMessageRpc.Message == nil {
 			userList = append(userList, types.FriendUser{
-				Message: "",
+				Message: "来打个招呼吧",
 				MsgType: int64(0),
 				User:    userInfo,
 			})
