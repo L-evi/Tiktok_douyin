@@ -30,7 +30,7 @@ func (l *ChatMessageLogic) ChatMessage(req *types.ChatMessageReq) (resp *types.C
 
 	// 秒级时间戳转毫秒级
 	if time.Unix(req.PreMsgTime, 0).Year() < 2000 {
-		req.PreMsgTime = req.PreMsgTime * 1000
+		req.PreMsgTime = req.PreMsgTime*1000 + 500
 	}
 
 	var rpcResp *chat.ChatMessageResp
@@ -52,7 +52,7 @@ func (l *ChatMessageLogic) ChatMessage(req *types.ChatMessageReq) (resp *types.C
 			FromUserId: v.FromUserId,
 			ToUserId:   v.ToUserId,
 			Content:    v.Content,
-			CreateTime: v.CreateTime / 1000,
+			CreateTime: v.CreateTime,
 		})
 	}
 
