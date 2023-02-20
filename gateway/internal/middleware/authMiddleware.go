@@ -33,7 +33,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		if token = r.URL.Query().Get("token"); token == "" {
 			if token = r.PostFormValue("token"); token == "" {
-				httpx.WriteJson(w, http.StatusOK, errorx.FromRpcStatus(errorx.ErrTokenInvalid))
+				httpx.WriteJson(w, http.StatusUnauthorized, errorx.FromRpcStatus(errorx.ErrTokenInvalid))
 				return
 			}
 		}
@@ -46,7 +46,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if resp, err = m.identityRpc.Status(r.Context(), &identityclient.StatusReq{
 			Token: token,
 		}); errorx.IsRpcError(err, errorx.ErrTokenInvalid) {
-			httpx.WriteJson(w, http.StatusOK, errorx.FromRpcStatus(errorx.ErrLoginTimeout))
+			httpx.WriteJson(w, http.StatusUnauthorized, errorx.FromRpcStatus(errorx.ErrLoginTimeout))
 			return
 		} else if err != nil {
 			logx.WithContext(r.Context()).Errorf("identityRpc.Status error: %v", err)
