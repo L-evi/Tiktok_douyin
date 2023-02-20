@@ -28,17 +28,11 @@ func NewChatMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatM
 
 func (l *ChatMessageLogic) ChatMessage(req *types.ChatMessageReq) (resp *types.ChatMessageResp, err error) {
 
-	// 避免前端传入的时间戳是秒级的
-	preMsgTime := req.PreMsgTime
-	if preMsgTime < 10000000000 {
-		preMsgTime = preMsgTime * 1000
-	}
-
 	var rpcResp *chat.ChatMessageResp
 	if rpcResp, err = l.svcCtx.ChatRpc.ChatMessage(l.ctx, &chat.ChatMessageReq{
 		FromUserId: l.ctx.Value("user_id").(int64),
 		ToUserId:   req.ToUserId,
-		PreMsgTime: preMsgTime,
+		PreMsgTime: req.PreMsgTime,
 	}); err != nil {
 
 		return &types.ChatMessageResp{

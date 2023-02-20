@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"gorm.io/gorm"
-	"time"
 	"train-tiktok/common/errorx"
 	"train-tiktok/service/chat/models"
 
@@ -29,15 +28,10 @@ func NewChatMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatM
 }
 
 func (l *ChatMessageLogic) ChatMessage(in *chat.ChatMessageReq) (*chat.ChatMessageResp, error) {
-	preMsgTime := in.PreMsgTime
-	if preMsgTime <= 0 {
-		preMsgTime = time.Now().Unix()
-	}
-
 	var Messages []models.Chat
 	if err := l.svcCtx.Db.Model(&models.Chat{}).Select([]string{"id", "from_user_id", "to_user_id", "content", "create_at"}).
 		Where("from_user_id = ? AND to_user_id = ?", in.FromUserId, in.ToUserId).
-		Where("create_at > ?", preMsgTime).
+		Where("create_at > ?", in.PreMsgTime).
 		Find(&Messages).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 
 		return &chat.ChatMessageResp{}, nil
