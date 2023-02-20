@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"time"
 	"train-tiktok/common/errorx"
 	"train-tiktok/service/chat/common/errx"
 	"train-tiktok/service/chat/internal/svc"
@@ -38,7 +37,6 @@ func (l *ChatActionLogic) ChatAction(in *chat.ChatActionReq) (*chat.CharActionRe
 		var chatMessage = models.Chat{
 			FromUserId: in.FromUserId,
 			ToUserId:   in.ToUserId,
-			CreateAt:   time.Now().Unix(),
 			Content:    in.Content,
 		}
 		// create chat into database
