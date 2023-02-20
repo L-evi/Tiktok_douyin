@@ -2,12 +2,12 @@ package user
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/logx"
+	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/common/errx"
+	"train-tiktok/gateway/common/tool/rpcutil"
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
-	"train-tiktok/service/user/types/user"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type UserLogic struct {
@@ -31,24 +31,14 @@ func (l *UserLogic) User(req *types.UserReq) (resp *types.UserResp, err error) {
 		userId = l.ctx.Value("user_id").(int64)
 	}
 
-	rpcResp, err := l.svcCtx.UserRpc.User(l.ctx, &user.UserReq{
-		UserId:   userId,
-		TargetId: req.UserId,
-	})
+	userInfo, err := rpcutil.GetUserInfo(l.svcCtx, l.ctx, userId, req.UserId)
 	if err != nil {
-		return &types.UserResp{
-			Resp: errx.HandleRpcErr(err),
-		}, nil
-	}
+		logx.Errorf("get user information failed: %v", err)
 
+		return &types.UserResp{}, errorx.ErrDatabaseError
+	}
 	return &types.UserResp{
 		Resp: errx.SUCCESS_RESP,
-		User: types.User{
-			Id:            req.UserId,
-			Name:          rpcResp.Name,
-			FollowCount:   *rpcResp.FollowCount,
-			FollowerCount: *rpcResp.FollowerCount,
-			IsFollow:      rpcResp.IsFollow,
-		},
+		User: userInfo,
 	}, nil
 }

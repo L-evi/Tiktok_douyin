@@ -4,6 +4,7 @@ import (
 	"context"
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
+	"train-tiktok/service/identity/identityclient"
 	"train-tiktok/service/user/types/user"
 	"train-tiktok/service/video/types/video"
 )
@@ -74,15 +75,23 @@ func GetUserInfo(c *svc.ServiceContext, ctx context.Context, userId int64, targe
 		return types.User{}, err
 	}
 
+	// 请求 identityRpc 获取信息
+	var identityRpc *identityclient.GetUserInfoResp
+	if identityRpc, err = c.IdentityRpc.GetUserInfo(ctx, &identityclient.GetUserInfoReq{
+		UserId: targetId,
+	}); err != nil {
+		return types.User{}, err
+	}
+
 	return types.User{
 		Id:              targetId,
-		Name:            resp.Name,
+		Name:            identityRpc.Nickname,
 		FollowCount:     *resp.FollowCount,
 		FollowerCount:   *resp.FollowerCount,
 		IsFollow:        resp.IsFollow,
-		Avatar:          *resp.Avatar,
-		Signature:       *resp.Signature,
-		BackgroundImage: *resp.BackgroundImage,
+		Avatar:          identityRpc.Avatar,
+		Signature:       identityRpc.Signature,
+		BackgroundImage: identityRpc.BackgroundImage,
 		WorkCount:       workRpc.WorkCount,
 		TotalFavorited:  favoritedCount.FavoriteCount,
 		FavoriteCount:   favoriteRpc.FavoriteCount,

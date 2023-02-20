@@ -5,7 +5,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"train-tiktok/common/errorx"
 	tool2 "train-tiktok/common/tool"
-	"train-tiktok/service/identity/types/identity"
 	"train-tiktok/service/user/common/tool"
 	"train-tiktok/service/user/internal/svc"
 	"train-tiktok/service/user/models"
@@ -68,23 +67,9 @@ func (l *UserLogic) User(in *user.UserReq) (*user.UserResp, error) {
 		return &user.UserResp{}, errorx.ErrDatabaseError
 	}
 
-	// Get Username From Identity
-	var rpcResp *identity.GetUserInfoResp
-	if rpcResp, err = l.svcCtx.IdentityRpc.GetUserInfo(l.ctx, &identity.GetUserInfoReq{
-		UserId: in.TargetId,
-	}); err != nil {
-		logx.WithContext(l.ctx).Errorf("failed to query username: %v", err)
-
-		return &user.UserResp{}, errorx.ErrDatabaseError
-	}
-
 	return &user.UserResp{
-		Name:            rpcResp.Nickname,
-		FollowCount:     &followCount,
-		FollowerCount:   &followerCount,
-		IsFollow:        isFollowed,
-		Avatar:          &rpcResp.Avatar,
-		Signature:       &rpcResp.Signature,
-		BackgroundImage: &rpcResp.BackgroundImage,
+		FollowCount:   &followCount,
+		FollowerCount: &followerCount,
+		IsFollow:      isFollowed,
 	}, nil
 }

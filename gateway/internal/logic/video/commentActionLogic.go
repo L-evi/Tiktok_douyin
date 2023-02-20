@@ -3,7 +3,7 @@ package video
 import (
 	"context"
 	"train-tiktok/gateway/common/errx"
-	"train-tiktok/service/user/types/user"
+	"train-tiktok/gateway/common/tool/rpcutil"
 	"train-tiktok/service/video/types/video"
 
 	"train-tiktok/gateway/internal/svc"
@@ -48,12 +48,8 @@ func (l *CommentActionLogic) CommentAction(req *types.CommentActionReq) (resp *t
 
 	if req.ActionType == 1 {
 		// add comment 时才需要返回 评论内容
-		userRpcResp, err := l.svcCtx.UserRpc.User(l.ctx, &user.UserReq{
-			UserId:   _userId,
-			TargetId: _userId,
-		})
 
-		// failed to get user information
+		userRpcResp, err := rpcutil.GetUserInfo(l.svcCtx, l.ctx, _userId, rpcResp.Comment.UserId)
 		if err != nil {
 			return &types.CommentActionResp{
 				Resp: errx.HandleRpcErr(err),
@@ -64,14 +60,8 @@ func (l *CommentActionLogic) CommentAction(req *types.CommentActionReq) (resp *t
 		return &types.CommentActionResp{
 			Resp: errx.SUCCESS_RESP,
 			Comment: types.Comment{
-				Id: rpcResp.Comment.Id,
-				User: types.User{
-					Id:            _userId,
-					Name:          userRpcResp.Name,
-					FollowerCount: *userRpcResp.FollowerCount,
-					FollowCount:   *userRpcResp.FollowCount,
-					IsFollow:      userRpcResp.IsFollow,
-				},
+				Id:         rpcResp.Comment.Id,
+				User:       userRpcResp,
 				Content:    rpcResp.Comment.Content,
 				CreateDate: rpcResp.Comment.CreateDate,
 			},
