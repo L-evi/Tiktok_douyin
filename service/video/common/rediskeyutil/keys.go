@@ -3,9 +3,10 @@ package rediskeyutil
 import "fmt"
 
 type Keyer interface {
-	GetVideoCountKey(videoId int64) string
+	GetVideoFavoriteKey(videoId int64) string
 	GetUserKey(userId int64) string
-	GetFavoriteKey(videoPublisherId int64) string
+	GetPublisherFavoriteKey(videoPublisherId int64) string
+	GetCommentCount(videoId int64) string
 }
 
 type Keys struct {

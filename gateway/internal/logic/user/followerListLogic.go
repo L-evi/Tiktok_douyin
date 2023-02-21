@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/gateway/common/tool/rpcutil"
 	"train-tiktok/service/user/types/user"
@@ -50,7 +49,7 @@ func (l *FollowerListLogic) FollowerList(req *types.FansListReq) (resp *types.Fa
 			userId = 0 // isFollow 将返回 false
 		}
 		if userInfo, err = rpcutil.GetUserInfo(l.svcCtx, l.ctx, userId, rpcUserId); err != nil {
-			return &types.FansListResp{}, errorx.ErrSystemError
+			return &types.FansListResp{}, err
 		}
 
 		users = append(users, types.User{

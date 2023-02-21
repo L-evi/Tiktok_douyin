@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/logx"
-	"train-tiktok/common/errorx"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/gateway/common/tool/rpcutil"
 	"train-tiktok/gateway/internal/svc"
@@ -34,7 +33,7 @@ func (l *UserLogic) User(req *types.UserReq) (resp *types.UserResp, err error) {
 	if err != nil {
 		logx.Errorf("get user information failed: %v", err)
 
-		return &types.UserResp{}, errorx.ErrDatabaseError
+		return &types.UserResp{}, err
 	}
 	return &types.UserResp{
 		Resp: errx.SUCCESS_RESP,

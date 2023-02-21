@@ -16,7 +16,7 @@ var (
 	ErrTokenInvalid             = status.Error(2001, "用户未登录，无权限或当前令牌已过期")
 	ErrLoginTimeout             = status.Error(2002, "登录超时")
 	ErrLoginError               = status.Error(2004, "帐号或密码错误")
-	ErrDatabaseError            = status.Error(3001, "数据库错误")
+	ErrDatabaseError            = status.Error(3001, "服务器开小差了, 过会儿再试吧")
 	ErrIoOperationError         = status.Error(3002, "IO操作错误")
 	ErrSystemError              = status.Error(3003, "服务器开小差了, 过会儿再试吧")
 	ErrRequestTimeout           = status.Error(3004, "请求超时")

@@ -3,11 +3,11 @@ package logic
 import (
 	"context"
 	"errors"
-	"fmt"
 	"gorm.io/gorm"
 	"strconv"
 	"train-tiktok/common/errorx"
 	tool2 "train-tiktok/common/tool"
+	"train-tiktok/service/video/common/rediskeyutil"
 	"train-tiktok/service/video/common/tool"
 	"train-tiktok/service/video/models"
 
@@ -43,7 +43,7 @@ func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.Favo
 
 	rdb := l.svcCtx.Rdb
 
-	_userKey := fmt.Sprintf("%s:favorite_user:%d", l.svcCtx.Config.RedisConf.Prefix, in.UserId)
+	_userKey := rediskeyutil.NewKeys(l.svcCtx.Config.RedisConf.Prefix).GetUserKey(in.UserId)
 
 	var err error
 	var userFavoriteList []string
@@ -62,15 +62,15 @@ func (l *FavoriteListLogic) FavoriteList(in *video.FavoriteListReq) (*video.Favo
 		if videoId, err = strconv.ParseInt(v, 10, 64); err != nil {
 			logx.Errorf("failed to convert video id, err: %v", err)
 			rdb.ZRem(l.ctx, _userKey, v)
-
-			return &video.FavoriteListResp{}, err
+			continue
 		}
+
 		var myVideo models.Video
 
 		if err := l.svcCtx.Db.Where(&models.Video{ID: videoId}).First(&myVideo).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-			return &video.FavoriteListResp{
-				VideoList: []*video.VideoX{},
-			}, nil
+			logx.Errorf("failed to get video, err: %v", err)
+			rdb.ZRem(l.ctx, _userKey, v)
+			continue
 		} else if err != nil {
 			logx.Errorf("failed to get video, err: %v", err)
 
