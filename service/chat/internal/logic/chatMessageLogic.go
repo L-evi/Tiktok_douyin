@@ -32,7 +32,7 @@ func (l *ChatMessageLogic) ChatMessage(in *chat.ChatMessageReq) (*chat.ChatMessa
 	if err := l.svcCtx.Db.Model(&models.Chat{}).Select([]string{"id", "from_user_id", "to_user_id", "content", "create_at"}).
 		Where("(from_user_id = ? and to_user_id = ? or from_user_id = ? and to_user_id = ?)", in.FromUserId, in.ToUserId, in.ToUserId, in.FromUserId).
 		Where("create_at > ? ", in.PreMsgTime).
-		Order("create_at desc").Limit(30).
+		Order("create_at asc").Limit(30).
 		Find(&Messages).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 
 		return &chat.ChatMessageResp{}, nil
