@@ -37,9 +37,12 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 	}); errorx.IsRpcError(err, videoErrx.ErrNoLatestVideo) || len(rpcResp.VideoList) == 0 {
 		// 没有更新的视频了
 		// loop
-		return NewFeedLogic(l.ctx, l.svcCtx).Feed(&types.FeedReq{
-			LatestTime: time.Now().Unix(),
-		})
+		//return NewFeedLogic(l.ctx, l.svcCtx).Feed(&types.FeedReq{
+		//	LatestTime: time.Now().Unix(),
+		//})
+		return &types.FeedResp{
+			NextTime: time.Now().Unix(),
+		}, nil
 	} else if err != nil {
 		logx.WithContext(l.ctx).Errorf("Feed rpc error: %v", err)
 
@@ -93,8 +96,8 @@ func (l *FeedLogic) Feed(req *types.FeedReq) (resp *types.FeedResp, err error) {
 			Author:        userInfo,
 		})
 	}
-	logx.WithContext(l.ctx).Infof("videoList: %v", videoList)
-	logx.WithContext(l.ctx).Infof("nextTime: %v", *rpcResp.NextTime)
+	logx.WithContext(l.ctx).Debugf("videoList: %v", videoList)
+	logx.WithContext(l.ctx).Debugf("nextTime: %v", *rpcResp.NextTime)
 	return &types.FeedResp{
 		Resp:      errx.SUCCESS_RESP,
 		VideoList: videoList,

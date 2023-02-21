@@ -44,7 +44,7 @@ func (l *PublishListLogic) PublishList(in *video.PublishListReq) (*video.Publish
 		Order("create_at desc").Find(&videos).
 		Error; errors.Is(err, gorm.ErrRecordNotFound) {
 
-		return &video.PublishListResp{VideoList: []*video.VideoX{}}, nil
+		return &video.PublishListResp{}, nil
 	} else if err != nil {
 		logx.WithContext(l.ctx).Errorf("PublishList Feed sql err: %v", err)
 

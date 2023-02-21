@@ -72,7 +72,7 @@ func (l *PublishListLogic) PublishList(req *types.PublishListReq) (resp *types.P
 			Author:        userInfo,
 		})
 	}
-	logx.WithContext(l.ctx).Infof("publishlist: %v", videoList)
+	logx.WithContext(l.ctx).Debugf("publishlist: %v", videoList)
 
 	return &types.PublishListResp{
 		Resp:      errx.SUCCESS_RESP,
