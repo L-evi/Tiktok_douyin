@@ -70,6 +70,9 @@ type (
 service gateway {
     @handler relationAction
     post /douyin/relation/action (RelationActionReq) returns (RelationActionResp)
+
+    @handler friendList // 好友列表
+    get /douyin/relation/friend/list (friendListReq) returns (friendListResp)
 }
 
 @server(
@@ -85,7 +88,4 @@ service gateway {
 
     @handler followerList // 粉丝列表
     get /douyin/relation/follower/list (fansListReq) returns (fansListResp)
-
-    @handler friendList // 好友列表
-    get /douyin/relation/friend/list (friendListReq) returns (friendListResp)
 }
