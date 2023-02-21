@@ -39,7 +39,6 @@ func (l *ChatMessageLogic) ChatMessage(in *chat.ChatMessageReq) (*chat.ChatMessa
 	} else if err != nil {
 		logx.Errorf("get chat message failed: %v", err)
 
-		// to/do bug：只是查询了单方的信息，应该查询双方信息
 		return &chat.ChatMessageResp{}, errorx.ErrDatabaseError
 	}
 	// fix

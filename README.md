@@ -4,7 +4,7 @@
 
 use go-zero as microservice framework
 
-## ports
+## Ports
 
 | port | service  | description      |
 |:-----|:---------|:-----------------|
@@ -12,12 +12,17 @@ use go-zero as microservice framework
 | 8081 | identity | identity service |
 | 8082 | user     | user service     |
 | 8083 | video    | video service    |
+| 8084 | chat     | chat service     |
 
-## run
+## Deploy
 
 ```bash
 # 启动依赖 (etcd, redis, mysql)
 docker-compose -f docker-compose.env.yaml up -d
+
 # 启动服务
 docker-compose -f docker-compose.yaml up -d
+
+# 编译运行
+docker-compose -f docker-compose.build.yaml up -d
 ```

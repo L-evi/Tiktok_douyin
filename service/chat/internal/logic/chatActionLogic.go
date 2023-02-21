@@ -34,6 +34,7 @@ func (l *ChatActionLogic) ChatAction(in *chat.ChatActionReq) (*chat.CharActionRe
 		return &chat.CharActionResp{}, errx.ErrContentEmpty
 	}
 	if in.ActionType == 1 {
+		// 理论上应该使用消息队列，避免出现消息丢失或顺序错乱的情况
 		var chatMessage = models.Chat{
 			FromUserId: in.FromUserId,
 			ToUserId:   in.ToUserId,
