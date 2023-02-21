@@ -30,13 +30,9 @@ func NewChatMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChatM
 func (l *ChatMessageLogic) ChatMessage(in *chat.ChatMessageReq) (*chat.ChatMessageResp, error) {
 	var Messages []models.Chat
 	if err := l.svcCtx.Db.Model(&models.Chat{}).Select([]string{"id", "from_user_id", "to_user_id", "content", "create_at"}).
-		Raw("( ? or ? ) and create_at > ?",
-			l.svcCtx.Db.Where(&models.Chat{FromUserId: in.FromUserId, ToUserId: in.ToUserId}),
-			l.svcCtx.Db.Where(&models.Chat{FromUserId: in.ToUserId, ToUserId: in.FromUserId}),
-			in.PreMsgTime,
-		).
-		Order("create_at desc").
-		Limit(30).
+		Where("(from_user_id = ? and to_user_id = ? or from_user_id = ? and to_user_id = ?)", in.FromUserId, in.ToUserId, in.ToUserId, in.FromUserId).
+		Where("create_at > ? ", in.PreMsgTime).
+		Order("create_at desc").Limit(30).
 		Find(&Messages).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 
 		return &chat.ChatMessageResp{}, nil

@@ -72,7 +72,8 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 
 				return err
 			} else if exists != 0 {
-				return errx.ErrAlreadyFavorite
+				return nil
+				// return errx.ErrAlreadyFavorite
 			}
 
 			// 事物
