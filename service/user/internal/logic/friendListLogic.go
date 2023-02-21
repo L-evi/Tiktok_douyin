@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"train-tiktok/service/user/internal/svc"
+	"train-tiktok/service/user/models"
 	"train-tiktok/service/user/types/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -26,13 +27,14 @@ func (l *FriendListLogic) FriendList(in *user.FriendListReq) (*user.FriendListRe
 	// get friends from fans join follow
 	var userId []int64
 
-	// x SELECT f.target_id FROM fans f LEFT JOIN follows fo ON f.target_id = fo.user_id WHERE f.user_id = 1 AND fo.target_id = 1;
-	// select fans.user_id from fans where fans.target_id = 1 UNION select follows.target_id from follows where follows.user_id = 1;
-	result := l.svcCtx.Db.Raw("? UNION ?",
-		l.svcCtx.Db.Table("fans").Select("fans.user_id").Where("fans.target_id = ?", in.UserId),
-		l.svcCtx.Db.Table("follows").Select("follows.target_id").Where("follows.user_id = ?", in.UserId),
-	).Scan(&userId)
-
+	// models.Fans(targetId, userId) targetId 新增 userId 为粉丝 // uid 是 tid 的粉丝
+	// models.Follow(userId, targetId) userId 新增 targetId 为关注对象 // uid 关注 tid
+	// 求 user_id = 1 的好友列表 (互关)
+	//	// X select target_id from fans where user_id = 1 and target_id in (select user_id from follows where target_id = 1)
+	// select user_id from follows where target_id = 2 and user_id in (select user_id from fans where target_id = 2);
+	result := l.svcCtx.Db.Model(&models.Follow{}).Select([]string{"user_id"}).Where("target_id = ?", in.UserId).
+		Where("user_id in (?)", l.svcCtx.Db.Model(&models.Fans{}).Select("user_id").Where("target_id = ?", in.UserId)).
+		Pluck("user_id", &userId)
 	if result.Error != nil {
 		logx.WithContext(l.ctx).Error("get friend list failed: %v", result.Error)
 

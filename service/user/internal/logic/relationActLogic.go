@@ -65,8 +65,8 @@ func (l *RelationActLogic) RelationAct(in *user.RelationActReq) (*user.RelationA
 		}
 
 		// 关注
-		// models.Fans(targetId, userId) targetId 新增 userId 为粉丝
-		// models.Follow(userId, targetId) userId 新增 targetId 为关注对象
+		// models.Fans(targetId, userId) targetId 新增 userId 为粉丝 // uid 是 tid 的粉丝
+		// models.Follow(userId, targetId) userId 新增 targetId 为关注对象 // uid 关注 tid
 		if err := _db.Transaction(func(tx *gorm.DB) error {
 			if err := tx.Create(&models.Follow{
 				UserId:   in.UserId,

@@ -25,12 +25,13 @@ func NewFollowListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Follow
 	}
 }
 
+// FollowList 用户关注列表
 func (l *FollowListLogic) FollowList(in *user.FollowListReq) (*user.FollowListResp, error) {
 	if in.UserId == 0 {
 		return nil, errorx.ErrInvalidParameter
 	}
 	var users []int64
-	if err := l.svcCtx.Db.Model(&models.Follow{}).Where(models.Fans{
+	if err := l.svcCtx.Db.Model(&models.Follow{}).Where(models.Follow{
 		UserId: in.UserId,
 	}).Pluck("target_id", &users).Error; err != nil {
 		logx.WithContext(l.ctx).Errorf("failed to query follows: %v", err)
