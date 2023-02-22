@@ -11,9 +11,11 @@ import "video.api"
 import "user.api"
 import "chat.api"
 
-type pingResp {
+type indexResp {
 	Resp
-	Msg string `json:"msg"`
+	Github    string   `json:"Github"`
+	Author    []string `json:"Author"`
+	Timestamp string   `json:"Timestamp"`
 }
 
 @server(
@@ -21,5 +23,8 @@ type pingResp {
 )
 service gateway {
 	@handler ping
-	get /ping returns (pingResp)
+	get /ping returns (Resp)
+	
+	@handler index
+	get / returns (indexResp)
 }

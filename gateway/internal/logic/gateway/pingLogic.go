@@ -23,11 +23,9 @@ func NewPingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PingLogic {
 	}
 }
 
-func (l *PingLogic) Ping() (resp *types.PingResp, err error) {
-	return &types.PingResp{
-		Resp: types.Resp{
-			Code: 0,
-			Msg:  "pong",
-		},
+func (l *PingLogic) Ping() (resp *types.Resp, err error) {
+	return &types.Resp{
+		Code: 0,
+		Msg:  "pong",
 	}, nil
 }

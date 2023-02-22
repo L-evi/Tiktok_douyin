@@ -22,6 +22,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/ping",
 				Handler: gateway.PingHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/",
+				Handler: gateway.IndexHandler(serverCtx),
+			},
 		},
 	)
 
@@ -100,6 +105,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/douyin/relation/action",
 					Handler: user.RelationActionHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/douyin/relation/friend/list",
+					Handler: user.FriendListHandler(serverCtx),
+				},
 			}...,
 		),
 	)
@@ -122,11 +132,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/douyin/relation/follower/list",
 					Handler: user.FollowerListHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodGet,
-					Path:    "/douyin/relation/friend/list",
-					Handler: user.FriendListHandler(serverCtx),
 				},
 			}...,
 		),
