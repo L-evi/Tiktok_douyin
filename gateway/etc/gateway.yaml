@@ -11,8 +11,8 @@ Log:
   ServiceName: Gateway
 Cos:
   Enable: false
-  SecretId: 1250000000
-  SecretKeu: AKID00000000000
+  SecretId: "1250000000"
+  SecretKey: AKID00000000000
   Path: /tiktok/storage
   BucketUrl: https://{bucket}.cos.{region}.myqcloud.com # not end with slash
 IdentityRpc:

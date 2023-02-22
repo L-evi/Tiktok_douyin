@@ -77,7 +77,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if CosSecretId, ok := os.LookupEnv("COS_SECRET_ID"); ok {
 		c.Cos.SecretId = CosSecretId
 	}
-	if CosSecretKey, ok := os.LookupEnv("COS_SECRET_ID"); ok {
+	if CosSecretKey, ok := os.LookupEnv("COS_SECRET_KEY"); ok {
 		c.Cos.SecretKey = CosSecretKey
 	}
 	if CosPath, ok := os.LookupEnv("COS_PATH"); ok {
