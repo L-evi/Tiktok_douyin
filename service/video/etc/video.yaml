@@ -20,7 +20,7 @@ Log:
   ServiceName: service-video
 StorageBaseUrl:
   Local: "http://127.0.0.1:8888" # do not end with stash
-  Cos: "-"
+  Cos: "http://127.0.0.1:8888"
 RedisConf:
   Addr: 127.0.0.1:6379
   Passwd:

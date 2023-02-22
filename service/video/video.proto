@@ -24,10 +24,11 @@ message VideoX{
 
 message publishReq {
   int64 user_id = 1;
-  string file_path = 2; // 视频目录
+  string video_path = 2; // 视频目录
   string cover_path = 3; // 封面目录
   string title = 5;
   string hash = 6;
+  string position = 7;
 }
 message publishResp {
   bool success = 1;
@@ -148,6 +149,7 @@ message getVideoByHashReq {
 message getVideoByHashResp {
   bool exists  = 1;
   VideoX video = 2;
+  string position = 3;
 }
 
 service video {

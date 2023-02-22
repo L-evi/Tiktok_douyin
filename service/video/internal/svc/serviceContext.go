@@ -64,6 +64,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if local, ok := os.LookupEnv("STORAGE_BASE_URL_LOCAL"); ok {
 		c.StorageBaseUrl.Local = local
 	}
+	if cos, ok := os.LookupEnv("STORAGE_BASE_URL_COS"); ok {
+		c.StorageBaseUrl.Cos = cos
+	}
 
 	// redis
 	if rdbAddr, ok := os.LookupEnv("REDIS_ADDR"); ok {

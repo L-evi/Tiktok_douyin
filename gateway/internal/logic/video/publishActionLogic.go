@@ -10,8 +10,10 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 	"train-tiktok/common/errorx"
+	"train-tiktok/common/position"
 	"train-tiktok/common/tool"
 	"train-tiktok/gateway/common/errx"
 	"train-tiktok/service/video/videoclient"
@@ -42,6 +44,7 @@ func NewPublishActionLogic(r *http.Request, ctx context.Context, svcCtx *svc.Ser
 func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *types.Resp, err error) {
 	var UserId = l.ctx.Value("user_id").(int64)
 	var _fileBaseDir = l.svcCtx.PublicPath
+	// public/video
 	var _videoBaseDir = _fileBaseDir + "/video"
 	var _coverBaseDir = _fileBaseDir + "/cover"
 	var _fileTypNotSupport = types.Resp{
@@ -172,26 +175,27 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 		return &SystemErrResp, nil
 	}
 
-	// 判断视频是否已经存在
+	// 通过 HASH 判断视频是否已经存在, 如果存在则使用原视频地址
 	var hashrpc *videoclient.GetVideoByHashResp
 	if hashrpc, err = l.svcCtx.VideoRpc.GetVideoByHash(l.ctx, &videoclient.GetVideoByHashReq{
 		Hash: videoHash,
 	}); err != nil {
 		closeAndRemove(f, _fileTmpPath)
-		logx.WithContext(l.ctx).Debugf("获取文件hash失败: %v", err)
+		logx.WithContext(l.ctx).Debugf("通过hash获取原视频信息失败: %v", err)
 
 		return &SystemErrResp, nil
-	}
-
-	// 秒存验证
-	if hashrpc.Exists == true {
+	} else if hashrpc.Exists == true {
+		// 秒存验证通过
+		// 删除本地源文件
 		closeAndRemove(f, _fileTmpPath)
+
 		if _, err := l.svcCtx.VideoRpc.Publish(l.ctx, &videoclient.PublishReq{
 			Title:     req.Title,
-			FilePath:  hashrpc.Video.PlayUrl,
+			VideoPath: hashrpc.Video.PlayUrl,
 			CoverPath: hashrpc.Video.CoverUrl,
 			UserId:    UserId,
 			Hash:      videoHash,
+			Position:  hashrpc.Position,
 		}); err != nil {
 			return &SystemErrResp, nil
 		}
@@ -218,21 +222,38 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 
 			return &SystemErrResp, nil
 		} else {
+			// 上传成功, 删除本地文件
 			closeAndRemove(f, _fileTmpPath)
 			_ = os.Remove(_coverPath)
 
-			_fileTmpPath = remoteVideoUrl
-			_coverPath = remoteCoverUrl
+			// 请求 video service 存储文件 (COS)
+			if _, err := l.svcCtx.VideoRpc.Publish(l.ctx, &videoclient.PublishReq{
+				Title:     req.Title,
+				VideoPath: remoteVideoUrl,
+				CoverPath: remoteCoverUrl,
+				UserId:    UserId,
+				Hash:      videoHash,
+				Position:  position.COS,
+			}); err != nil {
+				return &SystemErrResp, nil
+			}
+
+			return &types.Resp{
+				Code: 0,
+				Msg:  "upload to cos success",
+			}, nil
 		}
 	}
 
-	// 请求 video service 存储文件
+	// 请求 video service 存储文件 (LOCAL)
+	// videoPath ./public/video/xxx.mp4
 	if _, err := l.svcCtx.VideoRpc.Publish(l.ctx, &videoclient.PublishReq{
 		Title:     req.Title,
-		FilePath:  _fileTmpPath,
+		VideoPath: _fileTmpPath,
 		CoverPath: _coverPath,
 		UserId:    UserId,
 		Hash:      videoHash,
+		Position:  position.LOCAL,
 	}); err != nil {
 		closeAndRemove(f, _fileTmpPath)
 		_ = os.Remove(_coverPath)
@@ -282,8 +303,8 @@ func toCos(l *PublishActionLogic, videoPath string, coverPath string) (remoteVid
 		return "", "", errorx.ErrSystemError
 	}
 
-	remoteVideoFullPath := fmt.Sprintf("%s/%s", l.svcCtx.Config.Cos.BucketUrl, videoKey)
-	remoteCoverFullPath := fmt.Sprintf("%s/%s", l.svcCtx.Config.Cos.BucketUrl, coverKey)
+	_videoUrl := strings.TrimLeft(videoKey, "/")
+	_coverUrl := strings.TrimLeft(coverKey, "/")
 
-	return remoteVideoFullPath, remoteCoverFullPath, nil
+	return _videoUrl, _coverUrl, nil
 }

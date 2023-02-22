@@ -41,5 +41,6 @@ func (l *GetVideoByHashLogic) GetVideoByHash(in *video.GetVideoByHashReq) (*vide
 			CoverUrl: myVideo.CoverUrl,
 			Title:    myVideo.Title,
 		},
+		Position: myVideo.Position,
 	}, nil
 }
