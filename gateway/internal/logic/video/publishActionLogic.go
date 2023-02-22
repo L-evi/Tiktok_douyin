@@ -3,9 +3,12 @@ package video
 import (
 	"context"
 	"fmt"
+	"github.com/tencentyun/cos-go-sdk-v5"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 	"train-tiktok/common/errorx"
@@ -45,12 +48,13 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 		Code: 199,
 		Msg:  "不支持的文件类型",
 	}
+	var _fileTitleIllegal = types.Resp{
+		Code: 198,
+		Msg:  "标题不合法",
+	}
 
 	if req.Title == "" {
-		return &types.Resp{
-			Code: 199,
-			Msg:  "标题不能为空",
-		}, nil
+		return &_fileTitleIllegal, nil
 	}
 
 	var SystemErrResp = errx.HandleRpcErr(errorx.ErrSystemError)
@@ -87,10 +91,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	if !tool.IsVideo(header.Filename) {
 		logx.Debugf("不支持的文件类型: %s", header.Filename)
 
-		return &types.Resp{
-			Code: 1,
-			Msg:  "不支持的文件类型",
-		}, nil
+		return &_fileTypNotSupport, nil
 	}
 	logx.WithContext(l.ctx).Debugf("文件类型: %s", header.Filename)
 
@@ -98,23 +99,25 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 	if tool.IsFilenameDangerous(header.Filename) {
 		logx.Debugf("文件名存在安全风险: %s", header.Filename)
 
-		return &_fileTypNotSupport, nil
+		return &_fileTitleIllegal, nil
 	}
 
 	// 判断标题合法性
 	// TODO
 
 	// 生成文件路径
-	logx.Debug(header.Filename, req.Title)
-	_timeMd5 := strconv.Itoa(int(time.Now().UnixNano()))
-	_titleMd5 := tool.Md5(req.Title)
-	_filenameMd5 := tool.Md5(header.Filename)
+	logx.WithContext(l.ctx).Debug(header.Filename, req.Title)
+
 	_fileExt := tool.GetFileExt(header.Filename)
 	if _fileExt == "" {
-
 		return &_fileTypNotSupport, nil
 	}
-	_fileTmpPath := fmt.Sprintf("%s/%d_%s_%s_%s.%s", _videoBaseDir, UserId, _filenameMd5, _titleMd5, _timeMd5, _fileExt)
+
+	_fileFullName := fmt.Sprintf("%d_%s_%s_%s", UserId, tool.Md5(header.Filename)[0:16], tool.Md5(req.Title)[1:16], strconv.Itoa(int(time.Now().UnixNano())))
+	_fileTmpPath := fmt.Sprintf("%s/%s.%s", _videoBaseDir, _fileFullName, _fileExt)
+	if _fileExt == "" {
+		return &_fileTypNotSupport, nil
+	}
 
 	// 打开临时文件句柄
 	var f *os.File
@@ -160,12 +163,67 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 		}
 	}
 
+	// 获取视频的 hash 用于去重
+	var videoHash string
+	if videoHash, err = tool.GetFileHash(_fileTmpPath); err != nil {
+		closeAndRemove(f, _fileTmpPath)
+		logx.WithContext(l.ctx).Debugf("获取文件hash失败: %v", err)
+
+		return &SystemErrResp, nil
+	}
+
+	// 判断视频是否已经存在
+	var hashrpc *videoclient.GetVideoByHashResp
+	if hashrpc, err = l.svcCtx.VideoRpc.GetVideoByHash(l.ctx, &videoclient.GetVideoByHashReq{
+		Hash: videoHash,
+	}); err != nil {
+		closeAndRemove(f, _fileTmpPath)
+		logx.WithContext(l.ctx).Debugf("获取文件hash失败: %v", err)
+
+		return &SystemErrResp, nil
+	}
+
+	// 秒存验证
+	if hashrpc.Exists == true {
+		closeAndRemove(f, _fileTmpPath)
+		if _, err := l.svcCtx.VideoRpc.Publish(l.ctx, &videoclient.PublishReq{
+			Title:     req.Title,
+			FilePath:  hashrpc.Video.PlayUrl,
+			CoverPath: hashrpc.Video.CoverUrl,
+			UserId:    UserId,
+			Hash:      videoHash,
+		}); err != nil {
+			return &SystemErrResp, nil
+		}
+
+		return &types.Resp{
+			Code: 0,
+			Msg:  "rapid upload success",
+		}, nil
+	}
+
 	// 生成封面
-	_coverPath := fmt.Sprintf("%s/%d_%s_%s_%s.jpg", _coverBaseDir, UserId, _filenameMd5, _titleMd5, _timeMd5)
+	_coverPath := fmt.Sprintf("%s/%s.jpg", _coverBaseDir, _fileFullName)
 	if err := tool.GenerateVideoCover(_fileTmpPath, _coverPath); err != nil {
 		closeAndRemove(f, _fileTmpPath)
 
 		return &SystemErrResp, nil
+	}
+
+	// 是否上传至 cos
+	if l.svcCtx.Config.Cos.Enable {
+		if remoteVideoUrl, remoteCoverUrl, err := toCos(l, _fileTmpPath, _coverPath); err != nil {
+			closeAndRemove(f, _fileTmpPath)
+			_ = os.Remove(_coverPath)
+
+			return &SystemErrResp, nil
+		} else {
+			closeAndRemove(f, _fileTmpPath)
+			_ = os.Remove(_coverPath)
+
+			_fileTmpPath = remoteVideoUrl
+			_coverPath = remoteCoverUrl
+		}
 	}
 
 	// 请求 video service 存储文件
@@ -174,6 +232,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 		FilePath:  _fileTmpPath,
 		CoverPath: _coverPath,
 		UserId:    UserId,
+		Hash:      videoHash,
 	}); err != nil {
 		closeAndRemove(f, _fileTmpPath)
 		_ = os.Remove(_coverPath)
@@ -183,17 +242,8 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *t
 
 	return &types.Resp{
 		Code: 0,
-		Msg:  "success",
+		Msg:  "upload to server success",
 	}, nil
-
-	// let video service to handle the file
-
-	// delete
-	// err = os.Remove("/tmp/" + header.Filename)
-	// if err != nil {
-	// 	logx.Error(err)
-	// 	return err
-	// }
 }
 
 // closeAndRemove 关闭文件句柄并删除已经创建的临时文件
@@ -204,4 +254,36 @@ func closeAndRemove(f *os.File, path string) {
 	if err := os.Remove(path); err != nil {
 		logx.Errorf("remove tmp file failed: %v", err)
 	}
+}
+
+func toCos(l *PublishActionLogic, videoPath string, coverPath string) (remoteVideo string, remoteCover string, err error) {
+	bucketURL, _ := url.Parse(l.svcCtx.Config.Cos.BucketUrl)
+	b := &cos.BaseURL{BucketURL: bucketURL}
+
+	client := cos.NewClient(b, &http.Client{
+		Transport: &cos.AuthorizationTransport{
+			SecretID:  l.svcCtx.Config.Cos.SecretId,
+			SecretKey: l.svcCtx.Config.Cos.SecretKey,
+		},
+	})
+
+	videoKey := fmt.Sprintf("%s/video/%s", l.svcCtx.Config.Cos.Path, filepath.Base(videoPath))
+	coverKey := fmt.Sprintf("%s/cover/%s", l.svcCtx.Config.Cos.Path, filepath.Base(coverPath))
+
+	// 上传视频
+	if videoResp, err := client.Object.PutFromFile(l.ctx, videoKey, videoPath, nil); err != nil || videoResp.StatusCode != http.StatusOK {
+		logx.WithContext(l.ctx).Errorf("上传视频失败: %v %v", err, videoResp)
+		return "", "", errorx.ErrSystemError
+	}
+
+	if coverResp, err := client.Object.PutFromFile(l.ctx, coverKey, coverPath, nil); err != nil || coverResp.StatusCode != http.StatusOK {
+		logx.WithContext(l.ctx).Errorf("上传封面失败: %v %v", err, coverResp)
+		_, _ = client.Object.Delete(l.ctx, videoKey)
+		return "", "", errorx.ErrSystemError
+	}
+
+	remoteVideoFullPath := fmt.Sprintf("%s/%s", l.svcCtx.Config.Cos.BucketUrl, videoKey)
+	remoteCoverFullPath := fmt.Sprintf("%s/%s", l.svcCtx.Config.Cos.BucketUrl, coverKey)
+
+	return remoteVideoFullPath, remoteCoverFullPath, nil
 }

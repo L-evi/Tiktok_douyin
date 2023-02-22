@@ -8,6 +8,7 @@ type Video struct {
 	PlayUrl  string `gorm:"size:255"`
 	CoverUrl string `gorm:"type:text"`
 	Position string `gorm:"size:10"` // video 存储节点 cos / local
+	Hash     string `gorm:"index;size:255"`
 	CreateAt int64  `gorm:"index;autoCreateTime"`
 }
 

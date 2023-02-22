@@ -12,4 +12,13 @@ type Config struct {
 	UserRpc     zrpc.RpcClientConf
 	PublicPath  string
 	ChatRpc     zrpc.RpcClientConf
+	Cos         CosConf
+}
+
+type CosConf struct {
+	Enable    bool
+	SecretId  string
+	SecretKey string
+	BucketUrl string
+	Path      string
 }

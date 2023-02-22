@@ -27,6 +27,7 @@ message publishReq {
   string file_path = 2; // 视频目录
   string cover_path = 3; // 封面目录
   string title = 5;
+  string hash = 6;
 }
 message publishResp {
   bool success = 1;
@@ -141,6 +142,14 @@ message workCountResp {
   int64 work_count = 2;
 }
 
+message getVideoByHashReq {
+  string hash = 1;
+}
+message getVideoByHashResp {
+  bool exists  = 1;
+  VideoX video = 2;
+}
+
 service video {
   rpc publish(publishReq) returns (publishResp);
   rpc publishList(publishListReq) returns (publishListResp);
@@ -156,4 +165,6 @@ service video {
   rpc workCount(workCountReq) returns (workCountResp);      // 获赞数
   rpc favoritedCount(favoritedCountReq) returns (favoritedCountResp); // 用户获赞数
   rpc userFavoriteCount(UserFavoriteCountReq) returns (UserFavoriteCountResp); // 用户点赞数量
+
+  rpc getVideoByHash(getVideoByHashReq) returns (getVideoByHashResp);
 }

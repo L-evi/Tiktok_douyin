@@ -35,6 +35,7 @@ type VideoClient interface {
 	WorkCount(ctx context.Context, in *WorkCountReq, opts ...grpc.CallOption) (*WorkCountResp, error)
 	FavoritedCount(ctx context.Context, in *FavoritedCountReq, opts ...grpc.CallOption) (*FavoritedCountResp, error)
 	UserFavoriteCount(ctx context.Context, in *UserFavoriteCountReq, opts ...grpc.CallOption) (*UserFavoriteCountResp, error)
+	GetVideoByHash(ctx context.Context, in *GetVideoByHashReq, opts ...grpc.CallOption) (*GetVideoByHashResp, error)
 }
 
 type videoClient struct {
@@ -162,6 +163,15 @@ func (c *videoClient) UserFavoriteCount(ctx context.Context, in *UserFavoriteCou
 	return out, nil
 }
 
+func (c *videoClient) GetVideoByHash(ctx context.Context, in *GetVideoByHashReq, opts ...grpc.CallOption) (*GetVideoByHashResp, error) {
+	out := new(GetVideoByHashResp)
+	err := c.cc.Invoke(ctx, "/video.video/getVideoByHash", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VideoServer is the server API for Video service.
 // All implementations must embed UnimplementedVideoServer
 // for forward compatibility
@@ -179,6 +189,7 @@ type VideoServer interface {
 	WorkCount(context.Context, *WorkCountReq) (*WorkCountResp, error)
 	FavoritedCount(context.Context, *FavoritedCountReq) (*FavoritedCountResp, error)
 	UserFavoriteCount(context.Context, *UserFavoriteCountReq) (*UserFavoriteCountResp, error)
+	GetVideoByHash(context.Context, *GetVideoByHashReq) (*GetVideoByHashResp, error)
 	mustEmbedUnimplementedVideoServer()
 }
 
@@ -224,6 +235,9 @@ func (UnimplementedVideoServer) FavoritedCount(context.Context, *FavoritedCountR
 }
 func (UnimplementedVideoServer) UserFavoriteCount(context.Context, *UserFavoriteCountReq) (*UserFavoriteCountResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserFavoriteCount not implemented")
+}
+func (UnimplementedVideoServer) GetVideoByHash(context.Context, *GetVideoByHashReq) (*GetVideoByHashResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVideoByHash not implemented")
 }
 func (UnimplementedVideoServer) mustEmbedUnimplementedVideoServer() {}
 
@@ -472,6 +486,24 @@ func _Video_UserFavoriteCount_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Video_GetVideoByHash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVideoByHashReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServer).GetVideoByHash(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.video/getVideoByHash",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServer).GetVideoByHash(ctx, req.(*GetVideoByHashReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Video_ServiceDesc is the grpc.ServiceDesc for Video service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -530,6 +562,10 @@ var Video_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "userFavoriteCount",
 			Handler:    _Video_UserFavoriteCount_Handler,
+		},
+		{
+			MethodName: "getVideoByHash",
+			Handler:    _Video_GetVideoByHash_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

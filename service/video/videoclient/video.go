@@ -30,6 +30,8 @@ type (
 	FavoritedCountResp    = video.FavoritedCountResp
 	FeedReq               = video.FeedReq
 	FeedResp              = video.FeedResp
+	GetVideoByHashReq     = video.GetVideoByHashReq
+	GetVideoByHashResp    = video.GetVideoByHashResp
 	IsFavoriteReq         = video.IsFavoriteReq
 	IsFavoriteResp        = video.IsFavoriteResp
 	PublishListReq        = video.PublishListReq
@@ -57,6 +59,7 @@ type (
 		WorkCount(ctx context.Context, in *WorkCountReq, opts ...grpc.CallOption) (*WorkCountResp, error)
 		FavoritedCount(ctx context.Context, in *FavoritedCountReq, opts ...grpc.CallOption) (*FavoritedCountResp, error)
 		UserFavoriteCount(ctx context.Context, in *UserFavoriteCountReq, opts ...grpc.CallOption) (*UserFavoriteCountResp, error)
+		GetVideoByHash(ctx context.Context, in *GetVideoByHashReq, opts ...grpc.CallOption) (*GetVideoByHashResp, error)
 	}
 
 	defaultVideo struct {
@@ -133,4 +136,9 @@ func (m *defaultVideo) FavoritedCount(ctx context.Context, in *FavoritedCountReq
 func (m *defaultVideo) UserFavoriteCount(ctx context.Context, in *UserFavoriteCountReq, opts ...grpc.CallOption) (*UserFavoriteCountResp, error) {
 	client := video.NewVideoClient(m.cli.Conn())
 	return client.UserFavoriteCount(ctx, in, opts...)
+}
+
+func (m *defaultVideo) GetVideoByHash(ctx context.Context, in *GetVideoByHashReq, opts ...grpc.CallOption) (*GetVideoByHashResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.GetVideoByHash(ctx, in, opts...)
 }

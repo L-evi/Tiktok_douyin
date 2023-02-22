@@ -86,3 +86,8 @@ func (s *VideoServer) UserFavoriteCount(ctx context.Context, in *video.UserFavor
 	l := logic.NewUserFavoriteCountLogic(ctx, s.svcCtx)
 	return l.UserFavoriteCount(in)
 }
+
+func (s *VideoServer) GetVideoByHash(ctx context.Context, in *video.GetVideoByHashReq) (*video.GetVideoByHashResp, error) {
+	l := logic.NewGetVideoByHashLogic(ctx, s.svcCtx)
+	return l.GetVideoByHash(in)
+}

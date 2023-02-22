@@ -1,9 +1,14 @@
 package svc
 
 import (
+	"context"
+	"github.com/tencentyun/cos-go-sdk-v5"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
+	"log"
+	"net/http"
+	"net/url"
 	"os"
 	"train-tiktok/gateway/internal/config"
 	"train-tiktok/gateway/internal/middleware"
@@ -26,6 +31,7 @@ type ServiceContext struct {
 	AuthPass    rest.Middleware
 	PublicPath  string
 	ChatRpc     chat.ChatClient
+	EnableCos   bool
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -56,6 +62,47 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		c.VideoRpc.Etcd.Hosts = []string{etcdEndpoint}
 		c.UserRpc.Etcd.Hosts = []string{etcdEndpoint}
 		c.ChatRpc.Etcd.Hosts = []string{etcdEndpoint}
+	}
+
+	// cos
+	if CosBucketEnabled, ok := os.LookupEnv("COS_BUCKET_ENABLE"); ok {
+		c.Cos.Enable = false
+		if CosBucketEnabled == "true" {
+			c.Cos.Enable = true
+		}
+	}
+	if CosBucketUrl, ok := os.LookupEnv("COS_BUCKET_URL"); ok {
+		c.Cos.BucketUrl = CosBucketUrl
+	}
+	if CosSecretId, ok := os.LookupEnv("COS_SECRET_ID"); ok {
+		c.Cos.SecretId = CosSecretId
+	}
+	if CosSecretKey, ok := os.LookupEnv("COS_SECRET_ID"); ok {
+		c.Cos.SecretKey = CosSecretKey
+	}
+	if CosPath, ok := os.LookupEnv("COS_PATH"); ok {
+		c.Cos.Path = CosPath
+	}
+
+	// check Bucket exist
+	if c.Cos.Enable {
+		bucketURL, _ := url.Parse(c.Cos.BucketUrl)
+		b := &cos.BaseURL{BucketURL: bucketURL}
+
+		client := cos.NewClient(b, &http.Client{
+			Transport: &cos.AuthorizationTransport{
+				SecretID:  c.Cos.SecretId,
+				SecretKey: c.Cos.SecretKey,
+			},
+		})
+
+		ok, err := client.Bucket.IsExist(context.Background())
+
+		if err != nil {
+			log.Panicf("Bucket exists Check Failed, %s", err)
+		} else if !ok {
+			log.Panicf("Bucket not exists")
+		}
 	}
 
 	return &ServiceContext{

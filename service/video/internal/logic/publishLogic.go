@@ -38,6 +38,7 @@ func (l *PublishLogic) Publish(in *video.PublishReq) (*video.PublishResp, error)
 		Title:    in.Title,
 		PlayUrl:  in.FilePath,
 		CoverUrl: in.CoverPath,
+		Hash:     in.Hash,
 		Position: "local",
 	}).Error; err != nil {
 		logx.Errorf("insert video failed: %v", err)
