@@ -42,7 +42,6 @@ func videoStaticHandler(engine *rest.Server, conf config.Config) {
 			})
 		//log.Println("videoStaticHandler", path, pattern, fileDir)
 	}
-
 }
 
 func main() {
@@ -56,7 +55,11 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	server := rest.MustNewServer(c.RestConf)
+	server := rest.MustNewServer(c.RestConf,
+		rest.WithNotFoundHandler(handler.NotAllowHandler()),
+		rest.WithNotFoundHandler(handler.NotFoundHandler()),
+	)
+
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
@@ -71,8 +74,8 @@ func main() {
 		return http.StatusOK, errorx.FromRpcStatus(err)
 	})
 
-	// 注册视频对外路由
 	handler.RegisterHandlers(server, ctx)
+	// 注册视频对外路由
 	videoStaticHandler(server, c)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
