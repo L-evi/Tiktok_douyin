@@ -6,8 +6,8 @@ import (
 	"train-tiktok/common/tool"
 )
 
-func Handler(debug string, logConf logx.LogConf) {
-	if debug == "true" {
+func Handler(debug bool, logConf logx.LogConf) {
+	if debug {
 		logConf.Level = "debug"
 		logConf.Mode = "console"
 	} else {

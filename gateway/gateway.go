@@ -56,16 +56,17 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
+	ctx := svc.NewServiceContext(c)
+	c = ctx.Config
+
 	// set router
 	r := router.NewRouter()
 	r.SetNotAllowedHandler(handler.NotAllowHandler())
 	r.SetNotFoundHandler(handler.NotFoundHandler())
 
 	server := rest.MustNewServer(c.RestConf, rest.WithRouter(r))
-
 	defer server.Stop()
 
-	ctx := svc.NewServiceContext(c)
 	httpx.SetErrorHandlerCtx(func(ctx context.Context, err error) (int, interface{}) {
 		_, ok := status.FromError(err)
 		if !ok {

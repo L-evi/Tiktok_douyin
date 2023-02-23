@@ -29,22 +29,22 @@ type ServiceContext struct {
 	UserRpc     user.UserClient
 	Auth        rest.Middleware
 	AuthPass    rest.Middleware
-	PublicPath  string
 	ChatRpc     chat.ChatClient
-	EnableCos   bool
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 
-	// 视频临时存储路径
-	_publicPath := os.Getenv("PUBLIC_BASE_PATH")
-	if _publicPath == "" {
-		_publicPath = c.PublicPath
-	}
-
-	// is debug
+	var debug = false
 	if isDebug, ok := os.LookupEnv("DEBUG"); ok {
-		logset.Handler(isDebug, c.Log)
+		if isDebug == "true" {
+			debug = true
+		}
+	}
+	logset.Handler(debug, c.Log)
+
+	// 视频临时存储路径
+	if publicPath, ok := os.LookupEnv("PUBLIC_BASE_PATH"); ok {
+		c.PublicPath = publicPath
 	}
 
 	if etcdEndpoint, ok := os.LookupEnv("ETCD_ENDPOINT"); ok {
@@ -103,6 +103,5 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ChatRpc:     chatclient.NewChat(zrpc.MustNewClient(c.ChatRpc)),
 		Auth:        middleware.NewAuthMiddleware(c.IdentityRpc).Handle,
 		AuthPass:    middleware.NewAuthPassMiddleware(c.IdentityRpc).Handle,
-		PublicPath:  _publicPath,
 	}
 }

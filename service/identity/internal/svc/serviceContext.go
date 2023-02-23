@@ -22,8 +22,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		if isDebug == "true" {
 			debug = true
 		}
-		logset.Handler(isDebug, c.Log)
 	}
+	logset.Handler(debug, c.Log)
 
 	// Gorm
 	dsn := os.Getenv("MYSQL_DSN")

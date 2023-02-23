@@ -43,7 +43,7 @@ func NewPublishActionLogic(r *http.Request, ctx context.Context, svcCtx *svc.Ser
 
 func (l *PublishActionLogic) PublishAction(req *types.PublishActionReq) (resp *types.Resp, err error) {
 	var UserId = l.ctx.Value("user_id").(int64)
-	var _fileBaseDir = l.svcCtx.PublicPath
+	var _fileBaseDir = l.svcCtx.Config.PublicPath
 	// public/video
 	var _videoBaseDir = _fileBaseDir + "/video"
 	var _coverBaseDir = _fileBaseDir + "/cover"
