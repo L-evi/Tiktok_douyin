@@ -3,13 +3,13 @@ package svc
 import (
 	"context"
 	"github.com/tencentyun/cos-go-sdk-v5"
-	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"train-tiktok/common/logset"
 	"train-tiktok/gateway/internal/config"
 	"train-tiktok/gateway/internal/middleware"
 	"train-tiktok/service/chat/chatclient"
@@ -44,18 +44,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	// is debug
 	if isDebug, ok := os.LookupEnv("DEBUG"); ok {
-		if isDebug == "true" {
-			c.Log.Level = "debug"
-			c.Log.Mode = "console"
-		} else {
-			c.Log.Level = "info"
-			c.Log.Mode = "file"
-			c.Log.KeepDays = 60
-			c.Log.Rotation = "daily"
-			c.Log.Encoding = "json"
-		}
+		logset.Handler(isDebug, c.Log)
 	}
-	logx.MustSetup(c.Log)
 
 	if etcdEndpoint, ok := os.LookupEnv("ETCD_ENDPOINT"); ok {
 		c.IdentityRpc.Etcd.Hosts = []string{etcdEndpoint}

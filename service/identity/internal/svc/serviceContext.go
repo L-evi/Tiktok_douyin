@@ -1,11 +1,11 @@
 package svc
 
 import (
-	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 	"log"
 	"os"
 	"train-tiktok/common/dbutil"
+	"train-tiktok/common/logset"
 	"train-tiktok/service/identity/internal/config"
 	"train-tiktok/service/identity/models"
 )
@@ -21,17 +21,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if isDebug, ok := os.LookupEnv("DEBUG"); ok {
 		if isDebug == "true" {
 			debug = true
-			c.Log.Level = "debug"
-			c.Log.Mode = "console"
-		} else {
-			c.Log.Level = "info"
-			c.Log.Mode = "file"
-			c.Log.KeepDays = 60
-			c.Log.Rotation = "daily"
-			c.Log.Encoding = "json"
 		}
+		logset.Handler(isDebug, c.Log)
 	}
-	logx.MustSetup(c.Log)
 
 	// Gorm
 	dsn := os.Getenv("MYSQL_DSN")

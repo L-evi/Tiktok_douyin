@@ -2,13 +2,13 @@ package svc
 
 import (
 	"github.com/redis/go-redis/v9"
-	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
 	"gorm.io/gorm"
 	"log"
 	"os"
 	"strconv"
 	"train-tiktok/common/dbutil"
+	"train-tiktok/common/logset"
 	"train-tiktok/common/redisutil"
 	"train-tiktok/service/identity/identityclient"
 	"train-tiktok/service/user/internal/config"
@@ -28,17 +28,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if isDebug, ok := os.LookupEnv("DEBUG"); ok {
 		if isDebug == "true" {
 			debug = true
-			c.Log.Level = "debug"
-			c.Log.Mode = "console"
-		} else {
-			c.Log.Level = "info"
-			c.Log.Mode = "file"
-			c.Log.KeepDays = 60
-			c.Log.Rotation = "daily"
-			c.Log.Encoding = "json"
 		}
+		logset.Handler(isDebug, c.Log)
 	}
-	logx.MustSetup(c.Log)
 
 	// redis
 	if rdbAddr, ok := os.LookupEnv("REDIS_ADDR"); ok {
