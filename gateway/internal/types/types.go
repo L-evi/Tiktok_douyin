@@ -5,7 +5,7 @@ type IndexResp struct {
 	Resp
 	Github    string   `json:"Github"`
 	Author    []string `json:"Author"`
-	Timestamp string   `json:"Timestamp"`
+	Timestamp int64    `json:"Timestamp"`
 }
 
 type Resp struct {

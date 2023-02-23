@@ -56,7 +56,7 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 
 	server := rest.MustNewServer(c.RestConf,
-		rest.WithNotFoundHandler(handler.NotAllowHandler()),
+		rest.WithNotAllowedHandler(handler.NotAllowHandler()),
 		rest.WithNotFoundHandler(handler.NotFoundHandler()),
 	)
 

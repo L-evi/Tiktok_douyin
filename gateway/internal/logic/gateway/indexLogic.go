@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"context"
+	"time"
 
 	"train-tiktok/gateway/internal/svc"
 	"train-tiktok/gateway/internal/types"
@@ -29,7 +30,8 @@ func (l *IndexLogic) Index() (resp *types.IndexResp, err error) {
 			Code: 0,
 			Msg:  "ok",
 		},
-		Github: "https://github.com/L-evi/Tiktok_douyin",
-		Author: []string{"L-evi <Levitang@126.com>", "xcsoft <contact@xcsoft.top>"},
+		Github:    "https://github.com/L-evi/Tiktok_douyin",
+		Author:    []string{"L-evi Levitang@126.com", "xcsoft contact@xcsoft.top"},
+		Timestamp: time.Now().Unix(),
 	}, nil
 }
