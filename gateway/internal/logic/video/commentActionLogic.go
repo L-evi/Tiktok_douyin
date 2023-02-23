@@ -29,14 +29,6 @@ func NewCommentActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Com
 
 func (l *CommentActionLogic) CommentAction(req *types.CommentActionReq) (resp *types.CommentActionResp, err error) {
 
-	if req.CommentText == "" {
-		return &types.CommentActionResp{
-			Resp: types.Resp{
-				Code: 10010,
-				Msg:  "评论内容不能为空",
-			},
-		}, nil
-	}
 	_userId := l.ctx.Value("user_id").(int64)
 
 	// sent to rpc to consult
