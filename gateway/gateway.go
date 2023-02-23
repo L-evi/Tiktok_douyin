@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
+	"github.com/zeromicro/go-zero/rest/router"
 	"google.golang.org/grpc/status"
 	"net/http"
 	"os/exec"
@@ -55,10 +56,12 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	server := rest.MustNewServer(c.RestConf,
-		rest.WithNotAllowedHandler(handler.NotAllowHandler()),
-		rest.WithNotFoundHandler(handler.NotFoundHandler()),
-	)
+	// set router
+	r := router.NewRouter()
+	r.SetNotAllowedHandler(handler.NotAllowHandler())
+	r.SetNotFoundHandler(handler.NotFoundHandler())
+
+	server := rest.MustNewServer(c.RestConf, rest.WithRouter(r))
 
 	defer server.Stop()
 
