@@ -51,6 +51,10 @@ func (l *CommentActionLogic) CommentAction(in *video.CommentActionReq) (*video.C
 	switch in.ActionType {
 	case 1:
 		// add comment
+		if in.CommentText == "" {
+			return nil, errx.ErrCommentTextEmpty
+		}
+
 		var Comment = &models.Comment{
 			VideoID: in.VideoId,
 			UserID:  in.UserId,

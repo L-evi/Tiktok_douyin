@@ -72,6 +72,7 @@ func (l *FavoriteActionLogic) FavoriteAction(in *video.FavoriteActionReq) (*vide
 
 				return err
 			} else if exists != 0 {
+				// 已经点赞了，不需要再点赞 向前端返回点赞成功避免错误
 				return nil
 				// return errx.ErrAlreadyFavorite
 			}
