@@ -15,6 +15,8 @@ services:
     container_name: service-identity
     # ports:
     #   - "8081:8081"
+    volumes:
+      - ./tiktok/logs/identity:/app/logs
     env_file:
       - .env
     networks:
@@ -28,10 +30,10 @@ services:
     container_name: service-user
     # ports:
     #   - "8082:8082"
+    volumes:
+      - ./tiktok/logs/user:/app/logs
     env_file:
       - .env
-    volumes:
-      - ./tiktok/public:/app/public
     networks:
       - tiktok_net
     restart: always
@@ -43,6 +45,8 @@ services:
     container_name: service-video
     # ports:
     #   - "8083:8083"
+    volumes:
+      - ./tiktok/logs/video:/app/logs
     env_file:
       - .env
     networks:
@@ -56,6 +60,8 @@ services:
     container_name: service-chat
     # ports:
     #   - "8083:8083"
+    volumes:
+      - ./tiktok/logs/chat:/app/logs
     env_file:
       - .env
     networks:
@@ -74,6 +80,7 @@ services:
       - .env
     volumes:
       - ./tiktok/public:/app/public
+      - ./tiktok/logs/gateway:/app/logs
     networks:
       - tiktok_net
     restart: always
