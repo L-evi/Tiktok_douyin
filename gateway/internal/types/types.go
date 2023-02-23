@@ -110,7 +110,7 @@ type CommentActionReq struct {
 	Token       string `form:"token"`
 	VideoId     int64  `form:"video_id"`
 	ActionType  int32  `form:"action_type,range=[1:2]"`
-	CommentText string `form:"comment_text"`
+	CommentText string `form:"comment_text,optional"`
 	CommentId   int64  `form:"comment_id,optional"`
 }
 
