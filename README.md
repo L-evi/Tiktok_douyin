@@ -2,6 +2,8 @@
 
 字节青训营第五期 大作业, 简易抖音后端设计
 
+项目介绍地址：[不用最好的抖音极简版](https://bqz5oeip06.feishu.cn/docx/MYL6dzRkwoi7m2xivcZcjyspn0b)
+
 use go-zero as microservice framework
 
 ## Ports
